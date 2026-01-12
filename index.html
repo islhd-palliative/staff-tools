@@ -216,6 +216,7 @@
         .leave-tag.annual { background: #dbeafe; color: #1e40af; }
         .leave-tag.lsl { background: #e9d5ff; color: #6b21a8; }
         .leave-tag.tesl { background: #fef3c7; color: #92400e; }
+        .leave-tag.unavailable { background: #e5e7eb; color: #374151; }
         .leave-tag.highlight { background: #fbbf24; color: #000; font-weight: 600; }
 
         .availability-indicator {
@@ -394,6 +395,10 @@
             <span>TESL (Study Leave)</span>
         </div>
         <div class="legend-item">
+            <div class="legend-color" style="background: #e5e7eb;"></div>
+            <span>Unavailable</span>
+        </div>
+        <div class="legend-item">
             <div class="legend-color" style="background: #fce7f3;"></div>
             <span>Public Holiday</span>
         </div>
@@ -478,6 +483,17 @@
         function loadEmbeddedData() {
             leaveData = [
                 { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+                // BT Management Course dates
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 1, 18), endDate: new Date(2026, 1, 18), leaveType: 'Unavailable', notes: 'Stepping into leadership' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 3), leaveType: 'Unavailable', notes: 'Emotional intelligence' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 2, 19), endDate: new Date(2026, 2, 19), leaveType: 'Unavailable', notes: 'Communication and culture' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 3, 23), endDate: new Date(2026, 3, 23), leaveType: 'Unavailable', notes: 'Performance with purpose' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 7), leaveType: 'Unavailable', notes: 'Grievance and conflict' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 26), endDate: new Date(2026, 4, 26), leaveType: 'Unavailable', notes: 'HR essentials' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 7, 5), endDate: new Date(2026, 7, 5), leaveType: 'Unavailable', notes: 'Work health and safety' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 8, 3), endDate: new Date(2026, 8, 3), leaveType: 'Unavailable', notes: 'Finance and procurement' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 8, 23), endDate: new Date(2026, 8, 23), leaveType: 'Unavailable', notes: 'Corporate governance' },
+                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 9, 20), endDate: new Date(2026, 9, 20), leaveType: 'Unavailable', notes: 'Clinical governance' },
                 { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
                 { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
                 { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
@@ -614,6 +630,7 @@
                         let typeClass = 'annual';
                         if (leave.leaveType.includes('Long Service')) typeClass = 'lsl';
                         if (leave.leaveType.includes('TESL')) typeClass = 'tesl';
+                        if (leave.leaveType.includes('Unavailable')) typeClass = 'unavailable';
 
                         // Highlight if filtering by specific person
                         if (filter !== 'all' && filter !== 'north' && filter !== 'south') {
