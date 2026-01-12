@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Entitlements Summary 2026 - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #1e40af;
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header .region {
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .entitlement-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 1fr 1fr;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+
+        .entitlement-row:last-child {
+            border-bottom: none;
+        }
+
+        .entitlement-row.header {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.good { background: #22c55e; }
+        .progress-fill.warning { background: #f59e0b; }
+        .progress-fill.over { background: #ef4444; }
+
+        .days-text {
+            font-size: 0.9rem;
+        }
+
+        .days-used {
+            font-weight: 600;
+        }
+
+        .days-remaining {
+            color: #666;
+        }
+
+        .days-remaining.negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .fte-badge {
+            font-size: 0.75rem;
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .notes-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .notes-section h4 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .note-item {
+            font-size: 0.85rem;
+            color: #374151;
+            padding: 4px 0;
+        }
+
+        .totals-card {
+            background: #1e40af;
+            color: white;
+        }
+
+        .totals-card .card-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .total-item {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .total-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .total-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .entitlement-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            .entitlement-row.header {
+                display: none;
+            }
+            .totals-card .card-body {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to Calendar</a>
+
+    <h1>Leave Entitlements Summary 2026</h1>
+    <p class="subtitle">ISLHD Palliative and End of Life Care - Staff Specialists</p>
+
+    <div id="summaryContainer"></div>
+
+    <div class="last-updated" id="lastUpdated"></div>
+
+    <script>
+        // Staff data with FTE
+        const staffData = [
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', role: 'Head of Service' },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', role: 'Divisional Director' },
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', role: 'Senior Staff Specialist' },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', role: 'Staff Specialist' },
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', role: 'Staff Specialist' },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', role: 'Staff Specialist' },
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', role: 'Staff Specialist' },
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', role: 'Staff Specialist' }
+        ];
+
+        // Leave data (same as calendar)
+        const leaveData = [
+            { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave', paidDays: 2, notes: '2 paid days only' },
+            { staffCode: 'RW', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
+            { staffCode: 'Fadz', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' }
+        ];
+
+        // NSW Public Holidays 2026
+        const publicHolidays = [
+            new Date(2026, 0, 1),   // New Year
+            new Date(2026, 0, 26),  // Australia Day
+            new Date(2026, 3, 3),   // Good Friday
+            new Date(2026, 3, 4),   // Easter Saturday
+            new Date(2026, 3, 6),   // Easter Monday
+            new Date(2026, 3, 25),  // Anzac Day
+            new Date(2026, 5, 8),   // Queen's Birthday
+            new Date(2026, 9, 5),   // Labour Day
+            new Date(2026, 11, 25), // Christmas
+            new Date(2026, 11, 26), // Boxing Day
+            new Date(2026, 11, 28)  // Boxing Day observed
+        ];
+
+        function isPublicHoliday(date) {
+            return publicHolidays.some(h =>
+                h.getDate() === date.getDate() &&
+                h.getMonth() === date.getMonth() &&
+                h.getFullYear() === date.getFullYear()
+            );
+        }
+
+        function isWeekend(date) {
+            return date.getDay() === 0 || date.getDay() === 6;
+        }
+
+        // Count weekdays between two dates (excluding public holidays)
+        function countWeekdays(startDate, endDate) {
+            let count = 0;
+            let current = new Date(startDate);
+            while (current <= endDate) {
+                if (!isWeekend(current) && !isPublicHoliday(current)) {
+                    count++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+            return count;
+        }
+
+        // Count calendar days between two dates
+        function countCalendarDays(startDate, endDate) {
+            const diffTime = Math.abs(endDate - startDate);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        }
+
+        function calculateLeaveUsed(staffCode) {
+            const staffLeave = leaveData.filter(l => l.staffCode === staffCode);
+
+            let annualDays = 0;
+            let teslDays = 0;
+            let lslDays = 0;
+            const otherNotes = [];
+
+            staffLeave.forEach(leave => {
+                if (leave.leaveType === 'Annual Leave') {
+                    // Use paidDays if specified, otherwise count weekdays
+                    if (leave.paidDays) {
+                        annualDays += leave.paidDays;
+                    } else {
+                        annualDays += countWeekdays(leave.startDate, leave.endDate);
+                    }
+                } else if (leave.leaveType === 'TESL') {
+                    teslDays += countCalendarDays(leave.startDate, leave.endDate);
+                    if (leave.notes) otherNotes.push(`TESL: ${leave.notes}`);
+                } else if (leave.leaveType === 'Long Service Leave') {
+                    lslDays += countWeekdays(leave.startDate, leave.endDate);
+                    otherNotes.push(`LSL: ${lslDays} days`);
+                }
+            });
+
+            return { annualDays, teslDays, lslDays, otherNotes };
+        }
+
+        function renderSummary() {
+            const container = document.getElementById('summaryContainer');
+            let html = '';
+
+            let totalAnnualUsed = 0;
+            let totalAnnualEntitled = 0;
+            let totalTeslUsed = 0;
+            let totalTeslEntitled = 0;
+
+            staffData.forEach(staff => {
+                const used = calculateLeaveUsed(staff.code);
+
+                // Annual leave: 25 weekdays * FTE
+                const annualEntitlement = Math.round(25 * staff.fte);
+                const annualRemaining = annualEntitlement - used.annualDays;
+                const annualPercent = Math.min((used.annualDays / annualEntitlement) * 100, 100);
+
+                // TESL: 25 calendar days * FTE
+                const teslEntitlement = Math.round(25 * staff.fte);
+                const teslRemaining = teslEntitlement - used.teslDays;
+                const teslPercent = Math.min((used.teslDays / teslEntitlement) * 100, 100);
+
+                totalAnnualUsed += used.annualDays;
+                totalAnnualEntitled += annualEntitlement;
+                totalTeslUsed += used.teslDays;
+                totalTeslEntitled += teslEntitlement;
+
+                html += `
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <span>${staff.name} <span class="fte-badge">${staff.fte} FTE</span></span>
+                            <span class="region">${staff.region}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="entitlement-row header">
+                                <span>Leave Type</span>
+                                <span>Used</span>
+                                <span>Progress</span>
+                                <span>Remaining</span>
+                            </div>
+                            <div class="entitlement-row">
+                                <span><strong>Annual Leave</strong></span>
+                                <span class="days-text days-used">${used.annualDays} / ${annualEntitlement} days</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${annualPercent > 100 ? 'over' : annualPercent > 80 ? 'warning' : 'good'}" style="width: ${annualPercent}%"></div>
+                                </div>
+                                <span class="days-text days-remaining ${annualRemaining < 0 ? 'negative' : ''}">${annualRemaining} days</span>
+                            </div>
+                            <div class="entitlement-row">
+                                <span><strong>TESL</strong></span>
+                                <span class="days-text days-used">${used.teslDays} / ${teslEntitlement} days</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${teslPercent > 100 ? 'over' : teslPercent > 80 ? 'warning' : 'good'}" style="width: ${teslPercent}%"></div>
+                                </div>
+                                <span class="days-text days-remaining ${teslRemaining < 0 ? 'negative' : ''}">${teslRemaining} days</span>
+                            </div>
+                            ${used.otherNotes.length > 0 ? `
+                                <div class="notes-section">
+                                    <h4>Other Leave / Notes</h4>
+                                    ${used.otherNotes.map(n => `<div class="note-item">${n}</div>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Totals card
+            html = `
+                <div class="summary-card totals-card">
+                    <div class="card-body">
+                        <div class="total-item">
+                            <div class="total-value">${totalAnnualUsed}</div>
+                            <div class="total-label">Annual Leave Days Used</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${totalAnnualEntitled - totalAnnualUsed}</div>
+                            <div class="total-label">Annual Leave Days Remaining</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${totalTeslUsed}</div>
+                            <div class="total-label">TESL Days Used</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${totalTeslEntitled - totalTeslUsed}</div>
+                            <div class="total-label">TESL Days Remaining</div>
+                        </div>
+                    </div>
+                </div>
+            ` + html;
+
+            container.innerHTML = html;
+
+            // Update timestamp
+            document.getElementById('lastUpdated').textContent =
+                `Last updated: ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        }
+
+        renderSummary();
+    </script>
+</body>
+</html>
