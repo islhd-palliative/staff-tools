@@ -208,16 +208,17 @@
     <div class="last-updated" id="lastUpdated"></div>
 
     <script>
-        // Staff data with FTE
+        // Staff data with FTE and work patterns
+        // workDays: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
         const staffData = [
-            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', role: 'Head of Service' },
-            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', role: 'Divisional Director' },
-            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', role: 'Senior Staff Specialist' },
-            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', role: 'Staff Specialist' },
-            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', role: 'Staff Specialist' },
-            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', role: 'Staff Specialist' },
-            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', role: 'Staff Specialist' },
-            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', role: 'Staff Specialist' }
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', role: 'Head of Service', workDays: [1,2,3,4,5], daysPerWeek: 5 },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', role: 'Divisional Director', workDays: [1,2,3,4,5], daysPerWeek: 4 }, // 4 days, float day varies
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', role: 'Senior Staff Specialist', workDays: [2,4], daysPerWeek: 2 }, // Tues, Thurs
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', role: 'Staff Specialist', workDays: [1,2], daysPerWeek: 2 }, // Mon, Tues
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', role: 'Staff Specialist', workDays: [3,4,5], daysPerWeek: 3 }, // Wed, Thu, Fri
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', role: 'Staff Specialist', workDays: [2,3,4], daysPerWeek: 3 }, // Tues, Wed, Thurs
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', role: 'Staff Specialist', workDays: [1,2,3,4,5], daysPerWeek: 4.5 }, // Every 2nd Fri off
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', role: 'Staff Specialist', workDays: [1,3,4,5], daysPerWeek: 4 } // Every Tuesday off
         ];
 
         // Leave data (same as calendar)
@@ -270,12 +271,17 @@
             return date.getDay() === 0 || date.getDay() === 6;
         }
 
-        // Count weekdays between two dates (excluding public holidays)
-        function countWeekdays(startDate, endDate) {
+        // Count work days for a specific staff member (based on their work pattern)
+        function countWorkDays(startDate, endDate, staffCode) {
+            const staff = staffData.find(s => s.code === staffCode);
+            if (!staff) return 0;
+
             let count = 0;
             let current = new Date(startDate);
             while (current <= endDate) {
-                if (!isWeekend(current) && !isPublicHoliday(current)) {
+                const dayOfWeek = current.getDay();
+                // Check if it's a work day for this person and not a public holiday
+                if (staff.workDays.includes(dayOfWeek) && !isPublicHoliday(current)) {
                     count++;
                 }
                 current.setDate(current.getDate() + 1);
@@ -283,7 +289,7 @@
             return count;
         }
 
-        // Count calendar days between two dates
+        // Count calendar days between two dates (for TESL)
         function countCalendarDays(startDate, endDate) {
             const diffTime = Math.abs(endDate - startDate);
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
@@ -291,6 +297,7 @@
 
         function calculateLeaveUsed(staffCode) {
             const staffLeave = leaveData.filter(l => l.staffCode === staffCode);
+            const staff = staffData.find(s => s.code === staffCode);
 
             let annualDays = 0;
             let teslDays = 0;
@@ -299,17 +306,17 @@
 
             staffLeave.forEach(leave => {
                 if (leave.leaveType === 'Annual Leave') {
-                    // Use paidDays if specified, otherwise count weekdays
-                    if (leave.paidDays) {
+                    // Use paidDays if explicitly specified, otherwise count work days
+                    if (leave.paidDays !== undefined) {
                         annualDays += leave.paidDays;
                     } else {
-                        annualDays += countWeekdays(leave.startDate, leave.endDate);
+                        annualDays += countWorkDays(leave.startDate, leave.endDate, staffCode);
                     }
                 } else if (leave.leaveType === 'TESL') {
                     teslDays += countCalendarDays(leave.startDate, leave.endDate);
                     if (leave.notes) otherNotes.push(`TESL: ${leave.notes}`);
                 } else if (leave.leaveType === 'Long Service Leave') {
-                    lslDays += countWeekdays(leave.startDate, leave.endDate);
+                    lslDays += countWorkDays(leave.startDate, leave.endDate, staffCode);
                     otherNotes.push(`LSL: ${lslDays} days`);
                 }
             });
@@ -329,10 +336,12 @@
             staffData.forEach(staff => {
                 const used = calculateLeaveUsed(staff.code);
 
-                // Annual leave: 25 weekdays * FTE
-                const annualEntitlement = Math.round(25 * staff.fte);
+                // Annual leave: 5 weeks × days per week for this person
+                const annualEntitlement = Math.round(5 * staff.daysPerWeek);
                 const annualRemaining = annualEntitlement - used.annualDays;
                 const annualPercent = Math.min((used.annualDays / annualEntitlement) * 100, 100);
+                const annualWeeksUsed = (used.annualDays / staff.daysPerWeek).toFixed(1);
+                const annualWeeksRemaining = (annualRemaining / staff.daysPerWeek).toFixed(1);
 
                 // TESL: 25 calendar days * FTE
                 const teslEntitlement = Math.round(25 * staff.fte);
@@ -347,7 +356,7 @@
                 html += `
                     <div class="summary-card">
                         <div class="card-header">
-                            <span>${staff.name} <span class="fte-badge">${staff.fte} FTE</span></span>
+                            <span>${staff.name} <span class="fte-badge">${staff.fte} FTE (${staff.daysPerWeek} days/wk)</span></span>
                             <span class="region">${staff.region}</span>
                         </div>
                         <div class="card-body">
@@ -359,11 +368,11 @@
                             </div>
                             <div class="entitlement-row">
                                 <span><strong>Annual Leave</strong></span>
-                                <span class="days-text days-used">${used.annualDays} / ${annualEntitlement} days</span>
+                                <span class="days-text days-used">${used.annualDays} days (${annualWeeksUsed} wks)</span>
                                 <div class="progress-bar">
                                     <div class="progress-fill ${annualPercent > 100 ? 'over' : annualPercent > 80 ? 'warning' : 'good'}" style="width: ${annualPercent}%"></div>
                                 </div>
-                                <span class="days-text days-remaining ${annualRemaining < 0 ? 'negative' : ''}">${annualRemaining} days</span>
+                                <span class="days-text days-remaining ${annualRemaining < 0 ? 'negative' : ''}">${annualRemaining} days (${annualWeeksRemaining} wks)</span>
                             </div>
                             <div class="entitlement-row">
                                 <span><strong>TESL</strong></span>
