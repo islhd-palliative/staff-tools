@@ -906,22 +906,56 @@
             return count;
         }
 
-        // Check if person has the weekend that follows this Friday
-        function hasWeekendAfterFriday(staffCode, fridayDate, roster) {
-            const saturday = new Date(fridayDate);
-            saturday.setDate(saturday.getDate() + 1);
+        // Check if person has the upcoming weekend (for Thu/Fri exclusion)
+        function hasUpcomingWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+            // Calculate days until Saturday
+            const daysUntilSat = 6 - dow;
+            const saturday = new Date(weeknightDate);
+            saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
             return assignment && assignment.staffCode === staffCode;
         }
 
-        // Check if person has the weekend that precedes this Monday
-        function hasWeekendBeforeMonday(staffCode, mondayDate, roster) {
-            const sunday = new Date(mondayDate);
-            sunday.setDate(sunday.getDate() - 1);
+        // Check if person had the previous weekend (for Mon/Tue exclusion)
+        function hadPreviousWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, etc.
+            // Calculate days since Sunday
+            const daysSinceSun = dow; // Mon=1, Tue=2, etc.
+            const sunday = new Date(weeknightDate);
+            sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
             return assignment && assignment.staffCode === staffCode;
+        }
+
+        // Check 2-day buffer around weekends
+        // Returns true if this weeknight is too close to a weekend for this person
+        function tooCloseToWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+            const staff = staffData.find(s => s.code === staffCode);
+
+            // After weekend: Mon/Tue excluded if had previous weekend (no exceptions)
+            if (dow === 1 || dow === 2) {
+                if (hadPreviousWeekend(staffCode, weeknightDate, roster)) {
+                    return true;
+                }
+            }
+
+            // Before weekend: Thu/Fri excluded if has upcoming weekend
+            // EXCEPTION: Staff who only work Mon/Tue can do weeknight before their weekend
+            if (dow === 4 || dow === 5) {
+                if (hasUpcomingWeekend(staffCode, weeknightDate, roster)) {
+                    // Check if they only work Mon/Tue (exception for Ron)
+                    const onlyWorksMonTue = staff.workDays.every(d => d <= 2);
+                    if (!onlyWorksMonTue) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         // Count how many times a person has been assigned to a specific day-of-week this month
@@ -1066,11 +1100,8 @@
                     // Check if this is one of their work days
                     if (!s.workDays.includes(dow)) return false;
 
-                    // If Friday, exclude if they have the following weekend (avoid Fri/Sat/Sun runs)
-                    if (dow === 5 && hasWeekendAfterFriday(s.code, date, currentRoster)) return false;
-
-                    // If Monday, exclude if they had the preceding weekend (avoid Sat/Sun/Mon runs)
-                    if (dow === 1 && hasWeekendBeforeMonday(s.code, date, currentRoster)) return false;
+                    // 2-day buffer around weekends (Mon/Tue after, Thu/Fri before)
+                    if (tooCloseToWeekend(s.code, date, currentRoster)) return false;
 
                     return true;
                 });
@@ -1079,7 +1110,6 @@
             // Get fallback staff for weeknights (relax work day constraint if needed)
             function getFallbackForWeeknight(date) {
                 const dateKey = formatDateKey(date);
-                const dow = date.getDay();
 
                 return staffData.filter(s => {
                     // Check leave
@@ -1088,9 +1118,8 @@
                     // Check ad-hoc unavailability
                     if (isAdHocUnavailable(s.code, dateKey)) return false;
 
-                    // Still enforce weekend adjacency rules even in fallback
-                    if (dow === 5 && hasWeekendAfterFriday(s.code, date, currentRoster)) return false;
-                    if (dow === 1 && hasWeekendBeforeMonday(s.code, date, currentRoster)) return false;
+                    // Still enforce 2-day weekend buffer even in fallback
+                    if (tooCloseToWeekend(s.code, date, currentRoster)) return false;
 
                     return true;
                 });
