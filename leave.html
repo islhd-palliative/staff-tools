@@ -335,6 +335,12 @@
             opacity: 0.3;
         }
 
+        .last-updated {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
         @media (max-width: 600px) {
             body { padding: 8px; }
             h1 { font-size: 1.2rem; }
@@ -352,6 +358,7 @@
 
     <h1>Staff Specialist Leave Calendar 2026-27</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
+    <p class="last-updated">Last updated: 13 January 2026</p>
 
     <div class="controls">
         <div class="control-group">
@@ -396,9 +403,9 @@
         </div>
         <button onclick="showUpcoming()">My Upcoming Leave</button>
         <button class="btn-green" onclick="showAvailable()">Available</button>
-        <button class="btn-amber" onclick="showLimited()">Almost Full</button>
+        <button class="btn-amber" onclick="showLimited()">Limited</button>
         <button class="btn-red" onclick="showRestricted()">Restricted</button>
-        <button class="btn-outline" onclick="clearHighlight()">Clear</button>
+        <button class="btn-outline" onclick="resetView()">Reset</button>
         <a href="summary.html" style="padding: 8px 12px; background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Entitlements Summary</a>
     </div>
 
@@ -753,6 +760,18 @@
             cells.forEach(cell => {
                 cell.classList.remove('highlight-available', 'highlight-restricted', 'highlight-limited', 'dimmed');
             });
+        }
+
+        // Reset everything to default state
+        function resetView() {
+            // Clear highlights
+            clearHighlight();
+            // Hide upcoming leave panel
+            document.getElementById('upcomingPanel').style.display = 'none';
+            // Reset staff filter to "all"
+            document.getElementById('staffFilter').value = 'all';
+            // Re-render calendar
+            renderCalendar();
         }
 
         // Show upcoming leave for selected person
