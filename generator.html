@@ -396,6 +396,79 @@
             margin-left: 4px;
         }
 
+        /* View Toggle Buttons */
+        .view-btn {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .view-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        /* Calendar View */
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            table-layout: fixed;
+        }
+
+        .calendar-table th {
+            background: #f3f4f6;
+            padding: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .calendar-table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px;
+            vertical-align: top;
+            height: 70px;
+        }
+
+        .calendar-table td.weekend {
+            background: #fef3c7;
+        }
+
+        .calendar-table td.empty {
+            background: #f9fafb;
+        }
+
+        .cal-date {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .cal-staff {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .cal-staff.weekend {
+            background: #fde68a;
+            color: #92400e;
+        }
+
         /* Export Section */
         .export-section {
             background: white;
@@ -524,18 +597,18 @@
     <!-- Warnings -->
     <div id="warningsContainer"></div>
 
-    <!-- Equity Summary -->
+    <!-- Allocation Summary -->
     <div class="equity-section">
-        <h2>Equity Summary (3-Month Rolling Window)</h2>
+        <h2>Monthly Allocation Summary</h2>
         <table class="equity-table">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>FTE</th>
-                    <th>Target Share</th>
-                    <th>Weekends (Actual/Target)</th>
-                    <th>Weeknights (Actual/Target)</th>
-                    <th>Balance</th>
+                    <th>Target</th>
+                    <th>Weekends</th>
+                    <th>Weeknights</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="equityBody"></tbody>
@@ -545,18 +618,40 @@
     <!-- Generated Roster -->
     <div class="roster-section">
         <h2>Draft Roster - <span id="rosterMonthLabel">Select Month</span></h2>
-        <table class="roster-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Day</th>
-                    <th>Type</th>
-                    <th>On-Call</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody id="rosterBody"></tbody>
-        </table>
+        <div style="margin-bottom: 10px;">
+            <button id="viewListBtn" class="view-btn active" onclick="showListView()">List View</button>
+            <button id="viewCalBtn" class="view-btn" onclick="showCalendarView()">Calendar View</button>
+        </div>
+        <div id="listView">
+            <table class="roster-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Type</th>
+                        <th>On-Call</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterBody"></tbody>
+            </table>
+        </div>
+        <div id="calendarView" style="display: none;">
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                        <th>Sun</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Export Section -->
@@ -577,19 +672,20 @@
 
     <script>
         // ==================== STAFF DATA ====================
+        // Monthly targets based on 5.5 total FTE, ~22 weeknights, ~4-5 weekends per month
         const staffData = [
-            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] },
-            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
-            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
-            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5] },
-            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
-            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', workDays: [3,4,5] },
-            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5] },
-            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] }
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5], monthlyWeekNights: 4 },
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5], monthlyWeekNights: 4 },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5], monthlyWeekNights: 3 },
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5], monthlyWeekNights: 3 },
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', workDays: [3,4,5], monthlyWeekNights: 2 },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4], monthlyWeekNights: 2 },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2], monthlyWeekNights: 2 },
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5], monthlyWeekNights: 2 }
         ];
 
-        // Total FTE for proportional allocation
-        const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0);
+        // Total FTE for reference
+        const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0); // 5.5
 
         // ==================== LEAVE DATA ====================
         // This should match the leave calendar data
@@ -772,91 +868,15 @@
             });
         }
 
-        // ==================== EQUITY CALCULATION ====================
-        function calculateEquity(targetMonth, targetYear) {
-            // Calculate 3-month rolling window equity
-            const equity = {};
-            staffData.forEach(s => {
-                equity[s.code] = {
-                    name: s.name,
-                    fte: s.fte,
-                    targetShare: s.fte / totalFTE,
-                    weekends: 0,
-                    weeknights: 0,
-                    targetWeekends: 0,
-                    targetWeekNights: 0
-                };
-            });
-
-            // Look back 2 months + current month
-            const months = [];
-            for (let i = -2; i <= 0; i++) {
-                let m = targetMonth + i;
-                let y = targetYear;
-                if (m < 0) { m += 12; y -= 1; }
-                if (m > 11) { m -= 12; y += 1; }
-                months.push({ month: m, year: y });
-            }
-
-            let totalWeekends = 0;
-            let totalWeekNights = 0;
-
-            months.forEach(({ month, year }) => {
-                const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
-                const historical = historicalData[monthKey];
-
-                // Count weekends and weeknights in month
-                const weekendBlocks = getWeekendBlocks(year, month);
-                const weekNights = getWeekNights(year, month);
-
-                totalWeekends += weekendBlocks.length;
-                totalWeekNights += weekNights.length;
-
-                if (historical && historical.roster) {
-                    // Count from historical data
-                    weekendBlocks.forEach(block => {
-                        const satAssign = historical.roster[block.satKey];
-                        if (satAssign && equity[satAssign.staffCode]) {
-                            equity[satAssign.staffCode].weekends++;
-                        }
-                    });
-
-                    weekNights.forEach(night => {
-                        const key = formatDateKey(night);
-                        const assign = historical.roster[key];
-                        if (assign && equity[assign.staffCode]) {
-                            equity[assign.staffCode].weeknights++;
-                        }
-                    });
-                }
-            });
-
-            // Calculate targets
-            staffData.forEach(s => {
-                equity[s.code].targetWeekends = Math.round(totalWeekends * equity[s.code].targetShare * 10) / 10;
-                equity[s.code].targetWeekNights = Math.round(totalWeekNights * equity[s.code].targetShare * 10) / 10;
-            });
-
-            return equity;
-        }
-
         // ==================== ROSTER GENERATION ====================
 
         // Check if someone is returning from leave on a Monday (making weekend before unavailable)
         function isReturningFromLeaveOnMonday(staffCode, satDate) {
-            // If Saturday, check if Monday after is first day back from leave
             const monday = new Date(satDate);
             monday.setDate(monday.getDate() + 2); // Saturday + 2 = Monday
-
-            // Check if they were on leave Friday and not on leave Monday
             const friday = new Date(satDate);
             friday.setDate(friday.getDate() - 1);
-
-            const onLeaveFriday = isOnLeave(staffCode, friday);
-            const onLeaveMonday = isOnLeave(staffCode, monday);
-
-            // If they were on leave Friday but not Monday, they're returning
-            return onLeaveFriday && !onLeaveMonday;
+            return isOnLeave(staffCode, friday) && !isOnLeave(staffCode, monday);
         }
 
         // Get ISO week number for a date
@@ -868,29 +888,11 @@
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
 
-        // Check days since last weeknight assignment for a person
-        function daysSinceLastWeeknight(staffCode, currentDate, roster) {
-            const currentTime = currentDate.getTime();
-            let minDays = Infinity;
-
-            for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
-                    const assignDate = parseDate(dateKey);
-                    if (!isWeekend(assignDate) && assignDate.getTime() < currentTime) {
-                        const days = Math.floor((currentTime - assignDate.getTime()) / (1000 * 60 * 60 * 24));
-                        minDays = Math.min(minDays, days);
-                    }
-                }
-            }
-            return minDays;
-        }
-
         // Count weeknights assigned this week for a person
         function weeknightsThisWeek(staffCode, currentDate, roster) {
             const currentWeek = getWeekNumber(currentDate);
             const currentYear = currentDate.getFullYear();
             let count = 0;
-
             for (const [dateKey, assignment] of Object.entries(roster)) {
                 if (assignment.staffCode === staffCode) {
                     const assignDate = parseDate(dateKey);
@@ -904,12 +906,21 @@
             return count;
         }
 
-        // Check if person was assigned Friday night (to exclude from weekend)
-        function wasAssignedFriday(staffCode, satDate, roster) {
-            const friday = new Date(satDate);
-            friday.setDate(friday.getDate() - 1); // Saturday - 1 = Friday
-            const fridayKey = formatDateKey(friday);
-            const assignment = roster[fridayKey];
+        // Check if person has the weekend that follows this Friday
+        function hasWeekendAfterFriday(staffCode, fridayDate, roster) {
+            const saturday = new Date(fridayDate);
+            saturday.setDate(saturday.getDate() + 1);
+            const satKey = formatDateKey(saturday);
+            const assignment = roster[satKey];
+            return assignment && assignment.staffCode === staffCode;
+        }
+
+        // Check if person has the weekend that precedes this Monday
+        function hasWeekendBeforeMonday(staffCode, mondayDate, roster) {
+            const sunday = new Date(mondayDate);
+            sunday.setDate(sunday.getDate() - 1);
+            const sunKey = formatDateKey(sunday);
+            const assignment = roster[sunKey];
             return assignment && assignment.staffCode === staffCode;
         }
 
@@ -927,6 +938,46 @@
             return count;
         }
 
+        // Count weeknights assigned this month for a person
+        function weeknightsThisMonth(staffCode, roster) {
+            let count = 0;
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate)) count++;
+                }
+            }
+            return count;
+        }
+
+        // Get last weekend date for a person from historical data
+        function getLastWeekendDate(staffCode) {
+            let lastDate = null;
+            // Check historical data
+            for (const [monthKey, data] of Object.entries(historicalData)) {
+                if (data.roster) {
+                    for (const [dateKey, assignment] of Object.entries(data.roster)) {
+                        if (assignment.staffCode === staffCode) {
+                            const d = parseDate(dateKey);
+                            if (isWeekend(d)) {
+                                if (!lastDate || d > lastDate) lastDate = d;
+                            }
+                        }
+                    }
+                }
+            }
+            // Check current roster too
+            for (const [dateKey, assignment] of Object.entries(currentRoster)) {
+                if (assignment.staffCode === staffCode) {
+                    const d = parseDate(dateKey);
+                    if (isWeekend(d)) {
+                        if (!lastDate || d > lastDate) lastDate = d;
+                    }
+                }
+            }
+            return lastDate;
+        }
+
         function generateRoster() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -936,7 +987,6 @@
             currentRoster = {};
 
             const warnings = [];
-            const equity = calculateEquity(month, year);
 
             // Get all shifts for the month
             const weekendBlocks = getWeekendBlocks(year, month);
@@ -950,26 +1000,33 @@
                 monthWeekNights[s.code] = 0;
             });
 
-            // Sort staff by how far below target they are (prioritize under-served)
-            function getWeekendPriority(staffCode) {
-                const e = equity[staffCode];
-                return (e.weekends + monthWeekends[staffCode]) - e.targetWeekends;
+            // Weekend priority: who's gone longest without a weekend
+            function getWeekendPriority(staffCode, satDate) {
+                const lastWeekend = getLastWeekendDate(staffCode);
+                if (!lastWeekend) return -9999; // Never had one, highest priority
+                const daysSince = Math.floor((satDate - lastWeekend) / (1000 * 60 * 60 * 24));
+                return -daysSince; // More days = lower number = higher priority
             }
 
+            // Weeknight priority: prioritize those under their monthly target
             function getWeekNightPriority(staffCode, date) {
-                const e = equity[staffCode];
-                const base = (e.weeknights + monthWeekNights[staffCode]) - e.targetWeekNights;
+                const staff = staffData.find(s => s.code === staffCode);
+                const assigned = monthWeekNights[staffCode];
+                const target = staff.monthlyWeekNights;
 
-                // Heavily penalize if already has a shift this week
+                // Base: how far from target (negative = under target = higher priority)
+                let priority = assigned - target;
+
+                // Heavy penalty if already has a shift this week
                 const thisWeek = weeknightsThisWeek(staffCode, date, currentRoster);
-                if (thisWeek >= 1) return base + 100; // Push way down priority
+                if (thisWeek >= 1) priority += 100;
 
-                // Penalize repeat day-of-week assignments (avoid identical sequences)
+                // Penalty for repeat day-of-week assignments (avoid identical sequences)
                 const dow = date.getDay();
                 const sameDayCount = dayOfWeekCount(staffCode, dow, currentRoster);
-                const dayPenalty = sameDayCount * 10; // +10 penalty per same day already assigned
+                priority += sameDayCount * 5;
 
-                return base + dayPenalty;
+                return priority;
             }
 
             // Get available staff for weekends
@@ -990,9 +1047,6 @@
                     // Check if returning from leave on Monday
                     if (isReturningFromLeaveOnMonday(s.code, satDate)) return false;
 
-                    // Exclude if assigned Friday night (avoid Fri/Sat/Sun runs)
-                    if (wasAssignedFriday(s.code, satDate, currentRoster)) return false;
-
                     return true;
                 });
             }
@@ -1012,9 +1066,11 @@
                     // Check if this is one of their work days
                     if (!s.workDays.includes(dow)) return false;
 
-                    // Check minimum 3-day gap since last weeknight
-                    const daysSince = daysSinceLastWeeknight(s.code, date, currentRoster);
-                    if (daysSince < 3 && daysSince !== Infinity) return false;
+                    // If Friday, exclude if they have the following weekend (avoid Fri/Sat/Sun runs)
+                    if (dow === 5 && hasWeekendAfterFriday(s.code, date, currentRoster)) return false;
+
+                    // If Monday, exclude if they had the preceding weekend (avoid Sat/Sun/Mon runs)
+                    if (dow === 1 && hasWeekendBeforeMonday(s.code, date, currentRoster)) return false;
 
                     return true;
                 });
@@ -1023,6 +1079,7 @@
             // Get fallback staff for weeknights (relax work day constraint if needed)
             function getFallbackForWeeknight(date) {
                 const dateKey = formatDateKey(date);
+                const dow = date.getDay();
 
                 return staffData.filter(s => {
                     // Check leave
@@ -1031,9 +1088,9 @@
                     // Check ad-hoc unavailability
                     if (isAdHocUnavailable(s.code, dateKey)) return false;
 
-                    // Still enforce minimum 3-day gap
-                    const daysSince = daysSinceLastWeeknight(s.code, date, currentRoster);
-                    if (daysSince < 3 && daysSince !== Infinity) return false;
+                    // Still enforce weekend adjacency rules even in fallback
+                    if (dow === 5 && hasWeekendAfterFriday(s.code, date, currentRoster)) return false;
+                    if (dow === 1 && hasWeekendBeforeMonday(s.code, date, currentRoster)) return false;
 
                     return true;
                 });
@@ -1047,10 +1104,10 @@
                     return;
                 }
 
-                // Sort by priority (most under-served first), with random tie-breaker
+                // Sort by who's gone longest without a weekend
                 available.sort((a, b) => {
-                    const diff = getWeekendPriority(a.code) - getWeekendPriority(b.code);
-                    if (Math.abs(diff) < 0.1) return Math.random() - 0.5; // Random tie-breaker
+                    const diff = getWeekendPriority(a.code, block.sat) - getWeekendPriority(b.code, block.sat);
+                    if (Math.abs(diff) < 1) return Math.random() - 0.5; // Random tie-breaker
                     return diff;
                 });
 
@@ -1072,13 +1129,11 @@
                         warnings.push(`No staff available for ${dateKey} - check leave coverage`);
                         return;
                     }
-                    // Add warning that we used non-work day
-                    const willWarn = true;
 
                     // Sort by priority
                     available.sort((a, b) => {
                         const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
-                        if (Math.abs(diff) < 0.1) return Math.random() - 0.5;
+                        if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
                         return diff;
                     });
 
@@ -1091,7 +1146,7 @@
                 // Sort by priority with random tie-breaker
                 available.sort((a, b) => {
                     const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
-                    if (Math.abs(diff) < 0.1) return Math.random() - 0.5;
+                    if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
                     return diff;
                 });
 
@@ -1203,25 +1258,29 @@
         }
 
         function renderEquity(month, year) {
-            const equity = calculateEquity(month, year);
             const tbody = document.getElementById('equityBody');
             tbody.innerHTML = '';
 
-            // Add current month assignments
+            // Count assignments from current roster
+            const counts = {};
+            staffData.forEach(s => {
+                counts[s.code] = { weekends: 0, weeknights: 0 };
+            });
+
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && equity[assignment.staffCode]) {
-                    if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday to avoid double-counting
-                        equity[assignment.staffCode].weekends++;
+                if (assignment && counts[assignment.staffCode]) {
+                    if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
+                        counts[assignment.staffCode].weekends++;
                     } else if (!isWeekend(date)) {
-                        equity[assignment.staffCode].weeknights++;
+                        counts[assignment.staffCode].weeknights++;
                     }
                 }
             });
 
             staffData.forEach(s => {
-                const e = equity[s.code];
+                const c = counts[s.code];
                 const tr = document.createElement('tr');
 
                 // Name
@@ -1234,45 +1293,122 @@
                 tdFTE.textContent = s.fte;
                 tr.appendChild(tdFTE);
 
-                // Target Share
-                const tdShare = document.createElement('td');
-                tdShare.textContent = `${Math.round(e.targetShare * 100)}%`;
-                tr.appendChild(tdShare);
+                // Target (weeknights)
+                const tdTarget = document.createElement('td');
+                tdTarget.textContent = s.monthlyWeekNights;
+                tr.appendChild(tdTarget);
 
-                // Weekends
+                // Weekends this month
                 const tdWeekends = document.createElement('td');
-                const wkndDiff = e.weekends - e.targetWeekends;
-                const wkndClass = wkndDiff > 0.5 ? 'over' : wkndDiff < -0.5 ? 'under' : '';
-                tdWeekends.innerHTML = `
-                    <div class="equity-bar"><div class="equity-bar-fill ${wkndClass}" style="width: ${Math.min(100, (e.weekends / Math.max(1, e.targetWeekends)) * 100)}%"></div></div>
-                    ${e.weekends} / ${e.targetWeekends.toFixed(1)}
-                `;
+                tdWeekends.textContent = c.weekends;
                 tr.appendChild(tdWeekends);
 
-                // Weeknights
+                // Weeknights this month
                 const tdNights = document.createElement('td');
-                const nightDiff = e.weeknights - e.targetWeekNights;
-                const nightClass = nightDiff > 2 ? 'over' : nightDiff < -2 ? 'under' : '';
-                tdNights.innerHTML = `
-                    <div class="equity-bar"><div class="equity-bar-fill ${nightClass}" style="width: ${Math.min(100, (e.weeknights / Math.max(1, e.targetWeekNights)) * 100)}%"></div></div>
-                    ${e.weeknights} / ${e.targetWeekNights.toFixed(1)}
-                `;
+                const nightDiff = c.weeknights - s.monthlyWeekNights;
+                const nightClass = nightDiff > 0 ? 'color:#dc2626' : nightDiff < 0 ? 'color:#059669' : '';
+                tdNights.innerHTML = `<span style="${nightClass}">${c.weeknights}</span>`;
                 tr.appendChild(tdNights);
 
-                // Balance
-                const tdBalance = document.createElement('td');
-                const totalDiff = wkndDiff + (nightDiff / 5); // Weight weekends more
-                if (totalDiff > 1) {
-                    tdBalance.innerHTML = '<span style="color:#dc2626;">Over-allocated</span>';
-                } else if (totalDiff < -1) {
-                    tdBalance.innerHTML = '<span style="color:#059669;">Under-allocated</span>';
+                // Status
+                const tdStatus = document.createElement('td');
+                if (c.weeknights > s.monthlyWeekNights) {
+                    tdStatus.innerHTML = '<span style="color:#dc2626;">Over</span>';
+                } else if (c.weeknights < s.monthlyWeekNights) {
+                    tdStatus.innerHTML = '<span style="color:#059669;">Under</span>';
                 } else {
-                    tdBalance.innerHTML = '<span style="color:#666;">Balanced</span>';
+                    tdStatus.innerHTML = '<span style="color:#666;">On target</span>';
                 }
-                tr.appendChild(tdBalance);
+                tr.appendChild(tdStatus);
 
                 tbody.appendChild(tr);
             });
+        }
+
+        function showListView() {
+            document.getElementById('listView').style.display = 'block';
+            document.getElementById('calendarView').style.display = 'none';
+            document.getElementById('viewListBtn').classList.add('active');
+            document.getElementById('viewCalBtn').classList.remove('active');
+        }
+
+        function showCalendarView() {
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('calendarView').style.display = 'block';
+            document.getElementById('viewListBtn').classList.remove('active');
+            document.getElementById('viewCalBtn').classList.add('active');
+            renderCalendarView();
+        }
+
+        function renderCalendarView() {
+            const tbody = document.getElementById('calendarBody');
+            tbody.innerHTML = '';
+
+            if (currentMonth === null) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#666;">Generate a roster first</td></tr>';
+                return;
+            }
+
+            const days = getMonthDays(currentYear, currentMonth);
+            const firstDay = days[0].getDay(); // 0=Sun, 1=Mon, etc.
+            // Adjust to Monday-start week (0=Mon, 6=Sun)
+            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+            const getStaffName = (code) => {
+                const staff = staffData.find(s => s.code === code);
+                return staff ? staff.name.split(' ').pop() : code; // Last name only
+            };
+
+            let currentRow = document.createElement('tr');
+
+            // Add empty cells for days before the 1st
+            for (let i = 0; i < startOffset; i++) {
+                const td = document.createElement('td');
+                td.className = 'empty';
+                currentRow.appendChild(td);
+            }
+
+            days.forEach((day, idx) => {
+                const dateKey = formatDateKey(day);
+                const assignment = currentRoster[dateKey];
+                const dow = day.getDay();
+                const isWknd = dow === 0 || dow === 6;
+
+                const td = document.createElement('td');
+                if (isWknd) td.className = 'weekend';
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'cal-date';
+                dateDiv.textContent = day.getDate();
+                td.appendChild(dateDiv);
+
+                if (assignment) {
+                    const staffDiv = document.createElement('div');
+                    staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
+                    staffDiv.textContent = getStaffName(assignment.staffCode);
+                    td.appendChild(staffDiv);
+                }
+
+                currentRow.appendChild(td);
+
+                // If Sunday (end of week), start new row
+                if (dow === 0) {
+                    tbody.appendChild(currentRow);
+                    currentRow = document.createElement('tr');
+                }
+            });
+
+            // Add remaining empty cells if needed
+            const lastDay = days[days.length - 1].getDay();
+            if (lastDay !== 0) { // If month doesn't end on Sunday
+                const remaining = 7 - (lastDay === 0 ? 7 : lastDay);
+                for (let i = 0; i < remaining; i++) {
+                    const td = document.createElement('td');
+                    td.className = 'empty';
+                    currentRow.appendChild(td);
+                }
+                tbody.appendChild(currentRow);
+            }
         }
 
         function showWarnings(warnings) {
@@ -1537,6 +1673,9 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             const monthEnd = new Date(year, month + 1, 0); // Last day of month
 
             const relevantLeave = leaveData.filter(leave => {
+                // Exclude "Unavailable" - that's just non-clinical work markers
+                if (leave.leaveType === 'Unavailable') return false;
+
                 const leaveStart = new Date(leave.startDate);
                 const leaveEnd = new Date(leave.endDate);
                 // Check if leave overlaps with month
