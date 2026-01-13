@@ -619,10 +619,10 @@
     <div class="roster-section">
         <h2>Draft Roster - <span id="rosterMonthLabel">Select Month</span></h2>
         <div style="margin-bottom: 10px;">
-            <button id="viewListBtn" class="view-btn active" onclick="showListView()">List View</button>
-            <button id="viewCalBtn" class="view-btn" onclick="showCalendarView()">Calendar View</button>
+            <button id="viewListBtn" class="view-btn" onclick="showListView()">List View</button>
+            <button id="viewCalBtn" class="view-btn active" onclick="showCalendarView()">Calendar View</button>
         </div>
-        <div id="listView">
+        <div id="listView" style="display: none;">
             <table class="roster-table">
                 <thead>
                     <tr>
@@ -636,7 +636,7 @@
                 <tbody id="rosterBody"></tbody>
             </table>
         </div>
-        <div id="calendarView" style="display: none;">
+        <div id="calendarView">
             <table class="calendar-table">
                 <thead>
                     <tr>
@@ -1186,6 +1186,7 @@
 
             // Display
             renderRoster();
+            renderCalendarView();
             renderEquity(month, year);
             showWarnings(warnings);
 
