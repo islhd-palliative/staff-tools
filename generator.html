@@ -544,11 +544,6 @@
         <a href="index.html">&larr; Back to Home</a>
     </div>
 
-    <div class="test-banner">
-        <span class="test-banner-text">TEST MODE - Data will not be saved to production</span>
-        <button onclick="wipeTestData()">Wipe All Test Data</button>
-    </div>
-
     <h1>On-Call Roster Generator</h1>
     <p class="subtitle">Generate FTE-equitable, leave-aware on-call rosters for Staff Specialists</p>
 
@@ -662,6 +657,7 @@
             <button class="btn-green" onclick="downloadRosterDataJS()">Download roster-data.js</button>
             <button class="btn-outline" onclick="exportJSON()">Export JSON Backup</button>
             <button class="btn-outline" onclick="importJSON()">Import JSON</button>
+            <button class="btn-red" onclick="wipeTestData()">Clear All Data</button>
         </div>
         <div class="export-info">
             <strong>Workflow:</strong> Generate draft &rarr; Review &amp; adjust &rarr; Save draft &rarr; When finalized, click "Download roster-data.js" and send to Ben for deployment.
