@@ -904,6 +904,29 @@
             return count;
         }
 
+        // Check if person was assigned Friday night (to exclude from weekend)
+        function wasAssignedFriday(staffCode, satDate, roster) {
+            const friday = new Date(satDate);
+            friday.setDate(friday.getDate() - 1); // Saturday - 1 = Friday
+            const fridayKey = formatDateKey(friday);
+            const assignment = roster[fridayKey];
+            return assignment && assignment.staffCode === staffCode;
+        }
+
+        // Count how many times a person has been assigned to a specific day-of-week this month
+        function dayOfWeekCount(staffCode, dow, roster) {
+            let count = 0;
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
         function generateRoster() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -941,7 +964,12 @@
                 const thisWeek = weeknightsThisWeek(staffCode, date, currentRoster);
                 if (thisWeek >= 1) return base + 100; // Push way down priority
 
-                return base;
+                // Penalize repeat day-of-week assignments (avoid identical sequences)
+                const dow = date.getDay();
+                const sameDayCount = dayOfWeekCount(staffCode, dow, currentRoster);
+                const dayPenalty = sameDayCount * 10; // +10 penalty per same day already assigned
+
+                return base + dayPenalty;
             }
 
             // Get available staff for weekends
@@ -961,6 +989,9 @@
 
                     // Check if returning from leave on Monday
                     if (isReturningFromLeaveOnMonday(s.code, satDate)) return false;
+
+                    // Exclude if assigned Friday night (avoid Fri/Sat/Sun runs)
+                    if (wasAssignedFriday(s.code, satDate, currentRoster)) return false;
 
                     return true;
                 });
