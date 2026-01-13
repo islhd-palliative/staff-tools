@@ -110,11 +110,29 @@
 
         .entitlement-row {
             display: grid;
-            grid-template-columns: 140px 1fr 1fr 1fr;
+            grid-template-columns: 140px 1fr 1fr 1fr 80px;
             gap: 12px;
             padding: 8px 0;
             border-bottom: 1px solid #e5e7eb;
             align-items: center;
+        }
+
+        .percent-remaining {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .percent-remaining.negative {
+            color: #b45309;
+        }
+
+        .percent-remaining.low {
+            color: #d97706;
+        }
+
+        .percent-remaining.good {
+            color: #16a34a;
         }
 
         .entitlement-row:last-child {
@@ -142,7 +160,7 @@
 
         .progress-fill.good { background: #22c55e; }
         .progress-fill.warning { background: #f59e0b; }
-        .progress-fill.over { background: #ef4444; }
+        .progress-fill.over { background: #d97706; }
 
         .days-text {
             font-size: 0.9rem;
@@ -157,8 +175,74 @@
         }
 
         .days-remaining.negative {
-            color: #dc2626;
+            color: #b45309;
             font-weight: 600;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #0369a1;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box h3::before {
+            content: "ℹ️";
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .info-item {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .info-item h4 {
+            color: #1e40af;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .info-item p {
+            color: #374151;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .info-item ul {
+            color: #374151;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 4px 0 0 0;
+            padding-left: 18px;
+        }
+
+        .info-item li {
+            margin-bottom: 2px;
+        }
+
+        .info-note {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #bae6fd;
+            font-size: 0.8rem;
+            color: #6b7280;
         }
 
         .fte-badge {
@@ -238,13 +322,16 @@
             margin-top: 16px;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             .entitlement-row {
                 grid-template-columns: 1fr;
                 gap: 4px;
             }
             .entitlement-row.header {
                 display: none;
+            }
+            .percent-remaining {
+                text-align: left;
             }
             .totals-card .card-body {
                 grid-template-columns: 1fr 1fr;
@@ -266,6 +353,31 @@
                 <option value="2026" selected>2026</option>
             </select>
         </div>
+    </div>
+
+    <div class="info-box">
+        <h3>Leave Entitlements (Staff Specialist Award)</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <h4>Annual Leave</h4>
+                <p>5 calendar weeks per year for all staff. Part-time staff receive the same 5 weeks, paid pro-rata based on days worked per week.</p>
+                <ul>
+                    <li>Plus 1 day for each public holiday during leave</li>
+                    <li>Calculated as work days (excludes weekends and public holidays)</li>
+                </ul>
+            </div>
+            <div class="info-item">
+                <h4>TESL (Training, Education & Study Leave)</h4>
+                <p>25 calendar days per year, pro-rata for FTE.</p>
+                <ul>
+                    <li>Counted as calendar days (includes weekends and public holidays)</li>
+                    <li>For conferences, courses, approved training, and home-based study</li>
+                </ul>
+            </div>
+        </div>
+        <p class="info-note">
+            Leave balances beyond entitlements may be approved subject to service needs. Strategies for managing leave balances are discussed at performance reviews and take individual circumstances into account.
+        </p>
     </div>
 
     <div id="summaryContainer"></div>
@@ -415,9 +527,10 @@
                 const teslRemaining = teslEntitlement - used.teslDays;
                 const teslPercent = Math.min((used.teslDays / teslEntitlement) * 100, 100);
 
-                totalAnnualUsed += used.annualDays;
+                // For service totals, cap at entitlement (don't count excess leave)
+                totalAnnualUsed += Math.min(used.annualDays, annualEntitlement);
                 totalAnnualEntitled += annualEntitlement;
-                totalTeslUsed += used.teslDays;
+                totalTeslUsed += Math.min(used.teslDays, teslEntitlement);
                 totalTeslEntitled += teslEntitlement;
 
                 html += `
@@ -432,6 +545,7 @@
                                 <span>Used</span>
                                 <span>Progress</span>
                                 <span>Remaining</span>
+                                <span style="text-align: right;">% Left</span>
                             </div>
                             <div class="entitlement-row">
                                 <span><strong>Annual Leave</strong></span>
@@ -440,6 +554,7 @@
                                     <div class="progress-fill ${annualPercent > 100 ? 'over' : annualPercent > 80 ? 'warning' : 'good'}" style="width: ${annualPercent}%"></div>
                                 </div>
                                 <span class="days-text days-remaining ${annualRemaining < 0 ? 'negative' : ''}">${annualRemaining} days (${annualWeeksRemaining} wks)</span>
+                                <span class="percent-remaining ${annualRemaining < 0 ? 'negative' : annualRemaining / annualEntitlement < 0.2 ? 'low' : 'good'}">${Math.round((annualRemaining / annualEntitlement) * 100)}%</span>
                             </div>
                             <div class="entitlement-row">
                                 <span><strong>TESL</strong></span>
@@ -448,6 +563,7 @@
                                     <div class="progress-fill ${teslPercent > 100 ? 'over' : teslPercent > 80 ? 'warning' : 'good'}" style="width: ${teslPercent}%"></div>
                                 </div>
                                 <span class="days-text days-remaining ${teslRemaining < 0 ? 'negative' : ''}">${teslRemaining} days</span>
+                                <span class="percent-remaining ${teslRemaining < 0 ? 'negative' : teslRemaining / teslEntitlement < 0.2 ? 'low' : 'good'}">${Math.round((teslRemaining / teslEntitlement) * 100)}%</span>
                             </div>
                             ${used.otherNotes.length > 0 ? `
                                 <div class="notes-section">
@@ -464,9 +580,12 @@
             const annualUtilisation = Math.round((totalAnnualUsed / totalAnnualEntitled) * 100);
             const teslUtilisation = Math.round((totalTeslUsed / totalTeslEntitled) * 100);
 
-            // Totals card
+            // Service Total card
             html = `
                 <div class="summary-card totals-card">
+                    <div class="card-header" style="background: rgba(255,255,255,0.1); padding: 8px 16px;">
+                        <span style="font-size: 0.85rem; opacity: 0.9;">Service Total</span>
+                    </div>
                     <div class="card-body">
                         <div class="total-item">
                             <div class="total-value">${annualUtilisation}%</div>
