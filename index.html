@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Specialist Leave Calendar 2026-27 - ISLHD Palliative Care</title>
+    <title>ISLHD Palliative Care - Staff Tools</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,776 +14,127 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
-            padding: 16px;
-            max-width: 1400px;
-            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
         h1 {
             color: #1a365d;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 8px;
         }
 
         .subtitle {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 16px;
+            font-size: 1rem;
         }
 
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-            align-items: center;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        label {
-            font-weight: 500;
-            color: #333;
-            font-size: 0.9rem;
-        }
-
-        select, button {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            background: white;
-        }
-
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        button.btn-green {
-            background: #16a34a;
-        }
-
-        button.btn-green:hover {
-            background: #15803d;
-        }
-
-        button.btn-red {
-            background: #dc2626;
-        }
-
-        button.btn-red:hover {
-            background: #b91c1c;
-        }
-
-        button.btn-amber {
-            background: #f59e0b;
-        }
-
-        button.btn-amber:hover {
-            background: #d97706;
-        }
-
-        button.btn-outline {
-            background: white;
-            color: #333;
-            border: 1px solid #ccc;
-        }
-
-        button.btn-outline:hover {
-            background: #f3f4f6;
-        }
-
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 16px;
-            padding: 12px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        .calendar-container {
+        .card-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
         }
 
-        .month-card {
+        .card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .month-header {
-            background: #1e40af;
-            color: white;
-            padding: 12px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: #e5e7eb;
-            padding: 1px;
-        }
-
-        .day-header {
-            background: #f3f4f6;
-            padding: 6px 2px;
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #666;
-        }
-
-        .day-cell {
-            background: white;
-            min-height: 60px;
-            padding: 4px;
-            font-size: 0.75rem;
-            position: relative;
-        }
-
-        .day-cell.empty {
-            background: #fafafa;
-        }
-
-        .day-cell.weekend {
-            background: #f9fafb;
-        }
-
-        .day-number {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 2px;
-        }
-
-        .day-cell.weekend .day-number {
-            color: #999;
-        }
-
-        .day-cell.public-holiday {
-            background: #fce7f3;
-        }
-
-        .day-cell.public-holiday .day-number {
-            color: #be185d;
-        }
-
-        .leave-tag {
-            display: block;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 0.65rem;
-            margin-top: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .leave-tag.annual { background: #dbeafe; color: #1e40af; }
-        .leave-tag.lsl { background: #e9d5ff; color: #6b21a8; }
-        .leave-tag.tesl { background: #fef3c7; color: #92400e; }
-        .leave-tag.unavailable { background: #e5e7eb; color: #374151; }
-        .leave-tag.highlight { background: #fbbf24; color: #000; font-weight: 600; }
-
-        .availability-indicator {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .availability-indicator.available { background: #22c55e; }
-        .availability-indicator.limited { background: #f59e0b; }
-        .availability-indicator.full { background: #ef4444; }
-
-        .status-panel {
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .status-panel h3 {
-            font-size: 1rem;
-            margin-bottom: 12px;
-            color: #1a365d;
-        }
-
-        .upcoming-leave {
-            display: grid;
-            gap: 8px;
-        }
-
-        .leave-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-radius: 6px;
-            border-left: 4px solid #2563eb;
-        }
-
-        .leave-item.lsl { border-left-color: #7c3aed; }
-        .leave-item.tesl { border-left-color: #d97706; }
-
-        .leave-item-name { font-weight: 500; }
-        .leave-item-dates { color: #666; font-size: 0.85rem; }
-        .leave-item-type {
-            font-size: 0.75rem;
-            padding: 2px 8px;
             border-radius: 12px;
-            background: #e5e7eb;
-        }
-
-        .region-tabs {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            flex-direction: column;
         }
 
-        .region-tab {
-            padding: 8px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            font-weight: 500;
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
 
-        .region-tab.active {
-            border-color: #2563eb;
-            background: #eff6ff;
-            color: #2563eb;
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
         }
 
-        .rules-info {
-            font-size: 0.8rem;
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a365d;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
             color: #666;
-            padding: 8px 12px;
-            background: #f0f9ff;
-            border-radius: 6px;
-            margin-bottom: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
-        .day-cell.highlight-available {
-            background: #dcfce7 !important;
-            box-shadow: inset 0 0 0 2px #22c55e;
+        .card-leave {
+            border-top: 4px solid #2563eb;
         }
 
-        .day-cell.highlight-restricted {
-            background: #fee2e2 !important;
-            box-shadow: inset 0 0 0 2px #ef4444;
+        .card-summary {
+            border-top: 4px solid #059669;
         }
 
-        .day-cell.highlight-limited {
-            background: #fef3c7 !important;
-            box-shadow: inset 0 0 0 2px #f59e0b;
+        .card-oncall {
+            border-top: 4px solid #7c3aed;
         }
 
-        .day-cell.dimmed {
-            opacity: 0.3;
+        .footer {
+            margin-top: auto;
+            padding-top: 40px;
+            color: #999;
+            font-size: 0.8rem;
+            text-align: center;
         }
 
         @media (max-width: 600px) {
-            body { padding: 8px; }
-            h1 { font-size: 1.2rem; }
-            .controls { flex-direction: column; align-items: stretch; }
-            .calendar-container { grid-template-columns: 1fr; }
-            .day-cell { min-height: 50px; }
-            .leave-tag { font-size: 0.6rem; }
+            body { padding: 16px; }
+            h1 { font-size: 1.4rem; }
+            .card-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <h1>Staff Specialist Leave Calendar 2026-27</h1>
-    <p class="subtitle">ISLHD Palliative and End of Life Care</p>
-
-    <div class="controls">
-        <div class="control-group">
-            <label for="staffFilter">Show:</label>
-            <select id="staffFilter">
-                <option value="all">All Staff</option>
-                <option value="north">North Only</option>
-                <option value="south">South Only</option>
-                <optgroup label="North">
-                    <option value="BT">Benjamin Thomas</option>
-                    <option value="AL">Angela Lo</option>
-                    <option value="GB">Greg Barclay</option>
-                    <option value="HY">Helen Yourlo</option>
-                    <option value="MK">Muoi Khou</option>
-                    <option value="RW">Ron Wai</option>
-                </optgroup>
-                <optgroup label="South">
-                    <option value="SR">Stephanie Robinson</option>
-                    <option value="Fadz">Fadz wan Bahrum</option>
-                </optgroup>
-            </select>
-        </div>
-        <div class="control-group">
-            <label for="monthJump">Jump to:</label>
-            <select id="monthJump">
-                <option value="2026-0">January 2026</option>
-                <option value="2026-1">February 2026</option>
-                <option value="2026-2">March 2026</option>
-                <option value="2026-3">April 2026</option>
-                <option value="2026-4">May 2026</option>
-                <option value="2026-5">June 2026</option>
-                <option value="2026-6">July 2026</option>
-                <option value="2026-7">August 2026</option>
-                <option value="2026-8">September 2026</option>
-                <option value="2026-9">October 2026</option>
-                <option value="2026-10">November 2026</option>
-                <option value="2026-11">December 2026</option>
-                <option value="2027-0">January 2027</option>
-                <option value="2027-1">February 2027</option>
-            </select>
-            <button onclick="jumpToMonth()">Go</button>
-        </div>
-        <button onclick="showUpcoming()">My Upcoming Leave</button>
-        <button class="btn-green" onclick="showAvailable()">Available</button>
-        <button class="btn-amber" onclick="showLimited()">Almost Full</button>
-        <button class="btn-red" onclick="showRestricted()">Restricted</button>
-        <button class="btn-outline" onclick="clearHighlight()">Clear</button>
-        <a href="summary.html" style="padding: 8px 12px; background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Entitlements Summary</a>
+    <div class="header">
+        <h1>ISLHD Palliative Care</h1>
+        <p class="subtitle">Staff Tools & Resources</p>
     </div>
 
-    <div class="legend">
-        <div class="legend-item">
-            <div class="legend-color" style="background: #dbeafe;"></div>
-            <span>Annual Leave</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #e9d5ff;"></div>
-            <span>Long Service Leave</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #fef3c7;"></div>
-            <span>TESL (Study Leave)</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #e5e7eb;"></div>
-            <span>Unavailable</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: #fce7f3;"></div>
-            <span>Public Holiday</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color availability-indicator available" style="position:static;"></div>
-            <span>Leave Available</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color availability-indicator limited" style="position:static;"></div>
-            <span>Limited</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color availability-indicator full" style="position:static;"></div>
-            <span>Full (unlikely approved)</span>
-        </div>
+    <div class="card-container">
+        <a href="leave.html" class="card card-leave">
+            <div class="card-icon">📅</div>
+            <div class="card-title">Leave Calendar</div>
+            <div class="card-description">View and plan annual leave, conference leave, and other absences across the team.</div>
+        </a>
+
+        <a href="summary.html" class="card card-summary">
+            <div class="card-icon">📊</div>
+            <div class="card-title">Leave Summary</div>
+            <div class="card-description">Check leave entitlements and balances for each staff specialist.</div>
+        </a>
+
+        <a href="oncall.html" class="card card-oncall">
+            <div class="card-icon">📞</div>
+            <div class="card-title">On-Call Roster</div>
+            <div class="card-description">View the after-hours on-call roster and personal schedules.</div>
+        </a>
     </div>
 
-    <div class="rules-info">
-        <strong>Leave Rules:</strong> North: Max 2 on leave at once | South: Max 1 on leave at once
+    <div class="footer">
+        Illawarra Shoalhaven Local Health District
     </div>
-
-    <div id="upcomingPanel" class="status-panel" style="display:none;">
-        <h3>Upcoming Leave</h3>
-        <div id="upcomingList" class="upcoming-leave"></div>
-    </div>
-
-    <div id="calendar" class="calendar-container"></div>
-
-    <script>
-        // Staff data
-        const staff = {
-            'BT': { name: 'Benjamin Thomas', region: 'North', role: 'Head of Service' },
-            'AL': { name: 'Angela Lo', region: 'North', role: 'Divisional Director' },
-            'GB': { name: 'Greg Barclay', region: 'North', role: 'Senior Staff Specialist' },
-            'HY': { name: 'Helen Yourlo', region: 'North', role: 'Staff Specialist' },
-            'MK': { name: 'Muoi Khou', region: 'North', role: 'Staff Specialist' },
-            'RW': { name: 'Ron Wai', region: 'North', role: 'Staff Specialist' },
-            'SR': { name: 'Stephanie Robinson', region: 'South', role: 'Staff Specialist' },
-            'Fadz': { name: 'Fadz wan Bahrum', region: 'South', role: 'Staff Specialist' }
-        };
-
-        // NSW Public Holidays 2026-2027
-        const publicHolidays = {
-            // 2026
-            '2026-01-01': 'New Year\'s Day',
-            '2026-01-26': 'Australia Day',
-            '2026-04-03': 'Good Friday',
-            '2026-04-04': 'Easter Saturday',
-            '2026-04-06': 'Easter Monday',
-            '2026-04-25': 'Anzac Day',
-            '2026-06-08': 'Queen\'s Birthday',
-            '2026-10-05': 'Labour Day',
-            '2026-12-25': 'Christmas Day',
-            '2026-12-26': 'Boxing Day',
-            '2026-12-28': 'Boxing Day (observed)',
-            // 2027
-            '2027-01-01': 'New Year\'s Day',
-            '2027-01-26': 'Australia Day'
-        };
-
-        // Leave data - will be populated from CSV
-        let leaveData = [];
-
-        // Parse Australian date format DD/MM/YYYY
-        function parseDate(dateStr) {
-            const parts = dateStr.split('/');
-            return new Date(parts[2], parts[1] - 1, parts[0]);
-        }
-
-        // Format date as YYYY-MM-DD for comparison
-        function formatDateKey(date) {
-            return date.toISOString().split('T')[0];
-        }
-
-        // Format date for display
-        function formatDateDisplay(date) {
-            return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
-        }
-
-        // Load leave data - use embedded data directly
-        function loadLeaveData() {
-            loadEmbeddedData();
-        }
-
-        // Embedded fallback data
-        function loadEmbeddedData() {
-            leaveData = [
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
-                // BT Management Course dates
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 1, 18), endDate: new Date(2026, 1, 18), leaveType: 'Unavailable', notes: 'Stepping into leadership' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 3), leaveType: 'Unavailable', notes: 'Emotional intelligence' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 2, 19), endDate: new Date(2026, 2, 19), leaveType: 'Unavailable', notes: 'Communication and culture' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 3, 23), endDate: new Date(2026, 3, 23), leaveType: 'Unavailable', notes: 'Performance with purpose' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 7), leaveType: 'Unavailable', notes: 'Grievance and conflict' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 26), endDate: new Date(2026, 4, 26), leaveType: 'Unavailable', notes: 'HR essentials' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 7, 5), endDate: new Date(2026, 7, 5), leaveType: 'Unavailable', notes: 'Work health and safety' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 8, 3), endDate: new Date(2026, 8, 3), leaveType: 'Unavailable', notes: 'Finance and procurement' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 8, 23), endDate: new Date(2026, 8, 23), leaveType: 'Unavailable', notes: 'Corporate governance' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 9, 20), endDate: new Date(2026, 9, 20), leaveType: 'Unavailable', notes: 'Clinical governance' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
-                { staffCode: 'BT', staffName: 'Benjamin Thomas', region: 'North', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
-                { staffCode: 'AL', staffName: 'Angela Lo', region: 'North', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
-                { staffCode: 'AL', staffName: 'Angela Lo', region: 'North', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
-                { staffCode: 'GB', staffName: 'Greg Barclay', region: 'North', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
-                { staffCode: 'GB', staffName: 'Greg Barclay', region: 'North', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 8), leaveType: 'Annual Leave' },
-                { staffCode: 'GB', staffName: 'Greg Barclay', region: 'North', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
-                { staffCode: 'HY', staffName: 'Helen Yourlo', region: 'North', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
-                { staffCode: 'MK', staffName: 'Muoi Khou', region: 'North', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
-                { staffCode: 'MK', staffName: 'Muoi Khou', region: 'North', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
-                { staffCode: 'MK', staffName: 'Muoi Khou', region: 'North', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
-                { staffCode: 'RW', staffName: 'Ron Wai', region: 'North', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave', notes: '2 paid days' },
-                { staffCode: 'RW', staffName: 'Ron Wai', region: 'North', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
-                { staffCode: 'RW', staffName: 'Ron Wai', region: 'North', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
-                { staffCode: 'SR', staffName: 'Stephanie Robinson', region: 'South', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
-                { staffCode: 'SR', staffName: 'Stephanie Robinson', region: 'South', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
-                { staffCode: 'Fadz', staffName: 'Fadz wan Bahrum', region: 'South', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' }
-            ];
-            renderCalendar();
-        }
-
-        // Get leave for a specific date
-        function getLeaveForDate(date, filter = 'all') {
-            const dateKey = formatDateKey(date);
-            return leaveData.filter(leave => {
-                const inRange = date >= leave.startDate && date <= leave.endDate;
-                if (!inRange) return false;
-
-                if (filter === 'all') return true;
-                if (filter === 'north') return leave.region === 'North';
-                if (filter === 'south') return leave.region === 'South';
-                return leave.staffCode === filter;
-            });
-        }
-
-        // Calculate availability status for a date
-        function getAvailability(date) {
-            const dayOfWeek = date.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 6) return null; // Weekend
-
-            const dateKey = formatDateKey(date);
-            if (publicHolidays[dateKey]) return null; // Public holiday
-
-            const northLeave = leaveData.filter(l =>
-                l.region === 'North' && date >= l.startDate && date <= l.endDate
-            ).length;
-
-            const southLeave = leaveData.filter(l =>
-                l.region === 'South' && date >= l.startDate && date <= l.endDate
-            ).length;
-
-            // Rules:
-            // RED (full/unlikely): North 2+ OR South 1+
-            // AMBER (limited): North 1
-            // GREEN (available): otherwise
-
-            if (northLeave >= 2 || southLeave >= 1) return 'full';
-            if (northLeave >= 1) return 'limited';
-            return 'available';
-        }
-
-        // Render calendar
-        function renderCalendar() {
-            const container = document.getElementById('calendar');
-            const filter = document.getElementById('staffFilter').value;
-            container.innerHTML = '';
-
-            const months = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            // Calendar spans: Jan 2026 - Feb 2027 (14 months)
-            const calendarMonths = [
-                { year: 2026, month: 0 }, { year: 2026, month: 1 }, { year: 2026, month: 2 },
-                { year: 2026, month: 3 }, { year: 2026, month: 4 }, { year: 2026, month: 5 },
-                { year: 2026, month: 6 }, { year: 2026, month: 7 }, { year: 2026, month: 8 },
-                { year: 2026, month: 9 }, { year: 2026, month: 10 }, { year: 2026, month: 11 },
-                { year: 2027, month: 0 }, { year: 2027, month: 1 }
-            ];
-
-            calendarMonths.forEach(({ year, month }) => {
-                const monthCard = document.createElement('div');
-                monthCard.className = 'month-card';
-                monthCard.id = `month-${year}-${month}`;
-
-                const header = document.createElement('div');
-                header.className = 'month-header';
-                header.textContent = months[month] + ' ' + year;
-                monthCard.appendChild(header);
-
-                const grid = document.createElement('div');
-                grid.className = 'month-grid';
-
-                // Day headers
-                days.forEach(day => {
-                    const dayHeader = document.createElement('div');
-                    dayHeader.className = 'day-header';
-                    dayHeader.textContent = day;
-                    grid.appendChild(dayHeader);
-                });
-
-                // Get first day of month and number of days
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-                // Empty cells before first day
-                for (let i = 0; i < firstDay; i++) {
-                    const emptyCell = document.createElement('div');
-                    emptyCell.className = 'day-cell empty';
-                    grid.appendChild(emptyCell);
-                }
-
-                // Day cells
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const dateKey = formatDateKey(date);
-                    const dayOfWeek = date.getDay();
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    const isHoliday = publicHolidays[dateKey];
-
-                    const cell = document.createElement('div');
-                    cell.className = 'day-cell';
-                    if (isWeekend) cell.className += ' weekend';
-                    if (isHoliday) cell.className += ' public-holiday';
-
-                    const dayNum = document.createElement('div');
-                    dayNum.className = 'day-number';
-                    dayNum.textContent = day;
-                    cell.appendChild(dayNum);
-
-                    if (isHoliday) {
-                        const holidayTag = document.createElement('span');
-                        holidayTag.className = 'leave-tag annual';
-                        holidayTag.textContent = isHoliday;
-                        holidayTag.title = isHoliday;
-                        cell.appendChild(holidayTag);
-                    }
-
-                    // Add leave entries
-                    const leaves = getLeaveForDate(date, filter);
-                    leaves.forEach(leave => {
-                        const tag = document.createElement('span');
-                        let typeClass = 'annual';
-                        if (leave.leaveType.includes('Long Service')) typeClass = 'lsl';
-                        if (leave.leaveType.includes('TESL')) typeClass = 'tesl';
-                        if (leave.leaveType.includes('Unavailable')) typeClass = 'unavailable';
-
-                        // Highlight if filtering by specific person
-                        if (filter !== 'all' && filter !== 'north' && filter !== 'south') {
-                            typeClass += ' highlight';
-                        }
-
-                        tag.className = `leave-tag ${typeClass}`;
-                        tag.textContent = leave.staffCode;
-                        tag.title = `${leave.staffName} - ${leave.leaveType}`;
-                        cell.appendChild(tag);
-                    });
-
-                    // Availability indicator (only for weekdays, non-holidays)
-                    if (!isWeekend && !isHoliday) {
-                        const availability = getAvailability(date);
-                        if (availability) {
-                            const indicator = document.createElement('div');
-                            indicator.className = `availability-indicator ${availability}`;
-                            cell.appendChild(indicator);
-                        }
-                    }
-
-                    grid.appendChild(cell);
-                }
-
-                monthCard.appendChild(grid);
-                container.appendChild(monthCard);
-            });
-        }
-
-        // Jump to month
-        function jumpToMonth() {
-            const value = document.getElementById('monthJump').value;
-            const element = document.getElementById(`month-${value}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        // Show available dates (green zones)
-        function showAvailable() {
-            clearHighlight();
-            const cells = document.querySelectorAll('.day-cell');
-            cells.forEach(cell => {
-                const indicator = cell.querySelector('.availability-indicator');
-                if (indicator && indicator.classList.contains('available')) {
-                    cell.classList.add('highlight-available');
-                } else if (!cell.classList.contains('empty') && !cell.classList.contains('weekend') && !cell.classList.contains('public-holiday')) {
-                    cell.classList.add('dimmed');
-                }
-            });
-        }
-
-        // Show limited dates (amber zones)
-        function showLimited() {
-            clearHighlight();
-            const cells = document.querySelectorAll('.day-cell');
-            cells.forEach(cell => {
-                const indicator = cell.querySelector('.availability-indicator');
-                if (indicator && indicator.classList.contains('limited')) {
-                    cell.classList.add('highlight-limited');
-                } else if (!cell.classList.contains('empty') && !cell.classList.contains('weekend') && !cell.classList.contains('public-holiday')) {
-                    cell.classList.add('dimmed');
-                }
-            });
-        }
-
-        // Show restricted dates (red zones)
-        function showRestricted() {
-            clearHighlight();
-            const cells = document.querySelectorAll('.day-cell');
-            cells.forEach(cell => {
-                const indicator = cell.querySelector('.availability-indicator');
-                if (indicator && indicator.classList.contains('full')) {
-                    cell.classList.add('highlight-restricted');
-                } else if (!cell.classList.contains('empty') && !cell.classList.contains('weekend') && !cell.classList.contains('public-holiday')) {
-                    cell.classList.add('dimmed');
-                }
-            });
-        }
-
-        // Clear all highlights
-        function clearHighlight() {
-            const cells = document.querySelectorAll('.day-cell');
-            cells.forEach(cell => {
-                cell.classList.remove('highlight-available', 'highlight-restricted', 'highlight-limited', 'dimmed');
-            });
-        }
-
-        // Show upcoming leave for selected person
-        function showUpcoming() {
-            const filter = document.getElementById('staffFilter').value;
-            const panel = document.getElementById('upcomingPanel');
-            const list = document.getElementById('upcomingList');
-
-            const today = new Date();
-            let upcoming = leaveData.filter(leave => leave.endDate >= today);
-
-            if (filter !== 'all' && filter !== 'north' && filter !== 'south') {
-                upcoming = upcoming.filter(l => l.staffCode === filter);
-            } else if (filter === 'north') {
-                upcoming = upcoming.filter(l => l.region === 'North');
-            } else if (filter === 'south') {
-                upcoming = upcoming.filter(l => l.region === 'South');
-            }
-
-            upcoming.sort((a, b) => a.startDate - b.startDate);
-
-            if (upcoming.length === 0) {
-                list.innerHTML = '<p style="color:#666;">No upcoming leave found.</p>';
-            } else {
-                list.innerHTML = upcoming.map(leave => {
-                    let typeClass = '';
-                    if (leave.leaveType.includes('Long Service')) typeClass = 'lsl';
-                    if (leave.leaveType.includes('TESL')) typeClass = 'tesl';
-
-                    return `
-                        <div class="leave-item ${typeClass}">
-                            <div>
-                                <div class="leave-item-name">${leave.staffName}</div>
-                                <div class="leave-item-dates">${formatDateDisplay(leave.startDate)} - ${formatDateDisplay(leave.endDate)}</div>
-                            </div>
-                            <span class="leave-item-type">${leave.leaveType}</span>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            panel.style.display = 'block';
-        }
-
-        // Event listeners
-        document.getElementById('staffFilter').addEventListener('change', renderCalendar);
-
-        // Initial load
-        loadLeaveData();
-    </script>
 </body>
 </html>

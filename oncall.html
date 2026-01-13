@@ -95,6 +95,21 @@
             text-decoration: underline;
         }
 
+        /* Warning Banner */
+        .roster-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        .roster-warning strong {
+            color: #78350f;
+        }
+
         /* Personal Dashboard */
         .dashboard {
             background: white;
@@ -352,11 +367,15 @@
 </head>
 <body>
     <div class="nav-links">
-        <a href="index.html">&larr; Back to Leave Calendar</a>
+        <a href="index.html">&larr; Back to Home</a>
     </div>
 
     <h1>After Hours On-Call Roster</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
+
+    <div class="roster-warning">
+        <strong>Last generated: 13 January 2026.</strong> For the most up-to-date roster, please refer to the latest version circulated via email.
+    </div>
 
     <div class="controls">
         <div class="control-group">
