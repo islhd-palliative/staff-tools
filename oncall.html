@@ -761,11 +761,22 @@
                 }
             });
 
-            // Sort by total (descending)
+            // Sort: Staff Specialists alphabetically, then Trainees alphabetically
             const sorted = Object.entries(counts)
                 .map(([code, c]) => ({ code, ...c, total: c.first + c.second }))
                 .filter(x => x.total > 0)
-                .sort((a, b) => b.total - a.total);
+                .sort((a, b) => {
+                    const personA = staff[a.code];
+                    const personB = staff[b.code];
+                    // Staff Specialists first, then Trainees
+                    if (personA.isTrainee !== personB.isTrainee) {
+                        return personA.isTrainee ? 1 : -1;
+                    }
+                    // Within each group, sort alphabetically by surname
+                    const surnameA = personA.name.split(' ').pop();
+                    const surnameB = personB.name.split(' ').pop();
+                    return surnameA.localeCompare(surnameB);
+                });
 
             tbody.innerHTML = sorted.map(({ code, first, second, total }) => {
                 const person = staff[code];
