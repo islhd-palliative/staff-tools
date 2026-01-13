@@ -185,6 +185,76 @@
             cursor: pointer;
         }
 
+        /* Leave Preview Panel */
+        .leave-preview {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .leave-preview h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .leave-preview-empty {
+            color: #059669;
+            font-size: 0.9rem;
+        }
+
+        .leave-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        .leave-item:last-child {
+            border-bottom: none;
+        }
+
+        .leave-item-name {
+            font-weight: 600;
+            width: 160px;
+            color: #1a365d;
+        }
+
+        .leave-item-dates {
+            flex: 1;
+            color: #374151;
+        }
+
+        .leave-item-type {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .leave-type-annual {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-type-tesl {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .leave-type-lsl {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .leave-type-unavailable {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
         /* Equity Panel */
         .equity-section {
             background: white;
@@ -441,6 +511,14 @@
             <button class="btn-outline" onclick="addUnavailability()">Add</button>
         </div>
         <div id="unavailabilityList" class="unavailability-list"></div>
+    </div>
+
+    <!-- Leave This Month Preview -->
+    <div class="leave-preview">
+        <h2>Leave This Month - <span id="leavePreviewMonth">Select Month</span></h2>
+        <div id="leavePreviewContent">
+            <p class="leave-preview-empty">Select a month above to see booked leave.</p>
+        </div>
     </div>
 
     <!-- Warnings -->
@@ -1254,6 +1332,76 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             }
         }
 
+        // ==================== LEAVE PREVIEW ====================
+        function renderLeavePreview() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('leavePreviewMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const container = document.getElementById('leavePreviewContent');
+
+            // Find all leave that overlaps with this month
+            const monthStart = new Date(year, month, 1);
+            const monthEnd = new Date(year, month + 1, 0); // Last day of month
+
+            const relevantLeave = leaveData.filter(leave => {
+                const leaveStart = new Date(leave.startDate);
+                const leaveEnd = new Date(leave.endDate);
+                // Check if leave overlaps with month
+                return leaveStart <= monthEnd && leaveEnd >= monthStart;
+            }).sort((a, b) => {
+                // Sort by start date, then by name
+                const dateCompare = new Date(a.startDate) - new Date(b.startDate);
+                if (dateCompare !== 0) return dateCompare;
+                return a.staffCode.localeCompare(b.staffCode);
+            });
+
+            if (relevantLeave.length === 0) {
+                container.innerHTML = '<p class="leave-preview-empty">No leave booked this month - all staff available!</p>';
+                return;
+            }
+
+            const formatDate = (date) => {
+                const d = new Date(date);
+                return `${d.getDate()}/${d.getMonth() + 1}`;
+            };
+
+            const getTypeClass = (type) => {
+                switch (type) {
+                    case 'Annual Leave': return 'leave-type-annual';
+                    case 'TESL': return 'leave-type-tesl';
+                    case 'Long Service Leave': return 'leave-type-lsl';
+                    default: return 'leave-type-unavailable';
+                }
+            };
+
+            const getStaffName = (code) => {
+                const staff = staffData.find(s => s.code === code);
+                return staff ? staff.name : code;
+            };
+
+            container.innerHTML = relevantLeave.map(leave => {
+                const startDate = new Date(leave.startDate);
+                const endDate = new Date(leave.endDate);
+                const sameDay = startDate.getTime() === endDate.getTime();
+                const dateStr = sameDay
+                    ? formatDate(startDate)
+                    : `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
+                return `
+                    <div class="leave-item">
+                        <span class="leave-item-name">${getStaffName(leave.staffCode)}</span>
+                        <span class="leave-item-dates">${dateStr}</span>
+                        <span class="leave-item-type ${getTypeClass(leave.leaveType)}">${leave.leaveType}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // ==================== INITIALIZATION ====================
         function init() {
             // Populate month dropdown
@@ -1285,8 +1433,13 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             // Load any saved data
             loadFromLocalStorage();
 
+            // Add event listeners for month/year changes to update leave preview
+            monthSelect.addEventListener('change', renderLeavePreview);
+            document.getElementById('yearSelect').addEventListener('change', renderLeavePreview);
+
             // Initial render
             renderRoster();
+            renderLeavePreview();
         }
 
         init();
