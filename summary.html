@@ -42,6 +42,43 @@
             text-decoration: underline;
         }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .page-header-left {
+            flex: 1;
+        }
+
+        .page-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .year-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .year-selector label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .year-selector select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
         .summary-card {
             background: white;
             border-radius: 8px;
@@ -126,7 +163,8 @@
 
         .fte-badge {
             font-size: 0.75rem;
-            background: #e5e7eb;
+            background: rgba(255,255,255,0.25);
+            color: white;
             padding: 2px 6px;
             border-radius: 4px;
             margin-left: 8px;
@@ -176,6 +214,23 @@
             opacity: 0.9;
         }
 
+        .utilisation-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+            max-width: 120px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .utilisation-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+        }
+
         .last-updated {
             text-align: right;
             font-size: 0.8rem;
@@ -200,8 +255,18 @@
 <body>
     <a href="index.html" class="back-link">&larr; Back to Home</a>
 
-    <h1>Leave Entitlements Summary 2026</h1>
-    <p class="subtitle">ISLHD Palliative and End of Life Care - Staff Specialists</p>
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1>Leave Entitlements Summary</h1>
+            <p class="subtitle">ISLHD Palliative and End of Life Care - Staff Specialists</p>
+        </div>
+        <div class="year-selector">
+            <label for="yearSelect">Year:</label>
+            <select id="yearSelect">
+                <option value="2026" selected>2026</option>
+            </select>
+        </div>
+    </div>
 
     <div id="summaryContainer"></div>
 
@@ -395,25 +460,35 @@
                 `;
             });
 
+            // Calculate utilisation percentages
+            const annualUtilisation = Math.round((totalAnnualUsed / totalAnnualEntitled) * 100);
+            const teslUtilisation = Math.round((totalTeslUsed / totalTeslEntitled) * 100);
+
             // Totals card
             html = `
                 <div class="summary-card totals-card">
                     <div class="card-body">
                         <div class="total-item">
-                            <div class="total-value">${totalAnnualUsed}</div>
-                            <div class="total-label">Annual Leave Days Used</div>
+                            <div class="total-value">${annualUtilisation}%</div>
+                            <div class="total-label">Annual Leave Utilisation</div>
+                            <div class="utilisation-bar">
+                                <div class="utilisation-fill" style="width: ${annualUtilisation}%"></div>
+                            </div>
                         </div>
                         <div class="total-item">
-                            <div class="total-value">${totalAnnualEntitled - totalAnnualUsed}</div>
-                            <div class="total-label">Annual Leave Days Remaining</div>
+                            <div class="total-value">${totalAnnualUsed} / ${totalAnnualEntitled}</div>
+                            <div class="total-label">Annual Leave Days (Used / Total)</div>
                         </div>
                         <div class="total-item">
-                            <div class="total-value">${totalTeslUsed}</div>
-                            <div class="total-label">TESL Days Used</div>
+                            <div class="total-value">${teslUtilisation}%</div>
+                            <div class="total-label">TESL Utilisation</div>
+                            <div class="utilisation-bar">
+                                <div class="utilisation-fill" style="width: ${teslUtilisation}%"></div>
+                            </div>
                         </div>
                         <div class="total-item">
-                            <div class="total-value">${totalTeslEntitled - totalTeslUsed}</div>
-                            <div class="total-label">TESL Days Remaining</div>
+                            <div class="total-value">${totalTeslUsed} / ${totalTeslEntitled}</div>
+                            <div class="total-label">TESL Days (Used / Total)</div>
                         </div>
                     </div>
                 </div>
