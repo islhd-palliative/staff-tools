@@ -647,6 +647,41 @@
         let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
         let historicalData = {}; // { 'YYYY-MM': { roster: {...}, weekendCounts: {...}, weeknightCounts: {...} } }
+
+        // Seed with January 2026 actual data from oncall.html
+        const seedJanuary2026 = {
+            '2026-01-01': { staffCode: 'AL' },
+            '2026-01-02': { staffCode: 'GB' },
+            '2026-01-03': { staffCode: 'Fadz' }, // Weekend - trainee was 1st, Fadz was 2nd
+            '2026-01-04': { staffCode: 'Fadz' },
+            '2026-01-05': { staffCode: 'Fadz' },
+            '2026-01-06': { staffCode: 'RW' },   // Trainee 1st, RW 2nd
+            '2026-01-07': { staffCode: 'BT' },
+            '2026-01-08': { staffCode: 'HY' },
+            '2026-01-09': { staffCode: 'AL' },
+            '2026-01-10': { staffCode: 'BT' },   // Weekend - trainee 1st, BT 2nd
+            '2026-01-11': { staffCode: 'BT' },
+            '2026-01-12': { staffCode: 'SR' },   // Trainee 1st, SR 2nd
+            '2026-01-13': { staffCode: 'GB' },
+            '2026-01-14': { staffCode: 'HY' },
+            '2026-01-15': { staffCode: 'MK' },
+            '2026-01-16': { staffCode: 'BT' },
+            '2026-01-17': { staffCode: 'SR' },
+            '2026-01-18': { staffCode: 'SR' },   // Weekend
+            '2026-01-19': { staffCode: 'RW' },
+            '2026-01-20': { staffCode: 'BT' },
+            '2026-01-21': { staffCode: 'MK' },   // Trainee 1st, MK 2nd
+            '2026-01-22': { staffCode: 'Fadz' },
+            '2026-01-23': { staffCode: 'HY' },   // Trainee 1st, HY 2nd
+            '2026-01-24': { staffCode: 'RW' },   // Weekend - trainee 1st, RW 2nd
+            '2026-01-25': { staffCode: 'RW' },
+            '2026-01-26': { staffCode: 'HY' },
+            '2026-01-27': { staffCode: 'AL' },
+            '2026-01-28': { staffCode: 'MK' },
+            '2026-01-29': { staffCode: 'SR' },   // Trainee 1st, SR 2nd
+            '2026-01-30': { staffCode: 'GB' },
+            '2026-01-31': { staffCode: 'AL' }
+        };
         let currentMonth = null;
         let currentYear = null;
 
@@ -806,6 +841,69 @@
         }
 
         // ==================== ROSTER GENERATION ====================
+
+        // Check if someone is returning from leave on a Monday (making weekend before unavailable)
+        function isReturningFromLeaveOnMonday(staffCode, satDate) {
+            // If Saturday, check if Monday after is first day back from leave
+            const monday = new Date(satDate);
+            monday.setDate(monday.getDate() + 2); // Saturday + 2 = Monday
+
+            // Check if they were on leave Friday and not on leave Monday
+            const friday = new Date(satDate);
+            friday.setDate(friday.getDate() - 1);
+
+            const onLeaveFriday = isOnLeave(staffCode, friday);
+            const onLeaveMonday = isOnLeave(staffCode, monday);
+
+            // If they were on leave Friday but not Monday, they're returning
+            return onLeaveFriday && !onLeaveMonday;
+        }
+
+        // Get ISO week number for a date
+        function getWeekNumber(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+            const yearStart = new Date(d.getFullYear(), 0, 1);
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        // Check days since last weeknight assignment for a person
+        function daysSinceLastWeeknight(staffCode, currentDate, roster) {
+            const currentTime = currentDate.getTime();
+            let minDays = Infinity;
+
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate) && assignDate.getTime() < currentTime) {
+                        const days = Math.floor((currentTime - assignDate.getTime()) / (1000 * 60 * 60 * 24));
+                        minDays = Math.min(minDays, days);
+                    }
+                }
+            }
+            return minDays;
+        }
+
+        // Count weeknights assigned this week for a person
+        function weeknightsThisWeek(staffCode, currentDate, roster) {
+            const currentWeek = getWeekNumber(currentDate);
+            const currentYear = currentDate.getFullYear();
+            let count = 0;
+
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate) &&
+                        getWeekNumber(assignDate) === currentWeek &&
+                        assignDate.getFullYear() === currentYear) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
         function generateRoster() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -829,55 +927,101 @@
                 monthWeekNights[s.code] = 0;
             });
 
-            // Calculate how many shifts each person should get this month
-            const targetWeekends = weekendBlocks.length;
-            const targetWeekNights = weekNights.length;
-
             // Sort staff by how far below target they are (prioritize under-served)
             function getWeekendPriority(staffCode) {
                 const e = equity[staffCode];
                 return (e.weekends + monthWeekends[staffCode]) - e.targetWeekends;
             }
 
-            function getWeekNightPriority(staffCode) {
+            function getWeekNightPriority(staffCode, date) {
                 const e = equity[staffCode];
-                return (e.weeknights + monthWeekNights[staffCode]) - e.targetWeekNights;
+                const base = (e.weeknights + monthWeekNights[staffCode]) - e.targetWeekNights;
+
+                // Heavily penalize if already has a shift this week
+                const thisWeek = weeknightsThisWeek(staffCode, date, currentRoster);
+                if (thisWeek >= 1) return base + 100; // Push way down priority
+
+                return base;
             }
 
-            function getAvailableStaff(date, excludeNearWeekend = false) {
+            // Get available staff for weekends
+            function getAvailableForWeekend(satDate) {
+                const dateKey = formatDateKey(satDate);
+                return staffData.filter(s => {
+                    // Check leave on Saturday and Sunday
+                    if (isOnLeave(s.code, satDate)) return false;
+                    const sunDate = new Date(satDate);
+                    sunDate.setDate(sunDate.getDate() + 1);
+                    if (isOnLeave(s.code, sunDate)) return false;
+
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+                    const sunKey = formatDateKey(sunDate);
+                    if (isAdHocUnavailable(s.code, sunKey)) return false;
+
+                    // Check if returning from leave on Monday
+                    if (isReturningFromLeaveOnMonday(s.code, satDate)) return false;
+
+                    return true;
+                });
+            }
+
+            // Get available staff for weeknights
+            function getAvailableForWeeknight(date) {
                 const dateKey = formatDateKey(date);
+                const dow = date.getDay(); // 1=Mon, 2=Tue, etc.
+
                 return staffData.filter(s => {
                     // Check leave
                     if (isOnLeave(s.code, date)) return false;
+
                     // Check ad-hoc unavailability
                     if (isAdHocUnavailable(s.code, dateKey)) return false;
-                    // Check if too close to a weekend they're assigned
-                    if (excludeNearWeekend) {
-                        // Check if assigned weekend within 3 days
-                        for (let offset = -3; offset <= 3; offset++) {
-                            if (offset === 0) continue;
-                            const checkDate = new Date(date);
-                            checkDate.setDate(checkDate.getDate() + offset);
-                            const checkKey = formatDateKey(checkDate);
-                            if (currentRoster[checkKey] && currentRoster[checkKey].staffCode === s.code && isWeekend(checkDate)) {
-                                return false;
-                            }
-                        }
-                    }
+
+                    // Check if this is one of their work days
+                    if (!s.workDays.includes(dow)) return false;
+
+                    // Check minimum 3-day gap since last weeknight
+                    const daysSince = daysSinceLastWeeknight(s.code, date, currentRoster);
+                    if (daysSince < 3 && daysSince !== Infinity) return false;
+
+                    return true;
+                });
+            }
+
+            // Get fallback staff for weeknights (relax work day constraint if needed)
+            function getFallbackForWeeknight(date) {
+                const dateKey = formatDateKey(date);
+
+                return staffData.filter(s => {
+                    // Check leave
+                    if (isOnLeave(s.code, date)) return false;
+
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+
+                    // Still enforce minimum 3-day gap
+                    const daysSince = daysSinceLastWeeknight(s.code, date, currentRoster);
+                    if (daysSince < 3 && daysSince !== Infinity) return false;
+
                     return true;
                 });
             }
 
             // Assign weekends first (Sat-Sun as a block)
             weekendBlocks.forEach(block => {
-                const available = getAvailableStaff(block.sat);
+                const available = getAvailableForWeekend(block.sat);
                 if (available.length === 0) {
                     warnings.push(`No staff available for weekend ${block.satKey}`);
                     return;
                 }
 
-                // Sort by priority (most under-served first)
-                available.sort((a, b) => getWeekendPriority(a.code) - getWeekendPriority(b.code));
+                // Sort by priority (most under-served first), with random tie-breaker
+                available.sort((a, b) => {
+                    const diff = getWeekendPriority(a.code) - getWeekendPriority(b.code);
+                    if (Math.abs(diff) < 0.1) return Math.random() - 0.5; // Random tie-breaker
+                    return diff;
+                });
 
                 const assigned = available[0];
                 currentRoster[block.satKey] = { staffCode: assigned.code };
@@ -885,27 +1029,40 @@
                 monthWeekends[assigned.code]++;
             });
 
-            // Assign weeknights, avoiding proximity to weekends
+            // Assign weeknights
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
-                const available = getAvailableStaff(night, true); // Exclude those near their weekend
+                let available = getAvailableForWeeknight(night);
 
                 if (available.length === 0) {
-                    // Fallback: anyone not on leave
-                    const fallback = getAvailableStaff(night, false);
-                    if (fallback.length === 0) {
-                        warnings.push(`No staff available for ${dateKey}`);
+                    // Fallback: relax work day constraint
+                    available = getFallbackForWeeknight(night);
+                    if (available.length === 0) {
+                        warnings.push(`No staff available for ${dateKey} - check leave coverage`);
                         return;
                     }
-                    fallback.sort((a, b) => getWeekNightPriority(a.code) - getWeekNightPriority(b.code));
-                    const assigned = fallback[0];
-                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Near weekend assignment' };
+                    // Add warning that we used non-work day
+                    const willWarn = true;
+
+                    // Sort by priority
+                    available.sort((a, b) => {
+                        const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
+                        if (Math.abs(diff) < 0.1) return Math.random() - 0.5;
+                        return diff;
+                    });
+
+                    const assigned = available[0];
+                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Non-work day' };
                     monthWeekNights[assigned.code]++;
                     return;
                 }
 
-                // Sort by priority
-                available.sort((a, b) => getWeekNightPriority(a.code) - getWeekNightPriority(b.code));
+                // Sort by priority with random tie-breaker
+                available.sort((a, b) => {
+                    const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
+                    if (Math.abs(diff) < 0.1) return Math.random() - 0.5;
+                    return diff;
+                });
 
                 const assigned = available[0];
                 currentRoster[dateKey] = { staffCode: assigned.code };
@@ -1430,7 +1587,15 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             // Set default date
             document.getElementById('unavailDate').value = '2026-02-01';
 
-            // Load any saved data
+            // Seed January 2026 historical data if not already present
+            if (!historicalData['2026-01']) {
+                historicalData['2026-01'] = {
+                    roster: seedJanuary2026,
+                    savedAt: '2026-01-13T00:00:00.000Z'
+                };
+            }
+
+            // Load any saved data (will override seed if user has saved data)
             loadFromLocalStorage();
 
             // Add event listeners for month/year changes to update leave preview
