@@ -157,6 +157,27 @@
             background: #b91c1c;
         }
 
+        /* Checkbox Grid for Last Month's Weekends */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .checkbox-grid input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
         /* Unavailability Section */
         .unavailability-list {
             margin-top: 12px;
@@ -565,6 +586,10 @@
             <button onclick="generateRoster()">Generate Draft</button>
             <button class="btn-outline" onclick="loadSavedDraft()">Load Saved Draft</button>
         </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Tick who had a weekend last month (they'll be deprioritized for weekends this month)</p>
+        <div id="lastMonthWeekends" class="checkbox-grid"></div>
 
         <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Add Unavailability</h3>
         <div class="control-row">
@@ -980,32 +1005,21 @@
             return count;
         }
 
-        // Get last weekend date for a person from historical data
-        function getLastWeekendDate(staffCode) {
-            let lastDate = null;
-            // Check historical data
-            for (const [monthKey, data] of Object.entries(historicalData)) {
-                if (data.roster) {
-                    for (const [dateKey, assignment] of Object.entries(data.roster)) {
-                        if (assignment.staffCode === staffCode) {
-                            const d = parseDate(dateKey);
-                            if (isWeekend(d)) {
-                                if (!lastDate || d > lastDate) lastDate = d;
-                            }
-                        }
-                    }
-                }
-            }
-            // Check current roster too
+        // Check if person had a weekend last month (from checkboxes)
+        function hadWeekendLastMonth(staffCode) {
+            const checkbox = document.getElementById(`lastWeekend_${staffCode}`);
+            return checkbox && checkbox.checked;
+        }
+
+        // Check if person has a weekend this month already (in current roster)
+        function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
                 if (assignment.staffCode === staffCode) {
                     const d = parseDate(dateKey);
-                    if (isWeekend(d)) {
-                        if (!lastDate || d > lastDate) lastDate = d;
-                    }
+                    if (isWeekend(d)) return true;
                 }
             }
-            return lastDate;
+            return false;
         }
 
         function generateRoster() {
@@ -1030,12 +1044,20 @@
                 monthWeekNights[s.code] = 0;
             });
 
-            // Weekend priority: who's gone longest without a weekend
-            function getWeekendPriority(staffCode, satDate) {
-                const lastWeekend = getLastWeekendDate(staffCode);
-                if (!lastWeekend) return -9999; // Never had one, highest priority
-                const daysSince = Math.floor((satDate - lastWeekend) / (1000 * 60 * 60 * 24));
-                return -daysSince; // More days = lower number = higher priority
+            // Weekend priority: prioritize those who didn't have a weekend last month
+            function getWeekendPriority(staffCode) {
+                let priority = 0;
+
+                // Big penalty if they already have a weekend this month
+                if (hasWeekendThisMonth(staffCode)) priority += 100;
+
+                // Penalty if they had a weekend last month (from checkboxes)
+                if (hadWeekendLastMonth(staffCode)) priority += 50;
+
+                // Small random factor for tie-breaking
+                priority += Math.random() * 0.1;
+
+                return priority; // Lower = higher priority
             }
 
             // Weeknight priority: prioritize those under their monthly target
@@ -1129,11 +1151,9 @@
                     return;
                 }
 
-                // Sort by who's gone longest without a weekend
+                // Sort by priority (those who didn't have weekend last month first)
                 available.sort((a, b) => {
-                    const diff = getWeekendPriority(a.code, block.sat) - getWeekendPriority(b.code, block.sat);
-                    if (Math.abs(diff) < 1) return Math.random() - 0.5; // Random tie-breaker
-                    return diff;
+                    return getWeekendPriority(a.code) - getWeekendPriority(b.code);
                 });
 
                 const assigned = available[0];
@@ -1778,6 +1798,19 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
                 opt.value = s.code;
                 opt.textContent = s.name;
                 personSelect.appendChild(opt);
+            });
+
+            // Populate last month's weekends checkboxes
+            const weekendsDiv = document.getElementById('lastMonthWeekends');
+            staffData.forEach(s => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `lastWeekend_${s.code}`;
+                checkbox.value = s.code;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(s.name.split(' ').pop())); // Surname only
+                weekendsDiv.appendChild(label);
             });
 
             // Set default date
