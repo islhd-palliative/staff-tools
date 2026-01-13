@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Call Roster Generator - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .nav-links {
+            margin-bottom: 16px;
+        }
+
+        .nav-links a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Test Mode Banner */
+        .test-banner {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-banner-text {
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .test-banner button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .test-banner button:hover {
+            background: #b91c1c;
+        }
+
+        /* Controls */
+        .controls-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .controls-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        select, input, button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button.btn-green {
+            background: #059669;
+        }
+
+        button.btn-green:hover {
+            background: #047857;
+        }
+
+        button.btn-outline {
+            background: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        button.btn-outline:hover {
+            background: #f3f4f6;
+        }
+
+        button.btn-red {
+            background: #dc2626;
+        }
+
+        button.btn-red:hover {
+            background: #b91c1c;
+        }
+
+        /* Unavailability Section */
+        .unavailability-list {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .unavailability-item {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .unavailability-item button {
+            background: transparent;
+            color: #92400e;
+            border: none;
+            padding: 0 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Equity Panel */
+        .equity-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .equity-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .equity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .equity-table th,
+        .equity-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .equity-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .equity-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .equity-bar {
+            width: 100px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .equity-bar-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 4px;
+        }
+
+        .equity-bar-fill.over {
+            background: #dc2626;
+        }
+
+        .equity-bar-fill.under {
+            background: #059669;
+        }
+
+        /* Roster Table */
+        .roster-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .roster-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .roster-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .roster-table th,
+        .roster-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .roster-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .roster-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .roster-table tr.weekend {
+            background: #fef3c7;
+        }
+
+        .roster-table tr.weekend:hover {
+            background: #fde68a;
+        }
+
+        .roster-table tr.public-holiday {
+            background: #fce7f3;
+        }
+
+        .roster-table select {
+            padding: 4px 8px;
+            font-size: 0.85rem;
+        }
+
+        .shift-type {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .shift-type.weekend {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .shift-type.weeknight {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-indicator {
+            font-size: 0.7rem;
+            color: #dc2626;
+            margin-left: 4px;
+        }
+
+        /* Export Section */
+        .export-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .export-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .export-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #0369a1;
+        }
+
+        /* Warnings */
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #b91c1c;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #047857;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 8px; }
+            h1 { font-size: 1.2rem; }
+            .control-row { flex-direction: column; }
+            .equity-bar { width: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="index.html">&larr; Back to Home</a>
+    </div>
+
+    <div class="test-banner">
+        <span class="test-banner-text">TEST MODE - Data will not be saved to production</span>
+        <button onclick="wipeTestData()">Wipe All Test Data</button>
+    </div>
+
+    <h1>On-Call Roster Generator</h1>
+    <p class="subtitle">Generate FTE-equitable, leave-aware on-call rosters for Staff Specialists</p>
+
+    <!-- Generation Controls -->
+    <div class="controls-section">
+        <h2>Generate Roster</h2>
+        <div class="control-row">
+            <div class="control-group">
+                <label for="monthSelect">Month</label>
+                <select id="monthSelect"></select>
+            </div>
+            <div class="control-group">
+                <label for="yearSelect">Year</label>
+                <select id="yearSelect">
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            <button onclick="generateRoster()">Generate Draft</button>
+            <button class="btn-outline" onclick="loadSavedDraft()">Load Saved Draft</button>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Add Unavailability</h3>
+        <div class="control-row">
+            <div class="control-group">
+                <label for="unavailPerson">Person</label>
+                <select id="unavailPerson"></select>
+            </div>
+            <div class="control-group">
+                <label for="unavailDate">Date</label>
+                <input type="date" id="unavailDate">
+            </div>
+            <button class="btn-outline" onclick="addUnavailability()">Add</button>
+        </div>
+        <div id="unavailabilityList" class="unavailability-list"></div>
+    </div>
+
+    <!-- Warnings -->
+    <div id="warningsContainer"></div>
+
+    <!-- Equity Summary -->
+    <div class="equity-section">
+        <h2>Equity Summary (3-Month Rolling Window)</h2>
+        <table class="equity-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>FTE</th>
+                    <th>Target Share</th>
+                    <th>Weekends (Actual/Target)</th>
+                    <th>Weeknights (Actual/Target)</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody id="equityBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Generated Roster -->
+    <div class="roster-section">
+        <h2>Draft Roster - <span id="rosterMonthLabel">Select Month</span></h2>
+        <table class="roster-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Type</th>
+                    <th>On-Call</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody id="rosterBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Export Section -->
+    <div class="export-section">
+        <h2>Export & Save</h2>
+        <div class="export-buttons">
+            <button onclick="saveDraft()">Save Draft</button>
+            <button class="btn-green" onclick="downloadRosterDataJS()">Download roster-data.js</button>
+            <button class="btn-outline" onclick="exportJSON()">Export JSON Backup</button>
+            <button class="btn-outline" onclick="importJSON()">Import JSON</button>
+        </div>
+        <div class="export-info">
+            <strong>Workflow:</strong> Generate draft &rarr; Review &amp; adjust &rarr; Save draft &rarr; When finalized, click "Download roster-data.js" and send to Ben for deployment.
+        </div>
+    </div>
+
+    <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
+
+    <script>
+        // ==================== STAFF DATA ====================
+        const staffData = [
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,4] },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.6, region: 'North', workDays: [3,4,5] },
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5] },
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] }
+        ];
+
+        // Total FTE for proportional allocation
+        const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0);
+
+        // ==================== LEAVE DATA ====================
+        // This should match the leave calendar data
+        const leaveData = [
+            { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 18), endDate: new Date(2026, 1, 18), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 3), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 2, 19), endDate: new Date(2026, 2, 19), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 3, 23), endDate: new Date(2026, 3, 23), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 7), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 26), endDate: new Date(2026, 4, 26), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 5), endDate: new Date(2026, 7, 5), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 8, 3), endDate: new Date(2026, 8, 3), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 8, 23), endDate: new Date(2026, 8, 23), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 9, 20), endDate: new Date(2026, 9, 20), leaveType: 'Unavailable' },
+            { staffCode: 'AL', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2027, 0, 5), endDate: new Date(2027, 0, 18), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'RW', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
+            { staffCode: 'Fadz', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' }
+        ];
+
+        // ==================== PUBLIC HOLIDAYS ====================
+        const publicHolidays = {
+            '2026-01-01': "New Year's Day",
+            '2026-01-26': 'Australia Day',
+            '2026-04-03': 'Good Friday',
+            '2026-04-04': 'Easter Saturday',
+            '2026-04-06': 'Easter Monday',
+            '2026-04-25': 'ANZAC Day',
+            '2026-06-08': "Queen's Birthday",
+            '2026-08-03': 'Bank Holiday',
+            '2026-10-05': 'Labour Day',
+            '2026-12-25': 'Christmas Day',
+            '2026-12-26': 'Boxing Day',
+            '2026-12-28': 'Boxing Day (observed)',
+            '2027-01-01': "New Year's Day"
+        };
+
+        // ==================== STATE ====================
+        let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
+        let adHocUnavailability = []; // [{ staffCode, date }]
+        let historicalData = {}; // { 'YYYY-MM': { roster: {...}, weekendCounts: {...}, weeknightCounts: {...} } }
+        let currentMonth = null;
+        let currentYear = null;
+
+        // ==================== UTILITIES ====================
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function parseDate(dateKey) {
+            const [y, m, d] = dateKey.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function getDayName(date) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return days[date.getDay()];
+        }
+
+        function isWeekend(date) {
+            const day = date.getDay();
+            return day === 0 || day === 6;
+        }
+
+        function isOnLeave(staffCode, date) {
+            const dateTime = date.getTime();
+            for (const leave of leaveData) {
+                if (leave.staffCode === staffCode) {
+                    const start = new Date(leave.startDate);
+                    start.setHours(0, 0, 0, 0);
+                    const end = new Date(leave.endDate);
+                    end.setHours(23, 59, 59, 999);
+                    if (dateTime >= start.getTime() && dateTime <= end.getTime()) {
+                        return leave.leaveType;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function isAdHocUnavailable(staffCode, dateKey) {
+            return adHocUnavailability.some(u => u.staffCode === staffCode && u.date === dateKey);
+        }
+
+        function isWorkDay(staff, date) {
+            // For on-call, we don't restrict by work days since it's after hours
+            // But we track it for information
+            return staff.workDays.includes(date.getDay());
+        }
+
+        function getMonthDays(year, month) {
+            const days = [];
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            for (let d = 1; d <= daysInMonth; d++) {
+                days.push(new Date(year, month, d));
+            }
+            return days;
+        }
+
+        function getWeekendBlocks(year, month) {
+            // Returns array of weekend blocks, each block is { sat, sun } dates
+            const blocks = [];
+            const days = getMonthDays(year, month);
+
+            for (const day of days) {
+                if (day.getDay() === 6) { // Saturday
+                    const sun = new Date(day);
+                    sun.setDate(sun.getDate() + 1);
+                    blocks.push({
+                        sat: day,
+                        sun: sun,
+                        satKey: formatDateKey(day),
+                        sunKey: formatDateKey(sun)
+                    });
+                }
+            }
+            return blocks;
+        }
+
+        function getWeekNights(year, month) {
+            // Returns array of weeknight dates (Mon-Fri evenings)
+            const days = getMonthDays(year, month);
+            return days.filter(d => {
+                const dow = d.getDay();
+                return dow >= 1 && dow <= 5; // Mon-Fri
+            });
+        }
+
+        // ==================== EQUITY CALCULATION ====================
+        function calculateEquity(targetMonth, targetYear) {
+            // Calculate 3-month rolling window equity
+            const equity = {};
+            staffData.forEach(s => {
+                equity[s.code] = {
+                    name: s.name,
+                    fte: s.fte,
+                    targetShare: s.fte / totalFTE,
+                    weekends: 0,
+                    weeknights: 0,
+                    targetWeekends: 0,
+                    targetWeekNights: 0
+                };
+            });
+
+            // Look back 2 months + current month
+            const months = [];
+            for (let i = -2; i <= 0; i++) {
+                let m = targetMonth + i;
+                let y = targetYear;
+                if (m < 0) { m += 12; y -= 1; }
+                if (m > 11) { m -= 12; y += 1; }
+                months.push({ month: m, year: y });
+            }
+
+            let totalWeekends = 0;
+            let totalWeekNights = 0;
+
+            months.forEach(({ month, year }) => {
+                const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+                const historical = historicalData[monthKey];
+
+                // Count weekends and weeknights in month
+                const weekendBlocks = getWeekendBlocks(year, month);
+                const weekNights = getWeekNights(year, month);
+
+                totalWeekends += weekendBlocks.length;
+                totalWeekNights += weekNights.length;
+
+                if (historical && historical.roster) {
+                    // Count from historical data
+                    weekendBlocks.forEach(block => {
+                        const satAssign = historical.roster[block.satKey];
+                        if (satAssign && equity[satAssign.staffCode]) {
+                            equity[satAssign.staffCode].weekends++;
+                        }
+                    });
+
+                    weekNights.forEach(night => {
+                        const key = formatDateKey(night);
+                        const assign = historical.roster[key];
+                        if (assign && equity[assign.staffCode]) {
+                            equity[assign.staffCode].weeknights++;
+                        }
+                    });
+                }
+            });
+
+            // Calculate targets
+            staffData.forEach(s => {
+                equity[s.code].targetWeekends = Math.round(totalWeekends * equity[s.code].targetShare * 10) / 10;
+                equity[s.code].targetWeekNights = Math.round(totalWeekNights * equity[s.code].targetShare * 10) / 10;
+            });
+
+            return equity;
+        }
+
+        // ==================== ROSTER GENERATION ====================
+        function generateRoster() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+
+            currentMonth = month;
+            currentYear = year;
+            currentRoster = {};
+
+            const warnings = [];
+            const equity = calculateEquity(month, year);
+
+            // Get all shifts for the month
+            const weekendBlocks = getWeekendBlocks(year, month);
+            const weekNights = getWeekNights(year, month);
+
+            // Track assignments this month
+            const monthWeekends = {};
+            const monthWeekNights = {};
+            staffData.forEach(s => {
+                monthWeekends[s.code] = 0;
+                monthWeekNights[s.code] = 0;
+            });
+
+            // Calculate how many shifts each person should get this month
+            const targetWeekends = weekendBlocks.length;
+            const targetWeekNights = weekNights.length;
+
+            // Sort staff by how far below target they are (prioritize under-served)
+            function getWeekendPriority(staffCode) {
+                const e = equity[staffCode];
+                return (e.weekends + monthWeekends[staffCode]) - e.targetWeekends;
+            }
+
+            function getWeekNightPriority(staffCode) {
+                const e = equity[staffCode];
+                return (e.weeknights + monthWeekNights[staffCode]) - e.targetWeekNights;
+            }
+
+            function getAvailableStaff(date, excludeNearWeekend = false) {
+                const dateKey = formatDateKey(date);
+                return staffData.filter(s => {
+                    // Check leave
+                    if (isOnLeave(s.code, date)) return false;
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+                    // Check if too close to a weekend they're assigned
+                    if (excludeNearWeekend) {
+                        // Check if assigned weekend within 3 days
+                        for (let offset = -3; offset <= 3; offset++) {
+                            if (offset === 0) continue;
+                            const checkDate = new Date(date);
+                            checkDate.setDate(checkDate.getDate() + offset);
+                            const checkKey = formatDateKey(checkDate);
+                            if (currentRoster[checkKey] && currentRoster[checkKey].staffCode === s.code && isWeekend(checkDate)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                });
+            }
+
+            // Assign weekends first (Sat-Sun as a block)
+            weekendBlocks.forEach(block => {
+                const available = getAvailableStaff(block.sat);
+                if (available.length === 0) {
+                    warnings.push(`No staff available for weekend ${block.satKey}`);
+                    return;
+                }
+
+                // Sort by priority (most under-served first)
+                available.sort((a, b) => getWeekendPriority(a.code) - getWeekendPriority(b.code));
+
+                const assigned = available[0];
+                currentRoster[block.satKey] = { staffCode: assigned.code };
+                currentRoster[block.sunKey] = { staffCode: assigned.code };
+                monthWeekends[assigned.code]++;
+            });
+
+            // Assign weeknights, avoiding proximity to weekends
+            weekNights.forEach(night => {
+                const dateKey = formatDateKey(night);
+                const available = getAvailableStaff(night, true); // Exclude those near their weekend
+
+                if (available.length === 0) {
+                    // Fallback: anyone not on leave
+                    const fallback = getAvailableStaff(night, false);
+                    if (fallback.length === 0) {
+                        warnings.push(`No staff available for ${dateKey}`);
+                        return;
+                    }
+                    fallback.sort((a, b) => getWeekNightPriority(a.code) - getWeekNightPriority(b.code));
+                    const assigned = fallback[0];
+                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Near weekend assignment' };
+                    monthWeekNights[assigned.code]++;
+                    return;
+                }
+
+                // Sort by priority
+                available.sort((a, b) => getWeekNightPriority(a.code) - getWeekNightPriority(b.code));
+
+                const assigned = available[0];
+                currentRoster[dateKey] = { staffCode: assigned.code };
+                monthWeekNights[assigned.code]++;
+            });
+
+            // Display
+            renderRoster();
+            renderEquity(month, year);
+            showWarnings(warnings);
+
+            // Update label
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('rosterMonthLabel').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        // ==================== RENDERING ====================
+        function renderRoster() {
+            const tbody = document.getElementById('rosterBody');
+            tbody.innerHTML = '';
+
+            if (currentMonth === null) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666;">Select a month and click Generate</td></tr>';
+                return;
+            }
+
+            const days = getMonthDays(currentYear, currentMonth);
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            days.forEach(day => {
+                const dateKey = formatDateKey(day);
+                const assignment = currentRoster[dateKey];
+                const dow = day.getDay();
+                const isWknd = isWeekend(day);
+                const holiday = publicHolidays[dateKey];
+
+                const tr = document.createElement('tr');
+                if (isWknd) tr.className = 'weekend';
+                if (holiday) tr.className = 'public-holiday';
+
+                // Date
+                const tdDate = document.createElement('td');
+                tdDate.textContent = `${day.getDate()}/${day.getMonth() + 1}`;
+                tr.appendChild(tdDate);
+
+                // Day
+                const tdDay = document.createElement('td');
+                tdDay.textContent = dayNames[dow];
+                tr.appendChild(tdDay);
+
+                // Type
+                const tdType = document.createElement('td');
+                const typeSpan = document.createElement('span');
+                typeSpan.className = `shift-type ${isWknd ? 'weekend' : 'weeknight'}`;
+                typeSpan.textContent = isWknd ? 'Weekend' : 'Weeknight';
+                tdType.appendChild(typeSpan);
+                tr.appendChild(tdType);
+
+                // On-Call (editable dropdown)
+                const tdOncall = document.createElement('td');
+                const select = document.createElement('select');
+                select.dataset.dateKey = dateKey;
+                select.onchange = function() { updateAssignment(dateKey, this.value); };
+
+                // Empty option
+                const emptyOpt = document.createElement('option');
+                emptyOpt.value = '';
+                emptyOpt.textContent = '-- Select --';
+                select.appendChild(emptyOpt);
+
+                staffData.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.code;
+                    opt.textContent = s.name;
+
+                    // Check if on leave
+                    const leave = isOnLeave(s.code, day);
+                    if (leave) {
+                        opt.textContent += ` (${leave})`;
+                        opt.style.color = '#dc2626';
+                    }
+                    if (isAdHocUnavailable(s.code, dateKey)) {
+                        opt.textContent += ' (Unavail)';
+                        opt.style.color = '#dc2626';
+                    }
+
+                    if (assignment && assignment.staffCode === s.code) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+
+                tdOncall.appendChild(select);
+                tr.appendChild(tdOncall);
+
+                // Notes
+                const tdNotes = document.createElement('td');
+                let notes = [];
+                if (holiday) notes.push(holiday);
+                if (assignment && assignment.warning) notes.push(assignment.warning);
+                tdNotes.textContent = notes.join(', ');
+                tr.appendChild(tdNotes);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderEquity(month, year) {
+            const equity = calculateEquity(month, year);
+            const tbody = document.getElementById('equityBody');
+            tbody.innerHTML = '';
+
+            // Add current month assignments
+            Object.keys(currentRoster).forEach(dateKey => {
+                const date = parseDate(dateKey);
+                const assignment = currentRoster[dateKey];
+                if (assignment && equity[assignment.staffCode]) {
+                    if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday to avoid double-counting
+                        equity[assignment.staffCode].weekends++;
+                    } else if (!isWeekend(date)) {
+                        equity[assignment.staffCode].weeknights++;
+                    }
+                }
+            });
+
+            staffData.forEach(s => {
+                const e = equity[s.code];
+                const tr = document.createElement('tr');
+
+                // Name
+                const tdName = document.createElement('td');
+                tdName.textContent = s.name;
+                tr.appendChild(tdName);
+
+                // FTE
+                const tdFTE = document.createElement('td');
+                tdFTE.textContent = s.fte;
+                tr.appendChild(tdFTE);
+
+                // Target Share
+                const tdShare = document.createElement('td');
+                tdShare.textContent = `${Math.round(e.targetShare * 100)}%`;
+                tr.appendChild(tdShare);
+
+                // Weekends
+                const tdWeekends = document.createElement('td');
+                const wkndDiff = e.weekends - e.targetWeekends;
+                const wkndClass = wkndDiff > 0.5 ? 'over' : wkndDiff < -0.5 ? 'under' : '';
+                tdWeekends.innerHTML = `
+                    <div class="equity-bar"><div class="equity-bar-fill ${wkndClass}" style="width: ${Math.min(100, (e.weekends / Math.max(1, e.targetWeekends)) * 100)}%"></div></div>
+                    ${e.weekends} / ${e.targetWeekends.toFixed(1)}
+                `;
+                tr.appendChild(tdWeekends);
+
+                // Weeknights
+                const tdNights = document.createElement('td');
+                const nightDiff = e.weeknights - e.targetWeekNights;
+                const nightClass = nightDiff > 2 ? 'over' : nightDiff < -2 ? 'under' : '';
+                tdNights.innerHTML = `
+                    <div class="equity-bar"><div class="equity-bar-fill ${nightClass}" style="width: ${Math.min(100, (e.weeknights / Math.max(1, e.targetWeekNights)) * 100)}%"></div></div>
+                    ${e.weeknights} / ${e.targetWeekNights.toFixed(1)}
+                `;
+                tr.appendChild(tdNights);
+
+                // Balance
+                const tdBalance = document.createElement('td');
+                const totalDiff = wkndDiff + (nightDiff / 5); // Weight weekends more
+                if (totalDiff > 1) {
+                    tdBalance.innerHTML = '<span style="color:#dc2626;">Over-allocated</span>';
+                } else if (totalDiff < -1) {
+                    tdBalance.innerHTML = '<span style="color:#059669;">Under-allocated</span>';
+                } else {
+                    tdBalance.innerHTML = '<span style="color:#666;">Balanced</span>';
+                }
+                tr.appendChild(tdBalance);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showWarnings(warnings) {
+            const container = document.getElementById('warningsContainer');
+            if (warnings.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = `
+                <div class="warning-box">
+                    <strong>Warnings:</strong><br>
+                    ${warnings.map(w => `• ${w}`).join('<br>')}
+                </div>
+            `;
+        }
+
+        function updateAssignment(dateKey, staffCode) {
+            if (staffCode) {
+                currentRoster[dateKey] = { staffCode };
+            } else {
+                delete currentRoster[dateKey];
+            }
+            renderEquity(currentMonth, currentYear);
+        }
+
+        // ==================== UNAVAILABILITY ====================
+        function renderUnavailability() {
+            const container = document.getElementById('unavailabilityList');
+            container.innerHTML = adHocUnavailability.map((u, i) => {
+                const staff = staffData.find(s => s.code === u.staffCode);
+                return `
+                    <div class="unavailability-item">
+                        ${staff ? staff.name : u.staffCode} - ${u.date}
+                        <button onclick="removeUnavailability(${i})">&times;</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addUnavailability() {
+            const person = document.getElementById('unavailPerson').value;
+            const date = document.getElementById('unavailDate').value;
+
+            if (!person || !date) {
+                alert('Please select a person and date');
+                return;
+            }
+
+            adHocUnavailability.push({ staffCode: person, date });
+            renderUnavailability();
+            saveToLocalStorage();
+
+            // Re-render roster if already generated
+            if (currentMonth !== null) {
+                renderRoster();
+            }
+        }
+
+        function removeUnavailability(index) {
+            adHocUnavailability.splice(index, 1);
+            renderUnavailability();
+            saveToLocalStorage();
+
+            if (currentMonth !== null) {
+                renderRoster();
+            }
+        }
+
+        // ==================== SAVE/LOAD ====================
+        function saveToLocalStorage() {
+            const data = {
+                adHocUnavailability,
+                historicalData,
+                currentRoster,
+                currentMonth,
+                currentYear
+            };
+            localStorage.setItem('oncall_generator_test', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('oncall_generator_test');
+            if (saved) {
+                const data = JSON.parse(saved);
+                adHocUnavailability = data.adHocUnavailability || [];
+                historicalData = data.historicalData || {};
+                currentRoster = data.currentRoster || {};
+                currentMonth = data.currentMonth;
+                currentYear = data.currentYear;
+                renderUnavailability();
+                if (currentMonth !== null) {
+                    document.getElementById('monthSelect').value = currentMonth;
+                    document.getElementById('yearSelect').value = currentYear;
+                    renderRoster();
+                    renderEquity(currentMonth, currentYear);
+                }
+            }
+        }
+
+        function saveDraft() {
+            if (currentMonth === null) {
+                alert('No roster generated yet');
+                return;
+            }
+
+            const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            historicalData[monthKey] = {
+                roster: { ...currentRoster },
+                savedAt: new Date().toISOString()
+            };
+
+            saveToLocalStorage();
+            alert(`Draft saved for ${monthKey}`);
+        }
+
+        function loadSavedDraft() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            if (historicalData[monthKey]) {
+                currentMonth = month;
+                currentYear = year;
+                currentRoster = { ...historicalData[monthKey].roster };
+                renderRoster();
+                renderEquity(month, year);
+
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                document.getElementById('rosterMonthLabel').textContent = `${monthNames[month]} ${year} (Loaded)`;
+            } else {
+                alert(`No saved draft for ${monthKey}`);
+            }
+        }
+
+        // ==================== EXPORT ====================
+        function downloadRosterDataJS() {
+            if (Object.keys(currentRoster).length === 0) {
+                alert('No roster data to export');
+                return;
+            }
+
+            // Convert current roster to oncallData format
+            const oncallEntries = Object.entries(currentRoster)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.staffCode}', second: null }`)
+                .join(',\n');
+
+            const jsContent = `// On-Call Roster Data
+// Generated: ${new Date().toISOString()}
+// Month: ${currentYear}-${String(currentMonth + 1).padStart(2, '0')}
+
+const oncallData = {
+${oncallEntries}
+};
+
+// Historical equity tracking
+const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
+`;
+
+            const blob = new Blob([jsContent], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'roster-data.js';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportJSON() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                currentRoster,
+                currentMonth,
+                currentYear,
+                historicalData,
+                adHocUnavailability
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oncall-roster-${currentYear}-${String(currentMonth + 1).padStart(2, '0')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importJSON() {
+            document.getElementById('jsonFileInput').click();
+        }
+
+        function handleJSONImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    if (data.currentRoster) currentRoster = data.currentRoster;
+                    if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
+                    if (data.currentYear !== undefined) currentYear = data.currentYear;
+                    if (data.historicalData) historicalData = data.historicalData;
+                    if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
+
+                    saveToLocalStorage();
+                    renderUnavailability();
+
+                    if (currentMonth !== null) {
+                        document.getElementById('monthSelect').value = currentMonth;
+                        document.getElementById('yearSelect').value = currentYear;
+                        renderRoster();
+                        renderEquity(currentMonth, currentYear);
+
+                        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                           'July', 'August', 'September', 'October', 'November', 'December'];
+                        document.getElementById('rosterMonthLabel').textContent = `${monthNames[currentMonth]} ${currentYear} (Imported)`;
+                    }
+
+                    alert('Import successful!');
+                } catch (err) {
+                    alert('Error importing file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset for re-import
+        }
+
+        function wipeTestData() {
+            if (confirm('Are you sure you want to wipe all test data? This cannot be undone.')) {
+                localStorage.removeItem('oncall_generator_test');
+                currentRoster = {};
+                historicalData = {};
+                adHocUnavailability = [];
+                currentMonth = null;
+                currentYear = null;
+                renderUnavailability();
+                renderRoster();
+                document.getElementById('equityBody').innerHTML = '';
+                document.getElementById('rosterMonthLabel').textContent = 'Select Month';
+                document.getElementById('warningsContainer').innerHTML = '';
+                alert('All test data wiped');
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            // Populate month dropdown
+            const monthSelect = document.getElementById('monthSelect');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            monthNames.forEach((name, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = name;
+                monthSelect.appendChild(opt);
+            });
+
+            // Default to February 2026 (next month to generate)
+            monthSelect.value = 1;
+
+            // Populate staff dropdown
+            const personSelect = document.getElementById('unavailPerson');
+            staffData.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.code;
+                opt.textContent = s.name;
+                personSelect.appendChild(opt);
+            });
+
+            // Set default date
+            document.getElementById('unavailDate').value = '2026-02-01';
+
+            // Load any saved data
+            loadFromLocalStorage();
+
+            // Initial render
+            renderRoster();
+        }
+
+        init();
+    </script>
+</body>
+</html>
