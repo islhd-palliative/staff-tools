@@ -276,6 +276,7 @@
 
         .leave-item.lsl { border-left-color: #7c3aed; }
         .leave-item.tesl { border-left-color: #d97706; }
+        .leave-item.unavailable { border-left-color: #6b7280; background: #f3f4f6; }
 
         .leave-item-name { font-weight: 500; }
         .leave-item-dates { color: #666; font-size: 0.85rem; }
@@ -801,6 +802,7 @@
                     let typeClass = '';
                     if (leave.leaveType.includes('Long Service')) typeClass = 'lsl';
                     if (leave.leaveType.includes('TESL')) typeClass = 'tesl';
+                    if (leave.leaveType.includes('Unavailable')) typeClass = 'unavailable';
 
                     return `
                         <div class="leave-item ${typeClass}">
