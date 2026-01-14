@@ -124,7 +124,24 @@
         @media (max-width: 600px) {
             body { padding: 16px; }
             h1 { font-size: 1.4rem; }
-            .card-container { grid-template-columns: 1fr; }
+            .card-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .card-icon {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            .card-title {
+                font-size: 1rem;
+            }
+            .card-description {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
         }
     </style>
 </head>
