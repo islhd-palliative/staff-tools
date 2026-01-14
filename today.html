@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Header with date and weather */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-nav button {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .date-nav button:hover {
+            background: #f3f4f6;
+        }
+
+        .current-date {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a365d;
+        }
+
+        .current-day {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .weather-icon {
+            font-size: 1.5rem;
+        }
+
+        .weather-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a365d;
+        }
+
+        .weather-desc {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* View toggle */
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .view-toggle button {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .view-toggle button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        /* Public holiday banner */
+        .holiday-banner {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #92400e;
+            text-align: center;
+        }
+
+        /* Main grid layout */
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .snapshot-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Region cards */
+        .region-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .region-header {
+            background: #1e40af;
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .region-header.south {
+            background: #0d9488;
+        }
+
+        .site-list {
+            padding: 12px 16px;
+        }
+
+        .site-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .site-row:last-child {
+            border-bottom: none;
+        }
+
+        .site-name {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .site-doctor {
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .site-doctor.empty {
+            color: #d1d5db;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* On call / Leave sections */
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .info-header {
+            background: #374151;
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .info-header.oncall {
+            background: #7c3aed;
+        }
+
+        .info-header.leave {
+            background: #dc2626;
+        }
+
+        .info-content {
+            padding: 16px;
+        }
+
+        .oncall-primary {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 4px;
+        }
+
+        .oncall-backup {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .oncall-time {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-top: 8px;
+        }
+
+        .leave-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .leave-item:last-child {
+            border-bottom: none;
+        }
+
+        .leave-name {
+            font-weight: 600;
+            color: #1a365d;
+        }
+
+        .leave-type {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-type.tesl {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .leave-type.lsl {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .no-leave {
+            color: #059669;
+            font-style: italic;
+        }
+
+        /* Tomorrow preview */
+        .tomorrow-preview {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .tomorrow-preview strong {
+            color: #374151;
+        }
+
+        /* Week view */
+        .week-view {
+            display: none;
+        }
+
+        .week-view.active {
+            display: block;
+        }
+
+        .day-view {
+            display: block;
+        }
+
+        .day-view.hidden {
+            display: none;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .week-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .week-day-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 12px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .week-day-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .week-day-card.today {
+            border: 2px solid #2563eb;
+        }
+
+        .week-day-card.weekend {
+            background: #fef3c7;
+        }
+
+        .week-day-name {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .week-day-date {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 8px;
+        }
+
+        .week-day-oncall {
+            font-size: 0.75rem;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .week-day-leave {
+            font-size: 0.7rem;
+            color: #dc2626;
+            margin-top: 4px;
+        }
+
+        /* Trainee section */
+        .trainee-section {
+            margin-top: 16px;
+        }
+
+        .trainee-header {
+            background: #059669;
+        }
+
+        /* Footer */
+        .last-updated {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to Staff Tools</a>
+
+    <div class="page-header">
+        <div class="date-nav">
+            <button onclick="previousDay()">&larr;</button>
+            <div>
+                <div class="current-date" id="currentDate">Tuesday 14 January</div>
+                <div class="current-day" id="currentYear">2026</div>
+            </div>
+            <button onclick="nextDay()">&rarr;</button>
+            <button onclick="goToToday()">Today</button>
+        </div>
+        <div class="weather" id="weatherWidget">
+            <span class="weather-icon">☀️</span>
+            <div>
+                <div class="weather-temp">24°C</div>
+                <div class="weather-desc">Sunny</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="view-toggle">
+        <button id="dayViewBtn" class="active" onclick="showDayView()">Day</button>
+        <button id="weekViewBtn" onclick="showWeekView()">Week</button>
+    </div>
+
+    <div id="holidayBanner" class="holiday-banner" style="display: none;"></div>
+
+    <!-- Day View -->
+    <div id="dayView" class="day-view">
+        <div class="snapshot-grid">
+            <!-- North Region -->
+            <div class="region-card">
+                <div class="region-header">North</div>
+                <div class="site-list" id="northSites">
+                    <div class="site-row">
+                        <span class="site-name">PCU (Bulli)</span>
+                        <span class="site-doctor" id="site-pcu">Thomas</span>
+                    </div>
+                    <div class="site-row">
+                        <span class="site-name">Community</span>
+                        <span class="site-doctor" id="site-community">Barclay</span>
+                    </div>
+                    <div class="site-row">
+                        <span class="site-name">Consults (TWH)</span>
+                        <span class="site-doctor" id="site-twh">Khou</span>
+                    </div>
+                    <div class="site-row">
+                        <span class="site-name">Consults (SHH)</span>
+                        <span class="site-doctor" id="site-shh">—</span>
+                    </div>
+                    <div class="site-row">
+                        <span class="site-name">Symptom Clinic</span>
+                        <span class="site-doctor" id="site-clinic">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- South Region -->
+            <div class="region-card">
+                <div class="region-header south">South</div>
+                <div class="site-list" id="southSites">
+                    <div class="site-row">
+                        <span class="site-name">Shoalhaven</span>
+                        <span class="site-doctor empty">TBC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="snapshot-grid">
+            <!-- On Call Tonight -->
+            <div class="info-card">
+                <div class="info-header oncall">On Call Tonight</div>
+                <div class="info-content">
+                    <div class="oncall-primary" id="oncallPrimary">Helen Yourlo</div>
+                    <div class="oncall-backup" id="oncallBackup">Backup: Patrick Loui</div>
+                    <div class="oncall-time">From 5:00 PM</div>
+                    <div class="tomorrow-preview">
+                        <strong>Tomorrow night:</strong> <span id="tomorrowOncall">Benjamin Thomas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- On Leave Today -->
+            <div class="info-card">
+                <div class="info-header leave">On Leave</div>
+                <div class="info-content" id="leaveContent">
+                    <div class="leave-item">
+                        <span class="leave-name">Angela Lo</span>
+                        <span class="leave-type">Annual Leave</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trainees -->
+        <div class="info-card trainee-section">
+            <div class="info-header trainee-header">Trainees</div>
+            <div class="info-content" id="traineeContent">
+                <div class="site-row">
+                    <span class="site-name">Patrick Loui</span>
+                    <span class="site-doctor">PCU</span>
+                </div>
+                <div class="site-row">
+                    <span class="site-name">Dominic Sellers</span>
+                    <span class="site-doctor">Community</span>
+                </div>
+                <div class="site-row">
+                    <span class="site-name">Michelle Petersen</span>
+                    <span class="site-doctor">TWH</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Week View -->
+    <div id="weekView" class="week-view">
+        <div class="week-grid" id="weekGrid">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="last-updated">Data from consultant roster, leave calendar, and on-call roster</div>
+
+    <script>
+        // ==================== DATA ====================
+        // Consultant schedule by day of week (0=Sun, 1=Mon, etc.)
+        const consultantSchedule = {
+            'BT': { 1: 'PCU', 2: 'Community', 3: 'Community', 4: 'PCU', 5: 'Community' },
+            'GB': { 2: 'PCU', 5: 'PCU' },
+            'AL': { 1: 'Community', 2: 'Non-clinical', 3: 'Non-clinical', 4: 'Community' },
+            'RW': { 1: 'TWH', 2: 'Clinic' },
+            'MK': { 2: 'SHH', 3: 'TWH', 4: 'TWH' },
+            'HY': { 3: 'Clinic', 4: 'SHH', 5: 'TWH' },
+            'SR': { }, // South - TBC
+            'Fadz': { } // South - TBC
+        };
+
+        const staffNames = {
+            'BT': 'Benjamin Thomas',
+            'GB': 'Greg Barclay',
+            'AL': 'Angela Lo',
+            'RW': 'Ron Wai',
+            'MK': 'Muoi Khou',
+            'HY': 'Helen Yourlo',
+            'SR': 'Stephanie Robinson',
+            'Fadz': 'Fadz wan Bahrum',
+            'PL': 'Patrick Loui',
+            'DS': 'Dominic Sellers',
+            'MP': 'Michelle Petersen'
+        };
+
+        // On-call data (sample - would be imported from roster-data.js)
+        const oncallData = {
+            '2026-01-14': { first: 'HY', second: 'PL' },
+            '2026-01-15': { first: 'BT', second: null },
+            '2026-01-16': { first: 'MK', second: null },
+            '2026-01-17': { first: 'AL', second: null },
+            '2026-01-18': { first: 'SR', second: 'DS' },
+            '2026-01-19': { first: 'SR', second: 'DS' },
+            '2026-01-20': { first: 'Fadz', second: null },
+        };
+
+        // Leave data (sample)
+        const leaveData = [
+            { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 0, 14), endDate: new Date(2026, 0, 14), leaveType: 'Annual Leave' },
+        ];
+
+        // Public holidays
+        const publicHolidays = {
+            '2026-01-26': 'Australia Day',
+            '2026-01-27': 'Australia Day (observed)',
+            '2026-04-03': 'Good Friday',
+            '2026-04-04': 'Easter Saturday',
+            '2026-04-06': 'Easter Monday',
+            '2026-04-25': 'ANZAC Day',
+            '2026-06-08': "Queen's Birthday",
+            '2026-08-03': 'Bank Holiday',
+            '2026-10-05': 'Labour Day',
+            '2026-12-25': 'Christmas Day',
+            '2026-12-26': 'Boxing Day',
+            '2026-12-28': 'Boxing Day (observed)',
+        };
+
+        // ==================== STATE ====================
+        let currentDate = new Date();
+
+        // ==================== DATE HELPERS ====================
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDisplayDate(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+        }
+
+        function isWeekend(date) {
+            const dow = date.getDay();
+            return dow === 0 || dow === 6;
+        }
+
+        // ==================== NAVIGATION ====================
+        function previousDay() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            render();
+        }
+
+        function nextDay() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            render();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            render();
+        }
+
+        // ==================== VIEW TOGGLE ====================
+        function showDayView() {
+            document.getElementById('dayView').classList.remove('hidden');
+            document.getElementById('weekView').classList.remove('active');
+            document.getElementById('dayViewBtn').classList.add('active');
+            document.getElementById('weekViewBtn').classList.remove('active');
+        }
+
+        function showWeekView() {
+            document.getElementById('dayView').classList.add('hidden');
+            document.getElementById('weekView').classList.add('active');
+            document.getElementById('dayViewBtn').classList.remove('active');
+            document.getElementById('weekViewBtn').classList.add('active');
+            renderWeekView();
+        }
+
+        // ==================== RENDERING ====================
+        function render() {
+            const dateKey = formatDateKey(currentDate);
+            const dow = currentDate.getDay();
+
+            // Update header
+            document.getElementById('currentDate').textContent = formatDisplayDate(currentDate);
+            document.getElementById('currentYear').textContent = currentDate.getFullYear();
+
+            // Check for public holiday
+            const holiday = publicHolidays[dateKey];
+            const holidayBanner = document.getElementById('holidayBanner');
+            if (holiday) {
+                holidayBanner.textContent = holiday;
+                holidayBanner.style.display = 'block';
+            } else {
+                holidayBanner.style.display = 'none';
+            }
+
+            // Update sites based on day of week
+            renderSites(dow);
+
+            // Update on-call
+            renderOncall(dateKey);
+
+            // Update leave
+            renderLeave(currentDate);
+
+            // Update weather (placeholder - could integrate real API)
+            renderWeather();
+        }
+
+        function renderSites(dow) {
+            const sites = {
+                'pcu': '—',
+                'community': '—',
+                'twh': '—',
+                'shh': '—',
+                'clinic': '—'
+            };
+
+            // Map consultant schedules to sites
+            Object.entries(consultantSchedule).forEach(([code, schedule]) => {
+                const location = schedule[dow];
+                if (location) {
+                    const surname = staffNames[code].split(' ').pop();
+                    if (location === 'PCU') sites.pcu = surname;
+                    if (location === 'Community') sites.community = surname;
+                    if (location === 'TWH') sites.twh = surname;
+                    if (location === 'SHH') sites.shh = surname;
+                    if (location === 'Clinic') sites.clinic = surname;
+                }
+            });
+
+            // Update DOM
+            Object.entries(sites).forEach(([site, doctor]) => {
+                const el = document.getElementById(`site-${site}`);
+                if (el) {
+                    el.textContent = doctor;
+                    el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
+                }
+            });
+        }
+
+        function renderOncall(dateKey) {
+            const oncall = oncallData[dateKey];
+            const primaryEl = document.getElementById('oncallPrimary');
+            const backupEl = document.getElementById('oncallBackup');
+
+            if (oncall) {
+                primaryEl.textContent = staffNames[oncall.first] || oncall.first;
+                if (oncall.second) {
+                    backupEl.textContent = `Backup: ${staffNames[oncall.second] || oncall.second}`;
+                    backupEl.style.display = 'block';
+                } else {
+                    backupEl.style.display = 'none';
+                }
+            } else {
+                primaryEl.textContent = 'Not rostered';
+                backupEl.style.display = 'none';
+            }
+
+            // Tomorrow preview
+            const tomorrow = new Date(currentDate);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowKey = formatDateKey(tomorrow);
+            const tomorrowOncall = oncallData[tomorrowKey];
+            const tomorrowEl = document.getElementById('tomorrowOncall');
+            if (tomorrowOncall) {
+                tomorrowEl.textContent = staffNames[tomorrowOncall.first] || tomorrowOncall.first;
+            } else {
+                tomorrowEl.textContent = 'Not rostered';
+            }
+        }
+
+        function renderLeave(date) {
+            const container = document.getElementById('leaveContent');
+            const onLeave = leaveData.filter(l => date >= l.startDate && date <= l.endDate);
+
+            if (onLeave.length === 0) {
+                container.innerHTML = '<div class="no-leave">No one on leave today</div>';
+                return;
+            }
+
+            container.innerHTML = onLeave.map(l => {
+                const typeClass = l.leaveType === 'TESL' ? 'tesl' :
+                                  l.leaveType === 'Long Service Leave' ? 'lsl' : '';
+                return `
+                    <div class="leave-item">
+                        <span class="leave-name">${staffNames[l.staffCode] || l.staffCode}</span>
+                        <span class="leave-type ${typeClass}">${l.leaveType}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderWeather() {
+            // Placeholder - could integrate with weather API
+            const conditions = [
+                { icon: '☀️', temp: '24°C', desc: 'Sunny' },
+                { icon: '⛅', temp: '22°C', desc: 'Partly cloudy' },
+                { icon: '🌧️', temp: '18°C', desc: 'Showers' },
+            ];
+            // Just show placeholder for now
+        }
+
+        function renderWeekView() {
+            const container = document.getElementById('weekGrid');
+            container.innerHTML = '';
+
+            // Find Monday of current week
+            const monday = new Date(currentDate);
+            const dayOfWeek = monday.getDay();
+            const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            monday.setDate(monday.getDate() + diff);
+
+            const today = new Date();
+            const todayKey = formatDateKey(today);
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(date.getDate() + i);
+                const dateKey = formatDateKey(date);
+                const isToday = dateKey === todayKey;
+                const isWknd = isWeekend(date);
+
+                const oncall = oncallData[dateKey];
+                const onLeave = leaveData.filter(l => date >= l.startDate && date <= l.endDate);
+
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+                const card = document.createElement('div');
+                card.className = `week-day-card${isToday ? ' today' : ''}${isWknd ? ' weekend' : ''}`;
+                card.onclick = () => {
+                    currentDate = new Date(date);
+                    showDayView();
+                    render();
+                };
+
+                card.innerHTML = `
+                    <div class="week-day-name">${dayNames[date.getDay()]}</div>
+                    <div class="week-day-date">${date.getDate()}</div>
+                    <div class="week-day-oncall">${oncall ? (staffNames[oncall.first]?.split(' ').pop() || oncall.first) : '—'}</div>
+                    ${onLeave.length > 0 ? `<div class="week-day-leave">${onLeave.length} on leave</div>` : ''}
+                `;
+
+                container.appendChild(card);
+            }
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            // Default to today
+            currentDate = new Date(2026, 0, 14); // For demo purposes
+            render();
+        }
+
+        init();
+    </script>
+</body>
+</html>
