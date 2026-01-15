@@ -232,6 +232,8 @@
         .loc-twh { color: #2563eb; }
         .loc-shh { color: #0891b2; }
         .loc-clinic { color: #dc2626; }
+        .loc-sdmh { color: #ea580c; }
+        .loc-south-community { color: #16a34a; }
         .loc-non-clinical { color: #6b7280; }
 
         .location-legend {
@@ -261,6 +263,8 @@
         .legend-dot.twh { background: #2563eb; }
         .legend-dot.shh { background: #0891b2; }
         .legend-dot.clinic { background: #dc2626; }
+        .legend-dot.sdmh { background: #ea580c; }
+        .legend-dot.south-community { background: #16a34a; }
 
         .last-updated {
             text-align: right;
@@ -459,24 +463,92 @@
     <!-- South Region -->
     <div class="region-section">
         <div class="region-header">South (Shoalhaven)</div>
-        <div class="coming-soon">
-            <p>South roster coming soon — awaiting confirmation of schedules.</p>
+
+        <!-- Service View -->
+        <div id="southServiceView" class="service-table-container">
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SDMH</td>
+                        <td><span class="doctor-name loc-sdmh">Steph</span></td>
+                        <td><span class="doctor-name loc-sdmh">Steph</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-sdmh">Fadz</span></td>
+                        <td><span class="doctor-name loc-sdmh">Steph*</span></td>
+                    </tr>
+                    <tr>
+                        <td>Community</td>
+                        <td><span class="doctor-name loc-south-community">Fadz</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-south-community">Steph</span>, <span class="doctor-name loc-south-community">Fadz</span></td>
+                        <td><span class="doctor-name loc-south-community">Steph</span></td>
+                        <td><span class="doctor-name loc-south-community">Fadz</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="location-legend">
+                <div class="legend-item"><span class="legend-dot sdmh"></span> SDMH = Shoalhaven District Memorial Hospital</div>
+                <div class="legend-item"><span class="legend-dot south-community"></span> Community = Shoalhaven region</div>
+            </div>
+            <div style="padding: 8px 16px; font-size: 0.8rem; color: #666;">* Steph alternate Fridays off (next off: 23 Jan)</div>
+        </div>
+
+        <!-- Doctor View -->
+        <div id="southDoctorView" class="doctor-cards" style="display: none;">
+            <div class="doctor-card">
+                <div class="doctor-card-header">Stephanie Robinson <span class="fte">0.9 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-sdmh">SDMH</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-sdmh">SDMH</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-sdmh">SDMH (alt. off)</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Fadz wan Bahrum <span class="fte">0.8 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-sdmh">SDMH</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-south-community">Community</span></div>
+                </div>
+            </div>
+            <div class="location-legend" style="grid-column: 1 / -1;">
+                <div class="legend-item"><span class="legend-dot sdmh"></span> SDMH = Shoalhaven District Memorial Hospital</div>
+                <div class="legend-item"><span class="legend-dot south-community"></span> Community = Shoalhaven region</div>
+            </div>
         </div>
     </div>
 
-    <div class="last-updated">Last updated: 13 January 2026</div>
+    <div class="last-updated">Last updated: 16 January 2026</div>
 
     <script>
         const btnServiceView = document.getElementById('btnServiceView');
         const btnDoctorView = document.getElementById('btnDoctorView');
         const northServiceView = document.getElementById('northServiceView');
         const northDoctorView = document.getElementById('northDoctorView');
+        const southServiceView = document.getElementById('southServiceView');
+        const southDoctorView = document.getElementById('southDoctorView');
 
         btnServiceView.addEventListener('click', () => {
             btnServiceView.classList.add('active');
             btnDoctorView.classList.remove('active');
             northServiceView.style.display = 'block';
             northDoctorView.style.display = 'none';
+            southServiceView.style.display = 'block';
+            southDoctorView.style.display = 'none';
         });
 
         btnDoctorView.addEventListener('click', () => {
@@ -484,6 +556,8 @@
             btnServiceView.classList.remove('active');
             northServiceView.style.display = 'none';
             northDoctorView.style.display = 'grid';
+            southServiceView.style.display = 'none';
+            southDoctorView.style.display = 'grid';
         });
     </script>
 </body>
