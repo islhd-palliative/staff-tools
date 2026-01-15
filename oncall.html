@@ -379,6 +379,11 @@
 
     <div class="controls">
         <div class="control-group">
+            <button class="btn-outline" onclick="prevMonth()">&larr;</button>
+            <span id="monthLabel" style="min-width: 140px; text-align: center; font-weight: 500;">This Month</span>
+            <button class="btn-outline" onclick="nextMonth()">&rarr;</button>
+        </div>
+        <div class="control-group">
             <label for="staffFilter">Show:</label>
             <select id="staffFilter">
                 <option value="all">All Staff</option>
@@ -519,8 +524,37 @@
             '2026-01-29': { first: 'MP', second: 'SR' },
             '2026-01-30': { first: 'GB', second: null },
             '2026-01-31': { first: 'AL', second: null },
-            // February 1 to complete weekend
-            '2026-02-01': { first: 'AL', second: null }
+            // February 2026
+            '2026-02-01': { first: 'AL', second: null },
+            '2026-02-02': { first: 'SR', second: null },
+            '2026-02-03': { first: 'RW', second: null },
+            '2026-02-04': { first: 'Fadz', second: null },
+            '2026-02-05': { first: 'MK', second: null },
+            '2026-02-06': { first: 'GB', second: null },
+            '2026-02-07': { first: 'MP', second: 'HY' },
+            '2026-02-08': { first: 'MP', second: 'HY' },
+            '2026-02-09': { first: 'SR', second: null },
+            '2026-02-10': { first: 'BT', second: null },
+            '2026-02-11': { first: 'AL', second: null },
+            '2026-02-12': { first: 'Fadz', second: null },
+            '2026-02-13': { first: 'HY', second: null },
+            '2026-02-14': { first: 'GB', second: null },
+            '2026-02-15': { first: 'GB', second: null },
+            '2026-02-16': { first: 'RW', second: null },
+            '2026-02-17': { first: 'BT', second: null },
+            '2026-02-18': { first: 'SR', second: null },
+            '2026-02-19': { first: 'MP', second: 'MK' },
+            '2026-02-20': { first: 'AL', second: null },
+            '2026-02-21': { first: 'MK', second: null },
+            '2026-02-22': { first: 'MK', second: null },
+            '2026-02-23': { first: 'Fadz', second: null },
+            '2026-02-24': { first: 'GB', second: null },
+            '2026-02-25': { first: 'BT', second: null },
+            '2026-02-26': { first: 'SR', second: null },
+            '2026-02-27': { first: 'HY', second: null },
+            '2026-02-28': { first: 'BT', second: null },
+            // March 1 to complete weekend
+            '2026-03-01': { first: 'AL', second: null }
         };
 
         // Format date as YYYY-MM-DD (local timezone)
@@ -634,9 +668,10 @@
                            'July', 'August', 'September', 'October', 'November', 'December'];
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-            // For now, just January 2026
+            // Get selected month from navigation
+            const { year: selectedYear, month: selectedMonth } = getSelectedMonth();
             const calendarMonths = [
-                { year: 2026, month: 0 }
+                { year: selectedYear, month: selectedMonth }
             ];
 
             calendarMonths.forEach(({ year, month }) => {
@@ -826,6 +861,53 @@
             renderCalendar();
         }
 
+        // Month navigation - relative to current month
+        let monthOffset = 0; // 0 = this month, 1 = next month
+
+        function updateMonthLabel() {
+            const label = document.getElementById('monthLabel');
+            if (monthOffset === 0) {
+                label.textContent = 'This Month';
+            } else if (monthOffset === 1) {
+                label.textContent = 'Next Month';
+            } else {
+                // For future extensibility
+                const now = new Date();
+                const targetDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+                const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+                label.textContent = `${months[targetDate.getMonth()]} ${targetDate.getFullYear()}`;
+            }
+        }
+
+        function getSelectedMonth() {
+            const now = new Date();
+            return {
+                year: now.getFullYear() + Math.floor((now.getMonth() + monthOffset) / 12),
+                month: (now.getMonth() + monthOffset) % 12
+            };
+        }
+
+        function prevMonth() {
+            if (monthOffset > 0) {
+                monthOffset--;
+                updateMonthLabel();
+                renderCalendar();
+                const filter = document.getElementById('staffFilter').value;
+                if (filter !== 'all') updateDashboard(filter);
+            }
+        }
+
+        function nextMonth() {
+            if (monthOffset < 1) { // Only allow this month and next month for now
+                monthOffset++;
+                updateMonthLabel();
+                renderCalendar();
+                const filter = document.getElementById('staffFilter').value;
+                if (filter !== 'all') updateDashboard(filter);
+            }
+        }
+
         // Event listeners
         document.getElementById('staffFilter').addEventListener('change', function() {
             updateDashboard(this.value);
@@ -833,6 +915,7 @@
         });
 
         // Initial load
+        updateMonthLabel();
         renderCalendar();
     </script>
 </body>
