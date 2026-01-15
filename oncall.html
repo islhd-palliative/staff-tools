@@ -531,6 +531,12 @@
             return `${year}-${month}-${day}`;
         }
 
+        // Parse YYYY-MM-DD as local timezone (not UTC)
+        function parseDate(dateKey) {
+            const [year, month, day] = dateKey.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }
+
         // Format date for display
         function formatDateDisplay(date) {
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -564,7 +570,7 @@
 
             // Find all on-calls for this person
             Object.entries(oncallData).forEach(([dateKey, data]) => {
-                const date = new Date(dateKey);
+                const date = parseDate(dateKey);
                 let role = null;
 
                 if (data.first === staffCode) {
