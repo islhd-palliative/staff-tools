@@ -809,6 +809,10 @@
         function renderSummary() {
             const tbody = document.getElementById('summaryBody');
 
+            // Get selected month
+            const { year, month } = getSelectedMonth();
+            const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
             // Count on-calls per person
             const counts = {};
             Object.keys(staff).forEach(code => {
@@ -816,8 +820,8 @@
             });
 
             Object.entries(oncallData).forEach(([dateKey, data]) => {
-                // Only count January 2026
-                if (dateKey.startsWith('2026-01')) {
+                // Only count selected month
+                if (dateKey.startsWith(monthPrefix)) {
                     if (data.first && counts[data.first]) counts[data.first].first++;
                     if (data.second && counts[data.second]) counts[data.second].second++;
                 }
