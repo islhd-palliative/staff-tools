@@ -820,8 +820,8 @@
                 holidayBanner.style.display = 'none';
             }
 
-            // Update sites based on day of week
-            renderSites(dow);
+            // Update sites based on day of week (and leave status)
+            renderSites(dow, currentDate);
 
             // Update on-call
             renderOncall(dateKey);
@@ -833,7 +833,27 @@
             renderWeather();
         }
 
-        function renderSites(dow) {
+        // Check if a staff member is on leave on a given date
+        function isOnLeave(staffCode, date) {
+            return leaveData.some(l =>
+                l.staffCode === staffCode &&
+                date >= l.startDate &&
+                date <= l.endDate
+            );
+        }
+
+        // Check if Steph is off on a given Friday (alternate Fridays starting 23 Jan 2026 OFF)
+        function isStephFridayOff(date) {
+            if (date.getDay() !== 5) return false; // Not a Friday
+            // Reference: 16 Jan 2026 (Fri) is ON, 23 Jan 2026 (Fri) is OFF
+            const referenceOff = new Date(2026, 0, 23); // 23 Jan 2026 - first OFF Friday
+            const diffTime = date.getTime() - referenceOff.getTime();
+            const diffWeeks = Math.round(diffTime / (7 * 24 * 60 * 60 * 1000));
+            // Every even number of weeks from reference is OFF
+            return diffWeeks % 2 === 0;
+        }
+
+        function renderSites(dow, date) {
             // North region sites
             const northSites = {
                 'pcu': '—',
@@ -849,8 +869,14 @@
                 'south-community': []
             };
 
-            // Map consultant schedules to sites
+            // Map consultant schedules to sites (excluding those on leave)
             Object.entries(consultantSchedule).forEach(([code, schedule]) => {
+                // Skip if on leave
+                if (isOnLeave(code, date)) return;
+
+                // Skip Steph on her alternate Fridays off
+                if (code === 'SR' && isStephFridayOff(date)) return;
+
                 const location = schedule[dow];
                 if (location) {
                     const surname = staffNames[code].split(' ').pop();
