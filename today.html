@@ -590,8 +590,12 @@
                     <div class="card-header south">South</div>
                     <div class="card-content" id="southSites">
                         <div class="site-row">
-                            <span class="site-name">Shoalhaven</span>
-                            <span class="site-doctor empty">TBC</span>
+                            <span class="site-name">Consults (SDMH)</span>
+                            <span class="site-doctor" id="site-sdmh">—</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Community</span>
+                            <span class="site-doctor" id="site-south-community">—</span>
                         </div>
                     </div>
                 </div>
@@ -604,7 +608,7 @@
                     <div class="card-content" id="traineeContent">
                         <div class="site-row">
                             <span class="site-name">Patrick Loui</span>
-                            <span class="site-doctor">PCU</span>
+                            <span class="site-doctor">TWH</span>
                         </div>
                         <div class="site-row">
                             <span class="site-name">Dominic Sellers</span>
@@ -612,8 +616,11 @@
                         </div>
                         <div class="site-row">
                             <span class="site-name">Michelle Petersen</span>
-                            <span class="site-doctor">TWH</span>
+                            <span class="site-doctor">PCU</span>
                         </div>
+                    </div>
+                    <div style="padding: 8px 16px 12px; font-size: 0.75rem; color: #6b7280; border-top: 1px solid #f3f4f6;">
+                        Rotations as of January 2026
                     </div>
                 </div>
             </div>
@@ -639,8 +646,8 @@
             'RW': { 1: 'TWH', 2: 'Clinic' },
             'MK': { 2: 'SHH', 3: 'TWH', 4: 'TWH' },
             'HY': { 3: 'Clinic', 4: 'SHH', 5: 'TWH' },
-            'SR': { }, // South - TBC
-            'Fadz': { } // South - TBC
+            'SR': { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' }, // Alternate Fridays off
+            'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off
         };
 
         const staffNames = {
@@ -827,7 +834,8 @@
         }
 
         function renderSites(dow) {
-            const sites = {
+            // North region sites
+            const northSites = {
                 'pcu': '—',
                 'community': '—',
                 'twh': '—',
@@ -835,25 +843,49 @@
                 'clinic': '—'
             };
 
+            // South region sites
+            const southSites = {
+                'sdmh': [],
+                'south-community': []
+            };
+
             // Map consultant schedules to sites
             Object.entries(consultantSchedule).forEach(([code, schedule]) => {
                 const location = schedule[dow];
                 if (location) {
                     const surname = staffNames[code].split(' ').pop();
-                    if (location === 'PCU') sites.pcu = surname;
-                    if (location === 'Community') sites.community = surname;
-                    if (location === 'TWH') sites.twh = surname;
-                    if (location === 'SHH') sites.shh = surname;
-                    if (location === 'Clinic') sites.clinic = surname;
+                    // North sites
+                    if (location === 'PCU') northSites.pcu = surname;
+                    if (location === 'Community' && !['SR', 'Fadz'].includes(code)) northSites.community = surname;
+                    if (location === 'TWH') northSites.twh = surname;
+                    if (location === 'SHH') northSites.shh = surname;
+                    if (location === 'Clinic') northSites.clinic = surname;
+                    // South sites
+                    if (location === 'SDMH') southSites.sdmh.push(surname);
+                    if (location === 'Community' && ['SR', 'Fadz'].includes(code)) southSites['south-community'].push(surname);
                 }
             });
 
-            // Update DOM
-            Object.entries(sites).forEach(([site, doctor]) => {
+            // Update North DOM
+            Object.entries(northSites).forEach(([site, doctor]) => {
                 const el = document.getElementById(`site-${site}`);
                 if (el) {
                     el.textContent = doctor;
                     el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
+                }
+            });
+
+            // Update South DOM
+            Object.entries(southSites).forEach(([site, doctors]) => {
+                const el = document.getElementById(`site-${site}`);
+                if (el) {
+                    if (doctors.length === 0) {
+                        el.textContent = '—';
+                        el.className = 'site-doctor empty';
+                    } else {
+                        el.textContent = doctors.join(', ');
+                        el.className = 'site-doctor';
+                    }
                 }
             });
         }
