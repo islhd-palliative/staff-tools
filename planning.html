@@ -879,10 +879,10 @@
                 <div id="shhExpandsSliderContainer" style="display:none;margin-top:8px;">
                     <div class="fte-slider-container">
                         <span style="font-size:0.75rem;color:#6b7280;">Beds:</span>
-                        <input type="range" class="fte-slider" id="shhExpandsBeds" min="140" max="200" step="20" value="160">
-                        <span class="fte-slider-value" id="shhExpandsBedsValue">160</span>
+                        <input type="range" class="fte-slider" id="shhExpandsBeds" min="140" max="200" step="20" value="180">
+                        <span class="fte-slider-value" id="shhExpandsBedsValue">180</span>
                     </div>
-                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="shhExpandsFTECalc">0.7</span> (current: 0.5, add: <span id="shhExpandsAddFTE">0.2</span>)</div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="shhExpandsFTECalc">0.8</span> (current: 0.5, add: <span id="shhExpandsAddFTE">0.3</span>)</div>
                 </div>
             </div>
             <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
@@ -1198,7 +1198,7 @@
                 southClinic: false,
                 southClinicDays: 2,       // Slider: 1-5 days
                 shhExpands: false,
-                shhExpandsBeds: 160,      // Slider: 140-200 step 20
+                shhExpandsBeds: 180,      // Slider: 140-200 step 20
                 sdmhExpands: false,
                 sdmhExpandsBeds: 230      // Slider: 160-230 step 10
             },
@@ -2138,7 +2138,7 @@
                 southClinic: false,
                 southClinicDays: 2,
                 shhExpands: false,
-                shhExpandsBeds: 160,
+                shhExpandsBeds: 180,
                 sdmhExpands: false,
                 sdmhExpandsBeds: 230
             };
@@ -2198,11 +2198,11 @@
 
             document.getElementById('scenarioSHHExpands').checked = false;
             document.getElementById('shhExpandsSliderContainer').style.display = 'none';
-            document.getElementById('shhExpandsBeds').value = 160;
-            document.getElementById('shhExpandsBedsValue').textContent = '160';
-            document.getElementById('shhExpandsFTECalc').textContent = '0.7';
-            document.getElementById('shhExpandsAddFTE').textContent = '0.2';
-            document.getElementById('shhExpandsImpact').textContent = '+0.2 need';
+            document.getElementById('shhExpandsBeds').value = 180;
+            document.getElementById('shhExpandsBedsValue').textContent = '180';
+            document.getElementById('shhExpandsFTECalc').textContent = '0.8';
+            document.getElementById('shhExpandsAddFTE').textContent = '0.3';
+            document.getElementById('shhExpandsImpact').textContent = '+0.3 need';
 
             document.getElementById('scenarioSDMHExpands').checked = false;
             document.getElementById('sdmhExpandsSliderContainer').style.display = 'none';
