@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workforce Planning - ISLHD Palliative Care</title>
+    <title>Medical Specialist Workforce Planning - ISLHD Palliative Care</title>
     <style>
         * {
             box-sizing: border-box;
@@ -690,8 +690,9 @@
 <body>
     <a href="index.html" class="back-link">&larr; Back to Home</a>
 
-    <h1>Workforce Planning</h1>
-    <p class="subtitle">ISLHD Palliative and End of Life Care - Scenario Modelling</p>
+    <h1>Medical Specialist Workforce Planning</h1>
+    <p class="subtitle">ISLHD Palliative and End of Life Care</p>
+    <p style="font-size:0.85rem;color:#6b7280;margin-bottom:16px;max-width:800px;line-height:1.5;">Consultant FTE projections based on bed-to-staff ratios. Excludes registrar positions - allocated consultant FTE represents capacity needed regardless of trainee support.</p>
 
     <!-- Timeline Section -->
     <div class="timeline-section">
@@ -723,14 +724,6 @@
         <!-- Staff Changes Section -->
         <h3 style="font-size:0.95rem;color:#1e40af;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;">Staff Changes</h3>
         <div class="scenario-toggles" style="margin-bottom:20px;">
-            <label class="scenario-toggle">
-                <input type="checkbox" id="scenarioTWHRegistrar" checked>
-                <div class="scenario-toggle-content">
-                    <div class="scenario-toggle-title">TWH has registrar</div>
-                    <div class="scenario-toggle-desc">1.0 FTE registrar covers consults</div>
-                </div>
-                <span class="scenario-toggle-impact positive">+1.0</span>
-            </label>
             <label class="scenario-toggle">
                 <input type="checkbox" id="scenarioHelenIncrease">
                 <div class="scenario-toggle-content">
@@ -1136,7 +1129,7 @@
             north: [
                 { name: 'PCU (Bulli)', current: 0.8, calculated: 1.0, beds: 15, type: 'pcu', key: 'pcu' },
                 { name: 'Community', current: 1.0, calculated: 1.0, type: 'community', key: 'community' },
-                { name: 'Consults (TWH)', current: 0.8, calculated: 2.0, beds: 448, futureBeds: 448, type: 'consults', hasRegistrar: true, key: 'twh' },
+                { name: 'Consults (TWH)', current: 0.8, calculated: 2.0, beds: 448, futureBeds: 448, type: 'consults', key: 'twh' },
                 { name: 'Consults (SHH)', current: 0.4, calculated: 0.5, beds: 120, futureBeds: 180, type: 'consults', key: 'shh' },
                 { name: 'Symptom Clinic', current: 0.4, calculated: 0.4, type: 'clinic', key: 'clinic' }
             ],
@@ -1180,7 +1173,6 @@
         let state = {
             quarter: 0,
             scenarios: {
-                twhRegistrar: true,
                 helenIncrease: false,
                 barclayRetires: false,
                 patrickReturns: false,
@@ -1224,22 +1216,14 @@
             let southFunded = 2.3;
 
             // Base REQUIRED is calculated from actual service needs (bed formulas)
-            // North services need: PCU 1.0 + Community 1.0 + TWH 2.0 + SHH 0.5 + Clinic 0.4 = 4.9 total
-            // But registrar covers 1.0 of TWH, so consultant need = 3.9
-            // However we also need to account for Angela's non-clinical 0.4
-            // Total North staff needed: 3.9 clinical + 0.4 non-clinical = 4.3
-            // With 3.8 filled, gap is 0.5
-            let northRequired = 4.3; // PCU 1.0 + Community 1.0 + TWH consultant 1.0 + SHH 0.5 + Clinic 0.4 + Angela non-clinical 0.4
+            // North services need: PCU 1.0 + Community 1.0 + TWH 2.0 + SHH 0.5 + Clinic 0.4 = 4.9 clinical
+            // Plus Angela's non-clinical 0.4 = 5.3 total consultant FTE needed
+            // With 3.8 filled, gap is 1.5
+            let northRequired = 5.3; // PCU 1.0 + Community 1.0 + TWH 2.0 + SHH 0.5 + Clinic 0.4 + Angela non-clinical 0.4
 
             // South services need: SDMH 0.6 + Community 1.0 = 1.6
             // With 1.7 filled, South is over by 0.1 (surplus)
             let southRequired = 1.6;
-
-            // Adjust for registrar - when we have registrar, TWH only needs 1.0 consultant
-            // When no registrar, TWH needs full 2.0 from consultants (add 1.0 more)
-            if (!state.scenarios.twhRegistrar) {
-                northRequired += 1.0; // Need extra consultant to cover registrar work
-            }
 
             // Apply scenarios
             if (state.scenarios.helenIncrease) {
@@ -1408,13 +1392,6 @@
                     let beds = s.beds;
                     let bedInfo = '';
                     let calculatedNeed = s.calculated;
-                    let currentWithReg = staffTotal;
-                    let hasRegistrar = s.hasRegistrar && state.scenarios.twhRegistrar;
-
-                    // TWH: add registrar to current if toggle is on
-                    if (s.name === 'Consults (TWH)' && state.scenarios.twhRegistrar) {
-                        currentWithReg = staffTotal + 1.0; // consultant allocation + 1.0 registrar
-                    }
 
                     if (s.name === 'Consults (SHH)' && state.scenarios.shhExpands) {
                         beds = state.scenarios.shhExpandsBeds;
@@ -1426,7 +1403,7 @@
                         bedInfo = ' → ' + beds + ' beds';
                     }
 
-                    return { ...s, current: staffTotal, beds, calculatedNeed, bedInfo, currentWithReg, hasRegistrar };
+                    return { ...s, current: staffTotal, beds, calculatedNeed, bedInfo };
                 }
                 return { ...s, current: staffTotal, calculatedNeed: s.calculated };
             });
@@ -1554,13 +1531,7 @@
                     gapIndicator = `<span class="ok-indicator">OK</span>`;
                 }
 
-                // For TWH, note the registrar if enabled
-                const registrarNote = s.hasRegistrar ? ' <small style="color:#6366f1;">+1.0 reg</small>' : '';
-
-                // Show consultant FTE + registrar breakdown for TWH
-                const displayValue = s.hasRegistrar
-                    ? `<strong>${s.current.toFixed(1)}</strong>${registrarNote}`
-                    : `<strong>${s.current.toFixed(1)}</strong>`;
+                const displayValue = `<strong>${s.current.toFixed(1)}</strong>`;
 
                 return `
                     <div class="service-row"${isNew}>
@@ -1917,11 +1888,6 @@
         });
 
         // Scenario toggles
-        document.getElementById('scenarioTWHRegistrar').addEventListener('change', (e) => {
-            state.scenarios.twhRegistrar = e.target.checked;
-            render();
-        });
-
         document.getElementById('scenarioHelenIncrease').addEventListener('change', (e) => {
             state.scenarios.helenIncrease = e.target.checked;
             render();
@@ -2121,7 +2087,6 @@
             // Reset state
             state.quarter = 0;
             state.scenarios = {
-                twhRegistrar: true,
                 helenIncrease: false,
                 barclayRetires: false,
                 patrickReturns: false,
@@ -2150,7 +2115,6 @@
             document.querySelectorAll('.timeline-labels span').forEach(el => el.classList.remove('active'));
 
             // Staff changes
-            document.getElementById('scenarioTWHRegistrar').checked = true;
             document.getElementById('scenarioHelenIncrease').checked = false;
             document.getElementById('scenarioBarclayRetires').checked = false;
             document.getElementById('scenarioPatrickReturns').checked = false;
