@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISLHD Palliative Care - Staff Tools</title>
+    <title>Admin Tools - ISLHD Palliative Care</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,6 +19,20 @@
             flex-direction: column;
             align-items: center;
             padding: 32px 16px;
+        }
+
+        .back-link {
+            align-self: flex-start;
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
         }
 
         .header {
@@ -41,6 +55,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
+            max-width: 900px;
             width: 100%;
         }
 
@@ -79,28 +94,12 @@
             line-height: 1.5;
         }
 
-        .card-leave {
-            border-top: 4px solid #2563eb;
+        .card-generator {
+            border-top: 4px solid #f59e0b;
         }
 
-        .card-summary {
-            border-top: 4px solid #059669;
-        }
-
-        .card-oncall {
-            border-top: 4px solid #7c3aed;
-        }
-
-        .card-roster {
-            border-top: 4px solid #dc2626;
-        }
-
-        .card-today {
-            border-top: 4px solid #0ea5e9;
-        }
-
-        .card-admin {
-            border-top: 4px solid #64748b;
+        .card-planning {
+            border-top: 4px solid #6366f1;
         }
 
         .footer {
@@ -145,46 +144,24 @@
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
     <div class="header">
-        <h1>ISLHD Palliative Care</h1>
-        <p class="subtitle">Staff Tools & Resources</p>
+        <h1>Admin & Planning</h1>
+        <p class="subtitle">Management Tools</p>
     </div>
 
     <div class="card-container">
-        <a href="today.html" class="card card-today">
-            <div class="card-icon">🌤️</div>
-            <div class="card-title">Today</div>
-            <div class="card-description">Daily snapshot showing sites, on-call, leave, and weather at a glance.</div>
+        <a href="generator.html" class="card card-generator">
+            <div class="card-icon">🔧</div>
+            <div class="card-title">Roster Generator</div>
+            <div class="card-description">Generate FTE-equitable, leave-aware on-call rosters for the month.</div>
         </a>
 
-        <a href="oncall.html" class="card card-oncall">
-            <div class="card-icon">📞</div>
-            <div class="card-title">On-Call Roster</div>
-            <div class="card-description">View the after-hours on-call roster and personal schedules.</div>
-        </a>
-
-        <a href="roster.html" class="card card-roster">
-            <div class="card-icon">🏥</div>
-            <div class="card-title">Consultant Roster</div>
-            <div class="card-description">Weekly timetable showing which consultant is at each site.</div>
-        </a>
-
-        <a href="leave.html" class="card card-leave">
-            <div class="card-icon">📅</div>
-            <div class="card-title">Leave Calendar</div>
-            <div class="card-description">View and plan annual leave, conference leave, and other absences across the team.</div>
-        </a>
-
-        <a href="summary.html" class="card card-summary">
-            <div class="card-icon">📊</div>
-            <div class="card-title">Leave Summary</div>
-            <div class="card-description">Check leave entitlements and balances for each staff specialist.</div>
-        </a>
-
-        <a href="admin.html" class="card card-admin">
-            <div class="card-icon">⚙️</div>
-            <div class="card-title">Admin</div>
-            <div class="card-description">Roster generator, workforce planning, and other management tools.</div>
+        <a href="planning.html" class="card card-planning">
+            <div class="card-icon">📈</div>
+            <div class="card-title">Workforce Planning</div>
+            <div class="card-description">Scenario modelling for FTE projections, infrastructure changes, and recruitment planning.</div>
         </a>
     </div>
 
