@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workforce Planning - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Timeline Slider */
+        .timeline-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .timeline-header h2 {
+            font-size: 1.1rem;
+            color: #1e40af;
+        }
+
+        .current-period {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-slider-container {
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .timeline-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e5e7eb;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .timeline-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .timeline-labels span {
+            cursor: pointer;
+        }
+
+        .timeline-labels span:hover {
+            color: #2563eb;
+        }
+
+        .timeline-labels span.active {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .timeline-events {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .event-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .event-badge.loss { background: #fee2e2; color: #dc2626; }
+        .event-badge.gain { background: #dcfce7; color: #16a34a; }
+        .event-badge.infrastructure { background: #fef3c7; color: #d97706; }
+        .event-badge.potential { background: #e0e7ff; color: #4f46e5; }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Region Cards */
+        .region-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .region-header {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .region-header.north { background: #1e40af; }
+        .region-header.south { background: #0d9488; }
+
+        .region-body {
+            padding: 20px;
+        }
+
+        /* FTE Summary */
+        .fte-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .fte-box {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .fte-box.filled { background: #dcfce7; }
+        .fte-box.required { background: #dbeafe; }
+        .fte-box.gap { background: #fee2e2; }
+        .fte-box.surplus { background: #dcfce7; }
+
+        .fte-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .fte-box.filled .fte-value { color: #16a34a; }
+        .fte-box.required .fte-value { color: #2563eb; }
+        .fte-box.gap .fte-value { color: #dc2626; }
+        .fte-box.surplus .fte-value { color: #16a34a; }
+
+        .fte-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Service Breakdown */
+        .service-breakdown h3 {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .service-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .service-row:last-child {
+            border-bottom: none;
+        }
+
+        .service-name {
+            flex: 1;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .service-bar-container {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .service-bar {
+            flex: 1;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .service-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .service-bar-fill.good { background: #22c55e; }
+        .service-bar-fill.warning { background: #f59e0b; }
+        .service-bar-fill.critical { background: #ef4444; }
+        .service-bar-fill.over { background: #3b82f6; }
+
+        .service-bar-target {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #1e40af;
+            z-index: 1;
+        }
+
+        .service-values {
+            width: 80px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .service-values strong {
+            color: #374151;
+        }
+
+        /* Staff List */
+        .staff-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .staff-section h3 {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .staff-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .staff-chip .name {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .staff-chip .fte {
+            margin-left: 6px;
+            color: #6b7280;
+        }
+
+        .staff-chip.retiring {
+            background: #fee2e2;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .staff-chip.potential {
+            background: #e0e7ff;
+            border: 1px dashed #6366f1;
+        }
+
+        .staff-chip.flexible {
+            background: #fef3c7;
+        }
+
+        /* Scenarios Panel */
+        .scenarios-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .scenarios-panel h2 {
+            font-size: 1.1rem;
+            color: #1e40af;
+            margin-bottom: 16px;
+        }
+
+        .scenario-toggles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .scenario-toggle {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .scenario-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .scenario-toggle input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .scenario-toggle-content {
+            flex: 1;
+        }
+
+        .scenario-toggle-title {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .scenario-toggle-desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .scenario-toggle-impact {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .scenario-toggle-impact.positive { background: #dcfce7; color: #16a34a; }
+        .scenario-toggle-impact.negative { background: #fee2e2; color: #dc2626; }
+
+        /* Recruitment Summary */
+        .recruitment-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .recruitment-summary h2 {
+            font-size: 1.1rem;
+            color: #1e40af;
+            margin-bottom: 16px;
+        }
+
+        .recruitment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .recruitment-card {
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .recruitment-card.total {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+        }
+
+        .recruitment-card.north-card {
+            background: #dbeafe;
+        }
+
+        .recruitment-card.south-card {
+            background: #ccfbf1;
+        }
+
+        .recruitment-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .recruitment-card.total .recruitment-value {
+            color: white;
+        }
+
+        .recruitment-card.north-card .recruitment-value {
+            color: #1e40af;
+        }
+
+        .recruitment-card.south-card .recruitment-value {
+            color: #0d9488;
+        }
+
+        .recruitment-label {
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .recruitment-card.total .recruitment-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .recruitment-breakdown {
+            font-size: 0.8rem;
+            margin-top: 8px;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .last-updated {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        /* Timetable */
+        .timetable-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .timetable-section h3 {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .timetable {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            gap: 2px;
+            font-size: 0.75rem;
+        }
+
+        .timetable-header {
+            background: #f1f5f9;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .timetable-name {
+            background: #f8fafc;
+            padding: 6px 8px;
+            font-weight: 500;
+            color: #374151;
+            display: flex;
+            align-items: center;
+        }
+
+        .timetable-cell {
+            padding: 6px 4px;
+            text-align: center;
+            background: white;
+            border: 1px solid #f3f4f6;
+            min-height: 28px;
+        }
+
+        .timetable-cell.off {
+            background: #f9fafb;
+            color: #d1d5db;
+        }
+
+        .timetable-cell.pcu { background: #f3e8ff; color: #7c3aed; }
+        .timetable-cell.community { background: #dcfce7; color: #059669; }
+        .timetable-cell.twh { background: #dbeafe; color: #2563eb; }
+        .timetable-cell.shh { background: #cffafe; color: #0891b2; }
+        .timetable-cell.clinic { background: #fee2e2; color: #dc2626; }
+        .timetable-cell.sdmh { background: #ccfbf1; color: #0d9488; }
+        .timetable-cell.south-community { background: #fef3c7; color: #d97706; }
+        .timetable-cell.non-clinical { background: #f3f4f6; color: #6b7280; font-style: italic; }
+
+        /* FTE Slider for trainees */
+        .fte-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .fte-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .fte-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #6366f1;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .fte-slider-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: #6366f1;
+        }
+
+        /* Comparison row */
+        .comparison-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .comparison-row .calculated {
+            color: #2563eb;
+        }
+
+        .comparison-row .gap-indicator {
+            color: #dc2626;
+        }
+
+        .comparison-row .ok-indicator {
+            color: #16a34a;
+        }
+
+        /* Staff Allocation Sliders */
+        .allocation-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .allocation-section h3 {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .allocation-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .allocation-card.retired {
+            opacity: 0.5;
+            background: #fee2e2;
+        }
+
+        .allocation-card.potential {
+            border: 1px dashed #6366f1;
+            background: #f5f3ff;
+        }
+
+        .allocation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .allocation-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .allocation-total {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .allocation-total strong {
+            color: #2563eb;
+        }
+
+        .allocation-slider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 0.8rem;
+        }
+
+        .allocation-slider-label {
+            width: 100px;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .allocation-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .allocation-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .allocation-slider.pcu-slider::-webkit-slider-thumb { background: #7c3aed; }
+        .allocation-slider.community-slider::-webkit-slider-thumb { background: #059669; }
+        .allocation-slider.twh-slider::-webkit-slider-thumb { background: #2563eb; }
+        .allocation-slider.shh-slider::-webkit-slider-thumb { background: #0891b2; }
+        .allocation-slider.clinic-slider::-webkit-slider-thumb { background: #dc2626; }
+        .allocation-slider.sdmh-slider::-webkit-slider-thumb { background: #0d9488; }
+
+        .allocation-value {
+            width: 35px;
+            text-align: right;
+            font-weight: 500;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <h1>Workforce Planning</h1>
+    <p class="subtitle">ISLHD Palliative and End of Life Care - Scenario Modelling</p>
+
+    <!-- Timeline Section -->
+    <div class="timeline-section">
+        <div class="timeline-header">
+            <h2>Timeline</h2>
+            <span class="current-period" id="currentPeriod">Q1 2026</span>
+        </div>
+        <div class="timeline-slider-container">
+            <input type="range" class="timeline-slider" id="timelineSlider" min="0" max="12" value="0">
+            <div class="timeline-labels">
+                <span data-quarter="0">Q1 2026</span>
+                <span data-quarter="2">Mid 2026</span>
+                <span data-quarter="4">Q1 2027</span>
+                <span data-quarter="6">Mid 2027</span>
+                <span data-quarter="8">Q1 2028</span>
+                <span data-quarter="10">Mid 2028</span>
+                <span data-quarter="12">2029</span>
+            </div>
+        </div>
+        <div class="timeline-events" id="timelineEvents">
+            <!-- Events populated by JS -->
+        </div>
+    </div>
+
+    <!-- Scenario Toggles -->
+    <div class="scenarios-panel">
+        <h2>Scenario Modelling</h2>
+
+        <!-- Staff Changes Section -->
+        <h3 style="font-size:0.95rem;color:#1e40af;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;">Staff Changes</h3>
+        <div class="scenario-toggles" style="margin-bottom:20px;">
+            <label class="scenario-toggle">
+                <input type="checkbox" id="scenarioTWHRegistrar" checked>
+                <div class="scenario-toggle-content">
+                    <div class="scenario-toggle-title">TWH has registrar</div>
+                    <div class="scenario-toggle-desc">1.0 FTE registrar covers consults</div>
+                </div>
+                <span class="scenario-toggle-impact positive">+1.0</span>
+            </label>
+            <label class="scenario-toggle">
+                <input type="checkbox" id="scenarioHelenIncrease">
+                <div class="scenario-toggle-content">
+                    <div class="scenario-toggle-title">Helen increases to 0.7 FTE</div>
+                    <div class="scenario-toggle-desc">Picking up additional 0.1 FTE (North)</div>
+                </div>
+                <span class="scenario-toggle-impact positive">+0.1</span>
+            </label>
+            <label class="scenario-toggle">
+                <input type="checkbox" id="scenarioBarclayRetires">
+                <div class="scenario-toggle-content">
+                    <div class="scenario-toggle-title">Greg Barclay retires</div>
+                    <div class="scenario-toggle-desc">Expected 2027-2028 (North)</div>
+                </div>
+                <span class="scenario-toggle-impact negative">-0.4</span>
+            </label>
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioPatrickReturns">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">Patrick Loui returns</div>
+                        <div class="scenario-toggle-desc">Prefers North (~2028)</div>
+                    </div>
+                    <span class="scenario-toggle-impact positive" id="patrickImpact">+0.8</span>
+                </div>
+                <div class="fte-slider-container" id="patrickSliderContainer" style="display:none;margin-top:8px;">
+                    <span style="font-size:0.75rem;color:#6b7280;">FTE:</span>
+                    <input type="range" class="fte-slider" id="patrickFTE" min="0.2" max="1.0" step="0.1" value="0.8">
+                    <span class="fte-slider-value" id="patrickFTEValue">0.8</span>
+                </div>
+            </div>
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioDomReturns">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">Dominic Sellers returns</div>
+                        <div class="scenario-toggle-desc">Flexible - can work North and/or South (~2028)</div>
+                    </div>
+                    <span class="scenario-toggle-impact positive" id="domImpact">+0.8</span>
+                </div>
+                <div id="domSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#1e40af;">North FTE:</span>
+                        <input type="range" class="fte-slider" id="domNorthFTE" min="0" max="1.0" step="0.1" value="0.4" style="background:#dbeafe;">
+                        <span class="fte-slider-value" id="domNorthFTEValue" style="color:#1e40af;">0.4</span>
+                    </div>
+                    <div class="fte-slider-container" style="margin-top:6px;">
+                        <span style="font-size:0.75rem;color:#0d9488;">South FTE:</span>
+                        <input type="range" class="fte-slider" id="domSouthFTE" min="0" max="1.0" step="0.1" value="0.4" style="background:#ccfbf1;">
+                        <span class="fte-slider-value" id="domSouthFTEValue" style="color:#0d9488;">0.4</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">Total: <span id="domTotalDisplay">0.8</span> FTE</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Infrastructure Changes Section -->
+        <h3 style="font-size:0.95rem;color:#d97706;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #fef3c7;">Infrastructure &amp; Services</h3>
+        <div class="scenario-toggles">
+            <!-- New PCU Units -->
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioSDMHPCU">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">SDMH PCU opens</div>
+                        <div class="scenario-toggle-desc" id="sdmhPCUDesc">New inpatient unit (South)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="sdmhPCUImpact">+0.8 need</span>
+                </div>
+                <div id="sdmhPCUSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Beds:</span>
+                        <input type="range" class="fte-slider" id="sdmhPCUBeds" min="5" max="14" step="1" value="14">
+                        <span class="fte-slider-value" id="sdmhPCUBedsValue">14</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="sdmhPCUFTECalc">0.8</span></div>
+                </div>
+            </div>
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioSHHPCU">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">SHH PCU beds gained</div>
+                        <div class="scenario-toggle-desc" id="shhPCUDesc">PCU beds in rebuild (North)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="shhPCUImpact">+0.5 need</span>
+                </div>
+                <div id="shhPCUSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Beds:</span>
+                        <input type="range" class="fte-slider" id="shhPCUBeds" min="5" max="10" step="1" value="8">
+                        <span class="fte-slider-value" id="shhPCUBedsValue">8</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="shhPCUFTECalc">0.5</span></div>
+                </div>
+            </div>
+
+            <!-- Clinic Expansions -->
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioNorthClinicExpands">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">North Clinic expands</div>
+                        <div class="scenario-toggle-desc">Additional clinic sessions (North)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="northClinicImpact">+0.2 need</span>
+                </div>
+                <div id="northClinicSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Days/wk:</span>
+                        <input type="range" class="fte-slider" id="northClinicDays" min="1" max="5" step="1" value="1">
+                        <span class="fte-slider-value" id="northClinicDaysValue">1</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">Additional FTE: <span id="northClinicFTECalc">0.2</span> (current: 0.4)</div>
+                </div>
+            </div>
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioSouthClinic">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">South Clinic established</div>
+                        <div class="scenario-toggle-desc">New symptom clinic (South)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="southClinicImpact">+0.4 need</span>
+                </div>
+                <div id="southClinicSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Days/wk:</span>
+                        <input type="range" class="fte-slider" id="southClinicDays" min="1" max="5" step="1" value="2">
+                        <span class="fte-slider-value" id="southClinicDaysValue">2</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="southClinicFTECalc">0.4</span></div>
+                </div>
+            </div>
+
+            <!-- Bed Base Expansions -->
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioSHHExpands">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">SHH bed base expands</div>
+                        <div class="scenario-toggle-desc" id="shhExpandsDesc">Currently 120 beds (North)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="shhExpandsImpact">+0.3 need</span>
+                </div>
+                <div id="shhExpandsSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Beds:</span>
+                        <input type="range" class="fte-slider" id="shhExpandsBeds" min="140" max="200" step="20" value="160">
+                        <span class="fte-slider-value" id="shhExpandsBedsValue">160</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="shhExpandsFTECalc">0.7</span> (current: 0.4, add: <span id="shhExpandsAddFTE">0.3</span>)</div>
+                </div>
+            </div>
+            <div class="scenario-toggle" style="flex-direction:column;align-items:stretch;">
+                <div style="display:flex;align-items:center;">
+                    <input type="checkbox" id="scenarioSDMHExpands">
+                    <div class="scenario-toggle-content">
+                        <div class="scenario-toggle-title">SDMH bed base expands</div>
+                        <div class="scenario-toggle-desc" id="sdmhExpandsDesc">Currently 138 beds (South)</div>
+                    </div>
+                    <span class="scenario-toggle-impact negative" id="sdmhExpandsImpact">+0.4 need</span>
+                </div>
+                <div id="sdmhExpandsSliderContainer" style="display:none;margin-top:8px;">
+                    <div class="fte-slider-container">
+                        <span style="font-size:0.75rem;color:#6b7280;">Beds:</span>
+                        <input type="range" class="fte-slider" id="sdmhExpandsBeds" min="160" max="230" step="10" value="230">
+                        <span class="fte-slider-value" id="sdmhExpandsBedsValue">230</span>
+                    </div>
+                    <div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">FTE needed: <span id="sdmhExpandsFTECalc">1.0</span> (current: 0.7, add: <span id="sdmhExpandsAddFTE">0.3</span>)</div>
+                </div>
+            </div>
+
+            <button id="resetScenarios" style="margin-top:12px;padding:8px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;font-size:0.85rem;color:#475569;">Reset to baseline</button>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+        <!-- North Region -->
+        <div class="region-card">
+            <div class="region-header north">North (Illawarra)</div>
+            <div class="region-body">
+                <div class="fte-summary" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="fte-box filled">
+                        <div class="fte-value" id="northFilled">3.8</div>
+                        <div class="fte-label">Filled</div>
+                    </div>
+                    <div class="fte-box required">
+                        <div class="fte-value" id="northFunded">5.0</div>
+                        <div class="fte-label">Funded</div>
+                    </div>
+                    <div class="fte-box" id="northUnfilledBox" style="background:#fef3c7;">
+                        <div class="fte-value" id="northUnfilled" style="color:#d97706;">1.2</div>
+                        <div class="fte-label">Unfilled</div>
+                    </div>
+                    <div class="fte-box gap" id="northGapBox">
+                        <div class="fte-value" id="northGap">0.3</div>
+                        <div class="fte-label" id="northGapLabel">Gap</div>
+                    </div>
+                </div>
+
+                <div class="service-breakdown">
+                    <h3>Service Allocation</h3>
+                    <div id="northServices">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="staff-section">
+                    <h3>Staff</h3>
+                    <div id="northStaff">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="allocation-section">
+                    <h3>Service Allocations by Staff</h3>
+                    <div id="northAllocations">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="timetable-section">
+                    <h3>Weekly Timetable</h3>
+                    <div id="northTimetable" class="timetable">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- South Region -->
+        <div class="region-card">
+            <div class="region-header south">South (Shoalhaven)</div>
+            <div class="region-body">
+                <div class="fte-summary" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="fte-box filled">
+                        <div class="fte-value" id="southFilled">1.7</div>
+                        <div class="fte-label">Filled</div>
+                    </div>
+                    <div class="fte-box required">
+                        <div class="fte-value" id="southFunded">2.3</div>
+                        <div class="fte-label">Funded</div>
+                    </div>
+                    <div class="fte-box" id="southUnfilledBox" style="background:#fef3c7;">
+                        <div class="fte-value" id="southUnfilled" style="color:#d97706;">0.6</div>
+                        <div class="fte-label">Unfilled</div>
+                    </div>
+                    <div class="fte-box gap" id="southGapBox">
+                        <div class="fte-value" id="southGap">-0.1</div>
+                        <div class="fte-label" id="southGapLabel">Gap</div>
+                    </div>
+                </div>
+
+                <div class="service-breakdown">
+                    <h3>Service Allocation</h3>
+                    <div id="southServices">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="staff-section">
+                    <h3>Staff</h3>
+                    <div id="southStaff">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="allocation-section">
+                    <h3>Service Allocations by Staff</h3>
+                    <div id="southAllocations">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="timetable-section">
+                    <h3>Weekly Timetable</h3>
+                    <div id="southTimetable" class="timetable">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recruitment Summary -->
+    <div class="recruitment-summary">
+        <h2>Recruitment Target</h2>
+        <div class="recruitment-grid">
+            <div class="recruitment-card total">
+                <div class="recruitment-value" id="totalRecruitment">1.8</div>
+                <div class="recruitment-label">Total FTE to recruit</div>
+            </div>
+            <div class="recruitment-card north-card">
+                <div class="recruitment-value" id="northRecruitment">1.2</div>
+                <div class="recruitment-label">North FTE needed</div>
+                <div class="recruitment-breakdown" id="northRecruitmentBreakdown"></div>
+            </div>
+            <div class="recruitment-card south-card">
+                <div class="recruitment-value" id="southRecruitment">0.6</div>
+                <div class="recruitment-label">South FTE needed</div>
+                <div class="recruitment-breakdown" id="southRecruitmentBreakdown"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-updated">Last updated: January 2026</div>
+
+    <script>
+        // ===================
+        // DATA CONFIGURATION
+        // ===================
+
+        // Current staff - baseline Jan 2026
+        const baselineStaff = {
+            north: [
+                { name: 'Benjamin Thomas', code: 'BT', fte: 1.0, role: 'Head of Service' },
+                { name: 'Angela Lo', code: 'AL', fte: 0.8, role: 'Divisional Director', nonClinical: 0.4 },
+                { name: 'Greg Barclay', code: 'GB', fte: 0.4, role: 'Senior Staff Specialist', retiring: true },
+                { name: 'Ron Wai', code: 'RW', fte: 0.4, role: 'Staff Specialist' },
+                { name: 'Helen Yourlo', code: 'HY', fte: 0.6, role: 'Staff Specialist' },
+                { name: 'Muoi Khou', code: 'MK', fte: 0.6, role: 'Staff Specialist' }
+            ],
+            south: [
+                { name: 'Stephanie Robinson', code: 'SR', fte: 0.9, role: 'Staff Specialist' },
+                { name: 'Fadz wan Bahrum', code: 'Fadz', fte: 0.8, role: 'Staff Specialist' }
+            ]
+        };
+
+        // Hospital bed data for extrapolation
+        const hospitals = {
+            TWH: {
+                currentBeds: 448,  // 375 ED-accessible + 24 ICU + 49 ED
+                futureBeds: 448,   // No planned increase
+                currentFTE: 0.8,   // Consultant: Ron Mon, Muoi Wed/Thu, Helen Fri
+                registrarFTE: 1.0, // Registrar covers consults too
+                totalFTE: 2.0,     // Combined consultant + registrar
+                region: 'north'
+            },
+            SHH: {
+                currentBeds: 120,  // Current bed base
+                futureBeds: 180,   // Expansion in rebuild (not doubling)
+                currentFTE: 0.4,   // Muoi Tue, Helen Thu
+                registrarFTE: 0,   // No registrar
+                region: 'north'
+            },
+            SDMH: {
+                currentBeds: 138,  // Current actual
+                futureBeds: 230,   // Confirmed future
+                currentFTE: 0.7,   // Steph Mon/Tue/Fri*, Fadz Thu
+                registrarFTE: 0,   // No registrar
+                region: 'south'
+            }
+        };
+
+        // Benchmark: TWH with 2.0 FTE (1.0 consultant + 1.0 registrar) for 448 beds
+        // = 0.00446 FTE per bed for consults
+        const FTE_PER_BED = 2.0 / 448;
+
+        // PCU FTE benchmark: Bulli 15 beds = 1.0 FTE → 0.0667 FTE per bed
+        // (PCA suggests 1 FTE per 6.7 beds which would be 0.15 FTE/bed - unrealistic)
+        const FTE_PER_PCU_BED = 1.0 / 15;
+
+        // Clinic FTE: 0.2 FTE per day (session-based)
+        const FTE_PER_CLINIC_DAY = 0.2;
+
+        // Calculate bed-based requirements for each hospital
+        function calculateBedBasedFTE(beds) {
+            return Math.round(beds * FTE_PER_BED * 10) / 10;
+        }
+
+        // Calculate PCU FTE requirement from beds (round up for workforce planning)
+        function calculatePCUFTE(beds) {
+            return Math.ceil(beds * FTE_PER_PCU_BED * 10) / 10;
+        }
+
+        // Calculate clinic FTE from days per week
+        function calculateClinicFTE(days) {
+            return Math.round(days * FTE_PER_CLINIC_DAY * 10) / 10;
+        }
+
+        // Weekly timetable data - who is where each day
+        const timetable = {
+            north: {
+                'BT': { Mon: 'PCU', Tue: 'Community', Wed: 'Community', Thu: 'PCU', Fri: 'Community' },
+                'AL': { Mon: 'Community', Tue: 'Non-clinical', Wed: 'Non-clinical', Thu: 'Community', Fri: 'Off' },
+                'GB': { Mon: null, Tue: 'PCU', Wed: null, Thu: null, Fri: 'PCU' },
+                'RW': { Mon: 'TWH', Tue: 'Clinic', Wed: null, Thu: null, Fri: null },
+                'HY': { Mon: null, Tue: null, Wed: 'Clinic', Thu: 'SHH', Fri: 'TWH' },
+                'MK': { Mon: null, Tue: 'SHH', Wed: 'TWH', Thu: 'TWH', Fri: null }
+            },
+            south: {
+                'SR': { Mon: 'SDMH', Tue: 'SDMH', Wed: 'Community', Thu: 'Community', Fri: 'SDMH*' },
+                'Fadz': { Mon: 'Community', Tue: null, Wed: 'Community', Thu: 'SDMH', Fri: 'Community' }
+            }
+        };
+
+        // Services with current allocation and calculated requirements
+        // current = what we actually allocate now
+        // calculated = bed-based formula (TWH 2.0 FTE / 448 beds benchmark)
+        const services = {
+            north: [
+                { name: 'PCU (Bulli)', current: 0.8, calculated: 1.0, beds: 15, type: 'pcu', key: 'pcu' },
+                { name: 'Community', current: 1.0, calculated: 1.0, type: 'community', key: 'community' },
+                { name: 'Consults (TWH)', current: 0.8, calculated: 2.0, beds: 448, futureBeds: 448, type: 'consults', hasRegistrar: true, key: 'twh' },
+                { name: 'Consults (SHH)', current: 0.4, calculated: 0.5, beds: 120, futureBeds: 180, type: 'consults', key: 'shh' },
+                { name: 'Symptom Clinic', current: 0.4, calculated: 0.4, type: 'clinic', key: 'clinic' }
+            ],
+            south: [
+                { name: 'Consults (SDMH)', current: 0.7, calculated: 0.6, beds: 138, futureBeds: 230, type: 'consults', key: 'sdmh' },
+                { name: 'Community', current: 1.0, calculated: 1.0, type: 'community', key: 'community' }
+            ]
+        };
+
+        // Staff service allocations - derived from timetable
+        // Each staff member contributes FTE to specific services
+        // These are editable via sliders
+        const staffAllocations = {
+            north: {
+                'BT': { pcu: 0.4, community: 0.6, twh: 0, shh: 0, clinic: 0 },  // 2 days PCU, 3 days Community
+                'AL': { pcu: 0, community: 0.4, twh: 0, shh: 0, clinic: 0 },    // 2 days Community (rest non-clinical)
+                'GB': { pcu: 0.4, community: 0, twh: 0, shh: 0, clinic: 0 },    // 2 days PCU (Tue, Fri)
+                'RW': { pcu: 0, community: 0, twh: 0.2, shh: 0, clinic: 0.2 },  // 1 day TWH, 1 day Clinic
+                'HY': { pcu: 0, community: 0, twh: 0.2, shh: 0.2, clinic: 0.2 }, // 1 day each: Clinic, SHH, TWH (0.6 total)
+                'MK': { pcu: 0, community: 0, twh: 0.4, shh: 0.2, clinic: 0 }   // 2 days TWH, 1 day SHH
+            },
+            south: {
+                'SR': { sdmh: 0.5, community: 0.4 },  // ~2.5 days SDMH, 2 days Community (0.9 total)
+                'Fadz': { sdmh: 0.2, community: 0.6 } // 1 day SDMH, 3 days Community (0.8 total)
+            }
+        };
+
+        // Timeline events
+        const timelineEvents = [
+            { quarter: 0, label: 'Q1 2026', events: ['Current state', 'Helen +0.1 FTE pending'] },
+            { quarter: 4, label: 'Q1 2027', events: ['SDMH PCU may open'] },
+            { quarter: 6, label: 'Mid 2027', events: ['Greg Barclay retirement window begins'] },
+            { quarter: 8, label: 'Q1 2028', events: ['Loui/Sellers may return', 'SHH rebuild progress'] },
+            { quarter: 12, label: '2029', events: ['SHH PCU potential opening'] }
+        ];
+
+        // ===================
+        // STATE MANAGEMENT
+        // ===================
+
+        let state = {
+            quarter: 0,
+            scenarios: {
+                twhRegistrar: true,
+                helenIncrease: false,
+                barclayRetires: false,
+                patrickReturns: false,
+                patrickFTE: 0.8,
+                domReturns: false,
+                domNorthFTE: 0.4,  // Independent North allocation (0-1)
+                domSouthFTE: 0.4,  // Independent South allocation (0-1)
+                // Infrastructure scenarios with dynamic values
+                sdmhPCU: false,
+                sdmhPCUBeds: 14,          // Slider: 5-14 beds
+                shhPCU: false,
+                shhPCUBeds: 8,            // Slider: 5-10 beds
+                northClinicExpands: false,
+                northClinicDays: 1,       // Slider: 1-5 days (additional)
+                southClinic: false,
+                southClinicDays: 2,       // Slider: 1-5 days
+                shhExpands: false,
+                shhExpandsBeds: 160,      // Slider: 140-200 step 20
+                sdmhExpands: false,
+                sdmhExpandsBeds: 230      // Slider: 160-230 step 10
+            },
+            // Deep copy of allocations that can be modified
+            allocations: JSON.parse(JSON.stringify(staffAllocations))
+        };
+
+        // ===================
+        // CALCULATIONS
+        // ===================
+
+        function calculateFTE() {
+            let northFilled = baselineStaff.north.reduce((sum, s) => sum + s.fte, 0);
+            let southFilled = baselineStaff.south.reduce((sum, s) => sum + s.fte, 0);
+
+            // Angela's non-clinical doesn't count toward service delivery
+            const angelaNonClinical = 0.4;
+            let northClinical = northFilled - angelaNonClinical;
+            let southClinical = southFilled;
+
+            // Base FUNDED positions (establishment - what's budgeted for)
+            let northFunded = 5.0;
+            let southFunded = 2.3;
+
+            // Base REQUIRED is calculated from actual service needs (bed formulas)
+            // North services need: PCU 1.0 + Community 1.0 + TWH 2.0 + SHH 0.5 + Clinic 0.4 = 4.9 total
+            // But registrar covers 1.0 of TWH, so consultant need = 3.9
+            // However we also need to account for Angela's non-clinical 0.4
+            // Total North staff needed: 3.9 clinical + 0.4 non-clinical = 4.3
+            // With 3.8 filled, gap is 0.5
+            let northRequired = 4.3; // PCU 1.0 + Community 1.0 + TWH consultant 1.0 + SHH 0.5 + Clinic 0.4 + Angela non-clinical 0.4
+
+            // South services need: SDMH 0.6 + Community 1.0 = 1.6
+            // With 1.7 filled, South is over by 0.1 (surplus)
+            let southRequired = 1.6;
+
+            // Adjust for registrar - when we have registrar, TWH only needs 1.0 consultant
+            // When no registrar, TWH needs full 2.0 from consultants (add 1.0 more)
+            if (!state.scenarios.twhRegistrar) {
+                northRequired += 1.0; // Need extra consultant to cover registrar work
+            }
+
+            // Apply scenarios
+            if (state.scenarios.helenIncrease) {
+                northFilled += 0.1;
+                northClinical += 0.1;
+            }
+
+            if (state.scenarios.barclayRetires) {
+                northFilled -= 0.4;
+                northClinical -= 0.4;
+            }
+
+            if (state.scenarios.patrickReturns) {
+                northFilled += state.scenarios.patrickFTE;
+                northClinical += state.scenarios.patrickFTE;
+            }
+
+            if (state.scenarios.domReturns) {
+                // Dom can split between North and South
+                northFilled += state.scenarios.domNorthFTE;
+                northClinical += state.scenarios.domNorthFTE;
+                southFilled += state.scenarios.domSouthFTE;
+                southClinical += state.scenarios.domSouthFTE;
+            }
+
+            // PCU scenarios - use dynamic bed slider values
+            if (state.scenarios.sdmhPCU) {
+                const sdmhPCUFTE = calculatePCUFTE(state.scenarios.sdmhPCUBeds);
+                southRequired += sdmhPCUFTE;
+            }
+
+            if (state.scenarios.shhPCU) {
+                const shhPCUFTE = calculatePCUFTE(state.scenarios.shhPCUBeds);
+                northRequired += shhPCUFTE;
+            }
+
+            // Clinic scenarios - use dynamic day slider values
+            if (state.scenarios.northClinicExpands) {
+                const additionalClinicFTE = calculateClinicFTE(state.scenarios.northClinicDays);
+                northRequired += additionalClinicFTE;
+            }
+
+            if (state.scenarios.southClinic) {
+                const southClinicFTE = calculateClinicFTE(state.scenarios.southClinicDays);
+                southRequired += southClinicFTE;
+            }
+
+            // Hospital bed expansion scenarios - use dynamic bed slider values
+            if (state.scenarios.shhExpands) {
+                // SHH expansion: current 120 beds → slider value
+                const currentSHHFTE = calculateBedBasedFTE(hospitals.SHH.currentBeds); // 0.54
+                const futureSHHFTE = calculateBedBasedFTE(state.scenarios.shhExpandsBeds);
+                const additionalSHHFTE = Math.max(0, futureSHHFTE - currentSHHFTE);
+                northRequired += additionalSHHFTE;
+            }
+
+            if (state.scenarios.sdmhExpands) {
+                // SDMH expansion: current 138 beds → slider value
+                const currentSDMHFTE = calculateBedBasedFTE(hospitals.SDMH.currentBeds); // 0.62
+                const futureSDMHFTE = calculateBedBasedFTE(state.scenarios.sdmhExpandsBeds);
+                const additionalSDMHFTE = Math.max(0, futureSDMHFTE - currentSDMHFTE);
+                southRequired += additionalSDMHFTE;
+            }
+
+            // Calculate unfilled (funded - filled) and gap (required - filled)
+            const northUnfilled = Math.max(0, northFunded - northFilled);
+            const southUnfilled = Math.max(0, southFunded - southFilled);
+
+            // Gap is based on actual need vs what we have
+            // Positive = we need more staff, Negative = we have more than needed (surplus)
+            const northGapRaw = northRequired - northFilled;
+            const southGapRaw = southRequired - southFilled;
+
+            return {
+                north: {
+                    filled: northFilled,
+                    clinical: northClinical,
+                    funded: northFunded,
+                    unfilled: northUnfilled,
+                    required: northRequired,
+                    gap: northGapRaw  // Can be negative (surplus)
+                },
+                south: {
+                    filled: southFilled,
+                    clinical: southClinical,
+                    funded: southFunded,
+                    unfilled: southUnfilled,
+                    required: southRequired,
+                    gap: southGapRaw  // Can be negative (surplus)
+                },
+                total: {
+                    filled: northFilled + southFilled,
+                    funded: northFunded + southFunded,
+                    unfilled: northUnfilled + southUnfilled,
+                    required: northRequired + southRequired,
+                    gap: northGapRaw + southGapRaw
+                }
+            };
+        }
+
+        function getStaffList(region) {
+            let staff = [...baselineStaff[region]];
+
+            if (region === 'north') {
+                // Helen increase
+                if (state.scenarios.helenIncrease) {
+                    const helen = staff.find(s => s.code === 'HY');
+                    if (helen) helen.fte = 0.7;
+                } else {
+                    const helen = staff.find(s => s.code === 'HY');
+                    if (helen) helen.fte = 0.6;
+                }
+
+                // Barclay retires
+                if (state.scenarios.barclayRetires) {
+                    staff = staff.map(s => s.code === 'GB' ? { ...s, retired: true } : s);
+                }
+
+                // Patrick returns
+                if (state.scenarios.patrickReturns) {
+                    staff.push({ name: 'Patrick Loui', code: 'PL', fte: state.scenarios.patrickFTE, potential: true, prefersNorth: true });
+                }
+
+                // Dom returns to North (if any North FTE allocated)
+                if (state.scenarios.domReturns && state.scenarios.domNorthFTE > 0) {
+                    staff.push({ name: 'Dominic Sellers', code: 'DS', fte: state.scenarios.domNorthFTE, potential: true, flexible: true });
+                }
+            }
+
+            if (region === 'south') {
+                // Dom returns to South (if any South FTE allocated)
+                if (state.scenarios.domReturns && state.scenarios.domSouthFTE > 0) {
+                    staff.push({ name: 'Dominic Sellers', code: 'DS', fte: state.scenarios.domSouthFTE, potential: true, flexible: true });
+                }
+            }
+
+            return staff;
+        }
+
+        // Calculate total allocation for a service from all active staff
+        function getServiceTotalFromStaff(region, serviceKey) {
+            let total = 0;
+            const staff = getStaffList(region);
+
+            staff.forEach(s => {
+                if (s.retired) return; // Skip retired staff
+                const alloc = state.allocations[region]?.[s.code];
+                if (alloc && alloc[serviceKey] !== undefined) {
+                    total += alloc[serviceKey];
+                }
+            });
+
+            return Math.round(total * 10) / 10;
+        }
+
+        function getServiceAllocation(region) {
+            let svc = JSON.parse(JSON.stringify(services[region]));
+
+            // Apply bed-based expansion to consult services using benchmark
+            // AND calculate current from staff allocations
+            svc = svc.map(s => {
+                // Get current allocation from staff allocations (dynamic)
+                const staffTotal = getServiceTotalFromStaff(region, s.key);
+
+                if (s.type === 'consults') {
+                    let beds = s.beds;
+                    let bedInfo = '';
+                    let calculatedNeed = s.calculated;
+                    let currentWithReg = staffTotal;
+                    let hasRegistrar = s.hasRegistrar && state.scenarios.twhRegistrar;
+
+                    // TWH: add registrar to current if toggle is on
+                    if (s.name === 'Consults (TWH)' && state.scenarios.twhRegistrar) {
+                        currentWithReg = staffTotal + 1.0; // consultant allocation + 1.0 registrar
+                    }
+
+                    if (s.name === 'Consults (SHH)' && state.scenarios.shhExpands) {
+                        beds = state.scenarios.shhExpandsBeds;
+                        calculatedNeed = calculateBedBasedFTE(beds);
+                        bedInfo = ' → ' + beds + ' beds';
+                    } else if (s.name === 'Consults (SDMH)' && state.scenarios.sdmhExpands) {
+                        beds = state.scenarios.sdmhExpandsBeds;
+                        calculatedNeed = calculateBedBasedFTE(beds);
+                        bedInfo = ' → ' + beds + ' beds';
+                    }
+
+                    return { ...s, current: staffTotal, beds, calculatedNeed, bedInfo, currentWithReg, hasRegistrar };
+                }
+                return { ...s, current: staffTotal, calculatedNeed: s.calculated };
+            });
+
+            if (region === 'south' && state.scenarios.sdmhPCU) {
+                const pcuTotal = getServiceTotalFromStaff(region, 'sdmhPCU') || 0;
+                const beds = state.scenarios.sdmhPCUBeds;
+                const ftcNeed = calculatePCUFTE(beds);
+                svc.push({ name: 'PCU (SDMH)', current: pcuTotal, calculatedNeed: ftcNeed, type: 'pcu', beds: beds, isNew: true, key: 'sdmhPCU' });
+            }
+
+            if (region === 'south' && state.scenarios.southClinic) {
+                const clinicTotal = getServiceTotalFromStaff(region, 'southClinic') || 0;
+                const days = state.scenarios.southClinicDays;
+                const fteNeed = calculateClinicFTE(days);
+                svc.push({ name: 'Symptom Clinic', current: clinicTotal, calculatedNeed: fteNeed, type: 'clinic', isNew: true, key: 'southClinic', days: days });
+            }
+
+            if (region === 'north' && state.scenarios.shhPCU) {
+                const shhPcuTotal = getServiceTotalFromStaff(region, 'shhPCU') || 0;
+                const beds = state.scenarios.shhPCUBeds;
+                const fteNeed = calculatePCUFTE(beds);
+                svc.push({ name: 'PCU (SHH)', current: shhPcuTotal, calculatedNeed: fteNeed, type: 'pcu', beds: beds, isNew: true, key: 'shhPCU' });
+            }
+
+            // North clinic expansion adds to existing clinic service
+            if (region === 'north' && state.scenarios.northClinicExpands) {
+                // Find existing clinic service and add additional need
+                const clinicIdx = svc.findIndex(s => s.key === 'clinic');
+                if (clinicIdx >= 0) {
+                    const additionalDays = state.scenarios.northClinicDays;
+                    const additionalFTE = calculateClinicFTE(additionalDays);
+                    svc[clinicIdx].calculatedNeed = (svc[clinicIdx].calculatedNeed || svc[clinicIdx].calculated) + additionalFTE;
+                    svc[clinicIdx].expanded = true;
+                    svc[clinicIdx].additionalDays = additionalDays;
+                }
+            }
+
+            return svc;
+        }
+
+        // ===================
+        // RENDERING
+        // ===================
+
+        function renderFTESummary(fte) {
+            // North
+            document.getElementById('northFilled').textContent = fte.north.filled.toFixed(1);
+            document.getElementById('northFunded').textContent = fte.north.funded.toFixed(1);
+            document.getElementById('northUnfilled').textContent = fte.north.unfilled.toFixed(1);
+
+            const northGapEl = document.getElementById('northGap');
+            const northGapBox = document.getElementById('northGapBox');
+            const northGapLabel = document.getElementById('northGapLabel');
+
+            if (fte.north.gap < 0) {
+                // Surplus - filled exceeds required
+                northGapEl.textContent = '+' + Math.abs(fte.north.gap).toFixed(1);
+                northGapBox.className = 'fte-box surplus';
+                northGapLabel.textContent = 'Surplus';
+            } else if (fte.north.gap === 0) {
+                northGapEl.textContent = '0';
+                northGapBox.className = 'fte-box surplus';
+                northGapLabel.textContent = 'Balanced';
+            } else {
+                northGapEl.textContent = fte.north.gap.toFixed(1);
+                northGapBox.className = 'fte-box gap';
+                northGapLabel.textContent = 'Gap';
+            }
+
+            // South
+            document.getElementById('southFilled').textContent = fte.south.filled.toFixed(1);
+            document.getElementById('southFunded').textContent = fte.south.funded.toFixed(1);
+            document.getElementById('southUnfilled').textContent = fte.south.unfilled.toFixed(1);
+
+            const southGapEl = document.getElementById('southGap');
+            const southGapBox = document.getElementById('southGapBox');
+            const southGapLabel = document.getElementById('southGapLabel');
+
+            if (fte.south.gap < 0) {
+                // Surplus - filled exceeds required
+                southGapEl.textContent = '+' + Math.abs(fte.south.gap).toFixed(1);
+                southGapBox.className = 'fte-box surplus';
+                southGapLabel.textContent = 'Surplus';
+            } else if (fte.south.gap === 0) {
+                southGapEl.textContent = '0';
+                southGapBox.className = 'fte-box surplus';
+                southGapLabel.textContent = 'Balanced';
+            } else {
+                southGapEl.textContent = fte.south.gap.toFixed(1);
+                southGapBox.className = 'fte-box gap';
+                southGapLabel.textContent = 'Gap';
+            }
+
+            // Recruitment - show unfilled positions (what we can/should recruit to)
+            const totalGap = Math.max(0, fte.total.gap);
+            document.getElementById('totalRecruitment').textContent = fte.total.unfilled.toFixed(1);
+            document.getElementById('northRecruitment').textContent = fte.north.unfilled.toFixed(1);
+            document.getElementById('southRecruitment').textContent = fte.south.unfilled.toFixed(1);
+        }
+
+        function renderServices(region) {
+            const container = document.getElementById(region + 'Services');
+            const svc = getServiceAllocation(region);
+
+            container.innerHTML = svc.map(s => {
+                const calculatedNeed = s.calculatedNeed || s.calculated || s.current;
+                // Use currentWithReg for comparison if it exists (TWH with registrar)
+                const effectiveCurrent = s.currentWithReg !== undefined ? s.currentWithReg : s.current;
+                const pct = Math.min(100, (effectiveCurrent / calculatedNeed) * 100);
+                let barClass = 'good';
+                if (pct < 80) barClass = 'warning';
+                if (pct < 60) barClass = 'critical';
+                if (pct > 100) barClass = 'over';
+
+                const isNew = s.isNew ? ' style="opacity:0.6;font-style:italic;"' : '';
+                const bedLabel = s.beds ? ` <small style="color:#6b7280;">(${s.beds} beds${s.bedInfo || ''})</small>` : '';
+
+                // Show gap or OK indicator based on effective current
+                const gap = calculatedNeed - effectiveCurrent;
+                let gapIndicator = '';
+                if (s.type === 'consults' && gap > 0.05) {
+                    gapIndicator = `<span class="gap-indicator">gap: ${gap.toFixed(1)}</span>`;
+                } else if (s.type === 'consults' && gap <= 0.05) {
+                    gapIndicator = `<span class="ok-indicator">OK</span>`;
+                }
+
+                // For TWH, note the registrar if enabled
+                const registrarNote = s.hasRegistrar ? ' <small style="color:#6366f1;">+1.0 reg</small>' : '';
+
+                // Show consultant FTE + registrar breakdown for TWH
+                const displayValue = s.hasRegistrar
+                    ? `<strong>${s.current.toFixed(1)}</strong>${registrarNote}`
+                    : `<strong>${s.current.toFixed(1)}</strong>`;
+
+                return `
+                    <div class="service-row"${isNew}>
+                        <span class="service-name">${s.name}${s.isNew ? ' (new)' : ''}${bedLabel}</span>
+                        <div class="service-bar-container">
+                            <div class="service-bar">
+                                <div class="service-bar-fill ${barClass}" style="width: ${pct}%"></div>
+                                <div class="service-bar-target" style="left: 100%"></div>
+                            </div>
+                            <span class="service-values">${displayValue} / ${calculatedNeed.toFixed(1)}</span>
+                        </div>
+                    </div>
+                    ${s.type === 'consults' ? `<div class="comparison-row"><span class="calculated">Total: ${effectiveCurrent.toFixed(1)} FTE</span>${gapIndicator}</div>` : ''}
+                `;
+            }).join('');
+        }
+
+        function renderStaff(region) {
+            const container = document.getElementById(region + 'Staff');
+            const staff = getStaffList(region);
+
+            container.innerHTML = staff.map(s => {
+                let chipClass = 'staff-chip';
+                let extra = '';
+
+                if (s.retired) {
+                    chipClass += ' retiring';
+                    extra = ' (retired)';
+                } else if (s.retiring && !state.scenarios.barclayRetires) {
+                    extra = ' <small style="color:#d97706;">(retiring soon)</small>';
+                }
+
+                if (s.potential) {
+                    chipClass += ' potential';
+                    extra = ' <small style="color:#6366f1;">(potential)</small>';
+                }
+
+                if (s.flexible) {
+                    chipClass += ' flexible';
+                }
+
+                return `
+                    <span class="${chipClass}">
+                        <span class="name">${s.name}</span>
+                        <span class="fte">${s.fte.toFixed(1)}</span>
+                        ${extra}
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function renderAllocations(region) {
+            const container = document.getElementById(region + 'Allocations');
+            const staff = getStaffList(region);
+            const serviceList = services[region];
+
+            let html = '';
+
+            staff.forEach(s => {
+                const isRetired = s.retired;
+                const isPotential = s.potential;
+                let cardClass = 'allocation-card';
+                if (isRetired) cardClass += ' retired';
+                if (isPotential) cardClass += ' potential';
+
+                // Get or initialize allocations for this staff member
+                if (!state.allocations[region][s.code]) {
+                    state.allocations[region][s.code] = {};
+                    serviceList.forEach(svc => {
+                        state.allocations[region][s.code][svc.key] = 0;
+                    });
+                }
+
+                const alloc = state.allocations[region][s.code];
+
+                // Calculate total allocated for this person
+                const total = Object.values(alloc).reduce((sum, v) => sum + (v || 0), 0);
+
+                html += `<div class="${cardClass}" data-staff="${s.code}">`;
+                html += `<div class="allocation-header">`;
+                html += `<span class="allocation-name">${s.name} (${s.code})${isPotential ? ' <em>potential</em>' : ''}${isRetired ? ' <em>retired</em>' : ''}</span>`;
+                html += `<span class="allocation-total">Allocated: <strong>${total.toFixed(1)}</strong> / ${s.fte.toFixed(1)} FTE</span>`;
+                html += `</div>`;
+
+                // Show sliders for each service
+                serviceList.forEach(svc => {
+                    const value = alloc[svc.key] || 0;
+                    const sliderClass = `allocation-slider ${svc.key}-slider`;
+                    const maxVal = s.fte;
+                    const disabled = isRetired ? 'disabled' : '';
+
+                    html += `<div class="allocation-slider-row">`;
+                    html += `<span class="allocation-slider-label">${svc.name.replace(' (Bulli)', '').replace('Consults ', '')}:</span>`;
+                    html += `<input type="range" class="${sliderClass}" data-region="${region}" data-staff="${s.code}" data-service="${svc.key}" min="0" max="${maxVal}" step="0.1" value="${value}" ${disabled}>`;
+                    html += `<span class="allocation-value">${value.toFixed(1)}</span>`;
+                    html += `</div>`;
+                });
+
+                // Add sliders for new services if enabled
+                if (region === 'north' && state.scenarios.shhPCU) {
+                    const value = alloc['shhPCU'] || 0;
+                    const disabled = isRetired ? 'disabled' : '';
+                    html += `<div class="allocation-slider-row">`;
+                    html += `<span class="allocation-slider-label">PCU (SHH) <em>new</em>:</span>`;
+                    html += `<input type="range" class="allocation-slider pcu-slider" data-region="${region}" data-staff="${s.code}" data-service="shhPCU" min="0" max="${s.fte}" step="0.1" value="${value}" ${disabled}>`;
+                    html += `<span class="allocation-value">${value.toFixed(1)}</span>`;
+                    html += `</div>`;
+                }
+
+                if (region === 'south' && state.scenarios.sdmhPCU) {
+                    const value = alloc['sdmhPCU'] || 0;
+                    const disabled = isRetired ? 'disabled' : '';
+                    html += `<div class="allocation-slider-row">`;
+                    html += `<span class="allocation-slider-label">PCU (SDMH) <em>new</em>:</span>`;
+                    html += `<input type="range" class="allocation-slider pcu-slider" data-region="${region}" data-staff="${s.code}" data-service="sdmhPCU" min="0" max="${s.fte}" step="0.1" value="${value}" ${disabled}>`;
+                    html += `<span class="allocation-value">${value.toFixed(1)}</span>`;
+                    html += `</div>`;
+                }
+
+                if (region === 'south' && state.scenarios.southClinic) {
+                    const value = alloc['southClinic'] || 0;
+                    const disabled = isRetired ? 'disabled' : '';
+                    html += `<div class="allocation-slider-row">`;
+                    html += `<span class="allocation-slider-label">Clinic <em>new</em>:</span>`;
+                    html += `<input type="range" class="allocation-slider clinic-slider" data-region="${region}" data-staff="${s.code}" data-service="southClinic" min="0" max="${s.fte}" step="0.1" value="${value}" ${disabled}>`;
+                    html += `<span class="allocation-value">${value.toFixed(1)}</span>`;
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+
+            // Attach event listeners to sliders
+            container.querySelectorAll('.allocation-slider').forEach(slider => {
+                slider.addEventListener('input', (e) => {
+                    const region = e.target.dataset.region;
+                    const staffCode = e.target.dataset.staff;
+                    const serviceKey = e.target.dataset.service;
+                    const value = parseFloat(e.target.value);
+
+                    // Update state
+                    if (!state.allocations[region][staffCode]) {
+                        state.allocations[region][staffCode] = {};
+                    }
+                    state.allocations[region][staffCode][serviceKey] = value;
+
+                    // Update the value display
+                    e.target.nextElementSibling.textContent = value.toFixed(1);
+
+                    // Update the total for this staff member
+                    const card = e.target.closest('.allocation-card');
+                    const alloc = state.allocations[region][staffCode];
+                    const total = Object.values(alloc).reduce((sum, v) => sum + (v || 0), 0);
+                    card.querySelector('.allocation-total strong').textContent = total.toFixed(1);
+
+                    // Re-render services to show updated totals
+                    renderServices(region);
+                });
+            });
+        }
+
+        function renderTimetable(region) {
+            const container = document.getElementById(region + 'Timetable');
+            const tt = timetable[region];
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+            const staff = getStaffList(region).filter(s => !s.retired);
+
+            // Build grid
+            let html = '';
+
+            // Header row
+            html += '<div class="timetable-header"></div>';
+            days.forEach(d => {
+                html += `<div class="timetable-header">${d}</div>`;
+            });
+
+            // Staff rows
+            staff.forEach(s => {
+                const schedule = tt[s.code] || {};
+                html += `<div class="timetable-name">${s.code}</div>`;
+
+                days.forEach(d => {
+                    const loc = schedule[d];
+                    let cellClass = 'timetable-cell';
+                    let content = '';
+
+                    if (!loc) {
+                        cellClass += ' off';
+                        content = '—';
+                    } else {
+                        content = loc.replace('*', '<sup>*</sup>');
+                        // Color coding
+                        const locLower = loc.toLowerCase();
+                        if (locLower.includes('pcu')) cellClass += ' pcu';
+                        else if (locLower === 'community' && region === 'north') cellClass += ' community';
+                        else if (locLower === 'community' && region === 'south') cellClass += ' south-community';
+                        else if (locLower.includes('twh')) cellClass += ' twh';
+                        else if (locLower.includes('shh')) cellClass += ' shh';
+                        else if (locLower.includes('clinic')) cellClass += ' clinic';
+                        else if (locLower.includes('sdmh')) cellClass += ' sdmh';
+                        else if (locLower.includes('non-clinical')) cellClass += ' non-clinical';
+                    }
+
+                    html += `<div class="${cellClass}">${content}</div>`;
+                });
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderTimelineEvents() {
+            const container = document.getElementById('timelineEvents');
+            let events = [];
+
+            // Current always shows baseline
+            if (state.quarter === 0) {
+                events.push({ type: 'infrastructure', text: 'Current baseline: 5.5 FTE filled' });
+            }
+
+            // Based on scenarios
+            if (state.scenarios.helenIncrease) {
+                events.push({ type: 'gain', text: 'Helen +0.1 FTE' });
+            }
+            if (state.scenarios.barclayRetires) {
+                events.push({ type: 'loss', text: 'Greg Barclay retired (-0.4 FTE)' });
+            }
+            if (state.scenarios.patrickReturns) {
+                events.push({ type: 'potential', text: 'Patrick Loui returns (+1.0 FTE North)' });
+            }
+            if (state.scenarios.domReturns) {
+                const domTotal = state.scenarios.domNorthFTE + state.scenarios.domSouthFTE;
+                let domText = `Dominic Sellers returns (+${domTotal.toFixed(1)} FTE`;
+                if (state.scenarios.domNorthFTE > 0 && state.scenarios.domSouthFTE > 0) {
+                    domText += `: ${state.scenarios.domNorthFTE.toFixed(1)} North, ${state.scenarios.domSouthFTE.toFixed(1)} South)`;
+                } else if (state.scenarios.domSouthFTE > 0) {
+                    domText += ' South)';
+                } else {
+                    domText += ' North)';
+                }
+                events.push({ type: 'potential', text: domText });
+            }
+            if (state.scenarios.sdmhPCU) {
+                const beds = state.scenarios.sdmhPCUBeds;
+                const fte = calculatePCUFTE(beds);
+                events.push({ type: 'infrastructure', text: `SDMH PCU opens (${beds} beds, +${fte.toFixed(1)} FTE need)` });
+            }
+            if (state.scenarios.shhPCU) {
+                const beds = state.scenarios.shhPCUBeds;
+                const fte = calculatePCUFTE(beds);
+                events.push({ type: 'infrastructure', text: `SHH PCU beds gained (${beds} beds, +${fte.toFixed(1)} FTE need)` });
+            }
+            if (state.scenarios.northClinicExpands) {
+                const days = state.scenarios.northClinicDays;
+                const fte = calculateClinicFTE(days);
+                events.push({ type: 'infrastructure', text: `North Clinic expands (+${days} day${days > 1 ? 's' : ''}/wk, +${fte.toFixed(1)} FTE need)` });
+            }
+            if (state.scenarios.southClinic) {
+                const days = state.scenarios.southClinicDays;
+                const fte = calculateClinicFTE(days);
+                events.push({ type: 'infrastructure', text: `South Clinic established (${days} day${days > 1 ? 's' : ''}/wk, +${fte.toFixed(1)} FTE need)` });
+            }
+            if (state.scenarios.shhExpands) {
+                const beds = state.scenarios.shhExpandsBeds;
+                const currentFTE = calculateBedBasedFTE(hospitals.SHH.currentBeds);
+                const futureFTE = calculateBedBasedFTE(beds);
+                const addFTE = Math.max(0, futureFTE - currentFTE);
+                events.push({ type: 'infrastructure', text: `SHH 120→${beds} beds (+${addFTE.toFixed(1)} consult FTE need)` });
+            }
+            if (state.scenarios.sdmhExpands) {
+                const beds = state.scenarios.sdmhExpandsBeds;
+                const currentFTE = calculateBedBasedFTE(hospitals.SDMH.currentBeds);
+                const futureFTE = calculateBedBasedFTE(beds);
+                const addFTE = Math.max(0, futureFTE - currentFTE);
+                events.push({ type: 'infrastructure', text: `SDMH 138→${beds} beds (+${addFTE.toFixed(1)} consult FTE need)` });
+            }
+
+            if (events.length === 0) {
+                events.push({ type: 'infrastructure', text: 'No scenario changes applied' });
+            }
+
+            container.innerHTML = events.map(e =>
+                `<span class="event-badge ${e.type}">${e.text}</span>`
+            ).join('');
+        }
+
+        function render() {
+            const fte = calculateFTE();
+            renderFTESummary(fte);
+            renderServices('north');
+            renderServices('south');
+            renderStaff('north');
+            renderStaff('south');
+            renderAllocations('north');
+            renderAllocations('south');
+            renderTimetable('north');
+            renderTimetable('south');
+            renderTimelineEvents();
+        }
+
+        // ===================
+        // EVENT HANDLERS
+        // ===================
+
+        // Timeline slider
+        document.getElementById('timelineSlider').addEventListener('input', (e) => {
+            state.quarter = parseInt(e.target.value);
+            const labels = ['Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026', 'Q1 2027', 'Q2 2027', 'Q3 2027', 'Q4 2027', 'Q1 2028', 'Q2 2028', 'Q3 2028', 'Q4 2028', '2029'];
+            document.getElementById('currentPeriod').textContent = labels[state.quarter];
+
+            // Update active label
+            document.querySelectorAll('.timeline-labels span').forEach(el => {
+                el.classList.remove('active');
+                if (parseInt(el.dataset.quarter) === state.quarter) {
+                    el.classList.add('active');
+                }
+            });
+
+            // Auto-apply scenarios based on timeline
+            if (state.quarter >= 6) {
+                // Mid 2027+ - Barclay retirement window
+                document.getElementById('scenarioBarclayRetires').checked = true;
+                state.scenarios.barclayRetires = true;
+            }
+            if (state.quarter >= 4) {
+                // Q1 2027+ - SDMH PCU
+                document.getElementById('scenarioSDMHPCU').checked = true;
+                state.scenarios.sdmhPCU = true;
+            }
+            if (state.quarter >= 8) {
+                // Q1 2028+ - Trainees return
+                document.getElementById('scenarioPatrickReturns').checked = true;
+                document.getElementById('scenarioDomReturns').checked = true;
+                state.scenarios.patrickReturns = true;
+                state.scenarios.domReturns = true;
+            }
+            if (state.quarter >= 12) {
+                // 2029+ - SHH PCU
+                document.getElementById('scenarioSHHPCU').checked = true;
+                state.scenarios.shhPCU = true;
+            }
+
+            render();
+        });
+
+        // Timeline label clicks
+        document.querySelectorAll('.timeline-labels span').forEach(el => {
+            el.addEventListener('click', () => {
+                const q = parseInt(el.dataset.quarter);
+                document.getElementById('timelineSlider').value = q;
+                document.getElementById('timelineSlider').dispatchEvent(new Event('input'));
+            });
+        });
+
+        // Scenario toggles
+        document.getElementById('scenarioTWHRegistrar').addEventListener('change', (e) => {
+            state.scenarios.twhRegistrar = e.target.checked;
+            render();
+        });
+
+        document.getElementById('scenarioHelenIncrease').addEventListener('change', (e) => {
+            state.scenarios.helenIncrease = e.target.checked;
+            render();
+        });
+
+        document.getElementById('scenarioBarclayRetires').addEventListener('change', (e) => {
+            state.scenarios.barclayRetires = e.target.checked;
+            render();
+        });
+
+        document.getElementById('scenarioPatrickReturns').addEventListener('change', (e) => {
+            state.scenarios.patrickReturns = e.target.checked;
+            document.getElementById('patrickSliderContainer').style.display = e.target.checked ? 'flex' : 'none';
+            render();
+        });
+
+        document.getElementById('patrickFTE').addEventListener('input', (e) => {
+            state.scenarios.patrickFTE = parseFloat(e.target.value);
+            document.getElementById('patrickFTEValue').textContent = state.scenarios.patrickFTE.toFixed(1);
+            document.getElementById('patrickImpact').textContent = '+' + state.scenarios.patrickFTE.toFixed(1);
+            render();
+        });
+
+        document.getElementById('scenarioDomReturns').addEventListener('change', (e) => {
+            state.scenarios.domReturns = e.target.checked;
+            document.getElementById('domSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateDomImpact();
+            render();
+        });
+
+        function updateDomImpact() {
+            const total = state.scenarios.domNorthFTE + state.scenarios.domSouthFTE;
+            document.getElementById('domImpact').textContent = '+' + total.toFixed(1);
+            document.getElementById('domTotalDisplay').textContent = total.toFixed(1);
+        }
+
+        document.getElementById('domNorthFTE').addEventListener('input', (e) => {
+            state.scenarios.domNorthFTE = parseFloat(e.target.value);
+            document.getElementById('domNorthFTEValue').textContent = state.scenarios.domNorthFTE.toFixed(1);
+            updateDomImpact();
+            render();
+        });
+
+        document.getElementById('domSouthFTE').addEventListener('input', (e) => {
+            state.scenarios.domSouthFTE = parseFloat(e.target.value);
+            document.getElementById('domSouthFTEValue').textContent = state.scenarios.domSouthFTE.toFixed(1);
+            updateDomImpact();
+            render();
+        });
+
+        // SDMH PCU toggle and slider
+        document.getElementById('scenarioSDMHPCU').addEventListener('change', (e) => {
+            state.scenarios.sdmhPCU = e.target.checked;
+            document.getElementById('sdmhPCUSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateSDMHPCUDisplay();
+            render();
+        });
+
+        document.getElementById('sdmhPCUBeds').addEventListener('input', (e) => {
+            state.scenarios.sdmhPCUBeds = parseInt(e.target.value);
+            updateSDMHPCUDisplay();
+            render();
+        });
+
+        function updateSDMHPCUDisplay() {
+            const beds = state.scenarios.sdmhPCUBeds;
+            const fte = calculatePCUFTE(beds);
+            document.getElementById('sdmhPCUBedsValue').textContent = beds;
+            document.getElementById('sdmhPCUFTECalc').textContent = fte.toFixed(1);
+            document.getElementById('sdmhPCUImpact').textContent = '+' + fte.toFixed(1) + ' need';
+            document.getElementById('sdmhPCUDesc').textContent = beds + ' bed inpatient unit (South)';
+        }
+
+        // SHH PCU toggle and slider
+        document.getElementById('scenarioSHHPCU').addEventListener('change', (e) => {
+            state.scenarios.shhPCU = e.target.checked;
+            document.getElementById('shhPCUSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateSHHPCUDisplay();
+            render();
+        });
+
+        document.getElementById('shhPCUBeds').addEventListener('input', (e) => {
+            state.scenarios.shhPCUBeds = parseInt(e.target.value);
+            updateSHHPCUDisplay();
+            render();
+        });
+
+        function updateSHHPCUDisplay() {
+            const beds = state.scenarios.shhPCUBeds;
+            const fte = calculatePCUFTE(beds);
+            document.getElementById('shhPCUBedsValue').textContent = beds;
+            document.getElementById('shhPCUFTECalc').textContent = fte.toFixed(1);
+            document.getElementById('shhPCUImpact').textContent = '+' + fte.toFixed(1) + ' need';
+            document.getElementById('shhPCUDesc').textContent = beds + ' PCU beds in rebuild (North)';
+        }
+
+        // North Clinic expansion toggle and slider
+        document.getElementById('scenarioNorthClinicExpands').addEventListener('change', (e) => {
+            state.scenarios.northClinicExpands = e.target.checked;
+            document.getElementById('northClinicSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateNorthClinicDisplay();
+            render();
+        });
+
+        document.getElementById('northClinicDays').addEventListener('input', (e) => {
+            state.scenarios.northClinicDays = parseInt(e.target.value);
+            updateNorthClinicDisplay();
+            render();
+        });
+
+        function updateNorthClinicDisplay() {
+            const days = state.scenarios.northClinicDays;
+            const fte = calculateClinicFTE(days);
+            document.getElementById('northClinicDaysValue').textContent = days;
+            document.getElementById('northClinicFTECalc').textContent = fte.toFixed(1);
+            document.getElementById('northClinicImpact').textContent = '+' + fte.toFixed(1) + ' need';
+        }
+
+        // South Clinic toggle and slider
+        document.getElementById('scenarioSouthClinic').addEventListener('change', (e) => {
+            state.scenarios.southClinic = e.target.checked;
+            document.getElementById('southClinicSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateSouthClinicDisplay();
+            render();
+        });
+
+        document.getElementById('southClinicDays').addEventListener('input', (e) => {
+            state.scenarios.southClinicDays = parseInt(e.target.value);
+            updateSouthClinicDisplay();
+            render();
+        });
+
+        function updateSouthClinicDisplay() {
+            const days = state.scenarios.southClinicDays;
+            const fte = calculateClinicFTE(days);
+            document.getElementById('southClinicDaysValue').textContent = days;
+            document.getElementById('southClinicFTECalc').textContent = fte.toFixed(1);
+            document.getElementById('southClinicImpact').textContent = '+' + fte.toFixed(1) + ' need';
+        }
+
+        // SHH Bed Expansion toggle and slider
+        document.getElementById('scenarioSHHExpands').addEventListener('change', (e) => {
+            state.scenarios.shhExpands = e.target.checked;
+            document.getElementById('shhExpandsSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateSHHExpandsDisplay();
+            render();
+        });
+
+        document.getElementById('shhExpandsBeds').addEventListener('input', (e) => {
+            state.scenarios.shhExpandsBeds = parseInt(e.target.value);
+            updateSHHExpandsDisplay();
+            render();
+        });
+
+        function updateSHHExpandsDisplay() {
+            const beds = state.scenarios.shhExpandsBeds;
+            const currentBeds = hospitals.SHH.currentBeds;
+            const currentFTE = calculateBedBasedFTE(currentBeds);
+            const futureFTE = calculateBedBasedFTE(beds);
+            const additionalFTE = Math.max(0, futureFTE - currentFTE);
+            document.getElementById('shhExpandsBedsValue').textContent = beds;
+            document.getElementById('shhExpandsFTECalc').textContent = futureFTE.toFixed(1);
+            document.getElementById('shhExpandsAddFTE').textContent = additionalFTE.toFixed(1);
+            document.getElementById('shhExpandsImpact').textContent = '+' + additionalFTE.toFixed(1) + ' need';
+            document.getElementById('shhExpandsDesc').textContent = currentBeds + '→' + beds + ' beds (North)';
+        }
+
+        // SDMH Bed Expansion toggle and slider
+        document.getElementById('scenarioSDMHExpands').addEventListener('change', (e) => {
+            state.scenarios.sdmhExpands = e.target.checked;
+            document.getElementById('sdmhExpandsSliderContainer').style.display = e.target.checked ? 'block' : 'none';
+            updateSDMHExpandsDisplay();
+            render();
+        });
+
+        document.getElementById('sdmhExpandsBeds').addEventListener('input', (e) => {
+            state.scenarios.sdmhExpandsBeds = parseInt(e.target.value);
+            updateSDMHExpandsDisplay();
+            render();
+        });
+
+        function updateSDMHExpandsDisplay() {
+            const beds = state.scenarios.sdmhExpandsBeds;
+            const currentBeds = hospitals.SDMH.currentBeds;
+            const currentFTE = calculateBedBasedFTE(currentBeds);
+            const futureFTE = calculateBedBasedFTE(beds);
+            const additionalFTE = Math.max(0, futureFTE - currentFTE);
+            document.getElementById('sdmhExpandsBedsValue').textContent = beds;
+            document.getElementById('sdmhExpandsFTECalc').textContent = futureFTE.toFixed(1);
+            document.getElementById('sdmhExpandsAddFTE').textContent = additionalFTE.toFixed(1);
+            document.getElementById('sdmhExpandsImpact').textContent = '+' + additionalFTE.toFixed(1) + ' need';
+            document.getElementById('sdmhExpandsDesc').textContent = currentBeds + '→' + beds + ' beds (South)';
+        }
+
+        // Reset button
+        document.getElementById('resetScenarios').addEventListener('click', () => {
+            // Reset state
+            state.quarter = 0;
+            state.scenarios = {
+                twhRegistrar: true,
+                helenIncrease: false,
+                barclayRetires: false,
+                patrickReturns: false,
+                patrickFTE: 0.8,
+                domReturns: false,
+                domNorthFTE: 0.4,
+                domSouthFTE: 0.4,
+                sdmhPCU: false,
+                sdmhPCUBeds: 14,
+                shhPCU: false,
+                shhPCUBeds: 8,
+                northClinicExpands: false,
+                northClinicDays: 1,
+                southClinic: false,
+                southClinicDays: 2,
+                shhExpands: false,
+                shhExpandsBeds: 160,
+                sdmhExpands: false,
+                sdmhExpandsBeds: 230
+            };
+            state.allocations = JSON.parse(JSON.stringify(staffAllocations));
+
+            // Reset UI elements
+            document.getElementById('timelineSlider').value = 0;
+            document.getElementById('currentPeriod').textContent = 'Q1 2026';
+            document.querySelectorAll('.timeline-labels span').forEach(el => el.classList.remove('active'));
+
+            // Staff changes
+            document.getElementById('scenarioTWHRegistrar').checked = true;
+            document.getElementById('scenarioHelenIncrease').checked = false;
+            document.getElementById('scenarioBarclayRetires').checked = false;
+            document.getElementById('scenarioPatrickReturns').checked = false;
+            document.getElementById('patrickSliderContainer').style.display = 'none';
+            document.getElementById('patrickFTE').value = 0.8;
+            document.getElementById('patrickFTEValue').textContent = '0.8';
+            document.getElementById('patrickImpact').textContent = '+0.8';
+            document.getElementById('scenarioDomReturns').checked = false;
+            document.getElementById('domSliderContainer').style.display = 'none';
+            document.getElementById('domNorthFTE').value = 0.4;
+            document.getElementById('domNorthFTEValue').textContent = '0.4';
+            document.getElementById('domSouthFTE').value = 0.4;
+            document.getElementById('domSouthFTEValue').textContent = '0.4';
+            document.getElementById('domTotalDisplay').textContent = '0.8';
+            document.getElementById('domImpact').textContent = '+0.8';
+
+            // Infrastructure toggles and sliders
+            document.getElementById('scenarioSDMHPCU').checked = false;
+            document.getElementById('sdmhPCUSliderContainer').style.display = 'none';
+            document.getElementById('sdmhPCUBeds').value = 14;
+            document.getElementById('sdmhPCUBedsValue').textContent = '14';
+            document.getElementById('sdmhPCUFTECalc').textContent = '0.7';
+            document.getElementById('sdmhPCUImpact').textContent = '+0.7 need';
+
+            document.getElementById('scenarioSHHPCU').checked = false;
+            document.getElementById('shhPCUSliderContainer').style.display = 'none';
+            document.getElementById('shhPCUBeds').value = 8;
+            document.getElementById('shhPCUBedsValue').textContent = '8';
+            document.getElementById('shhPCUFTECalc').textContent = '0.4';
+            document.getElementById('shhPCUImpact').textContent = '+0.4 need';
+
+            document.getElementById('scenarioNorthClinicExpands').checked = false;
+            document.getElementById('northClinicSliderContainer').style.display = 'none';
+            document.getElementById('northClinicDays').value = 1;
+            document.getElementById('northClinicDaysValue').textContent = '1';
+            document.getElementById('northClinicFTECalc').textContent = '0.2';
+            document.getElementById('northClinicImpact').textContent = '+0.2 need';
+
+            document.getElementById('scenarioSouthClinic').checked = false;
+            document.getElementById('southClinicSliderContainer').style.display = 'none';
+            document.getElementById('southClinicDays').value = 2;
+            document.getElementById('southClinicDaysValue').textContent = '2';
+            document.getElementById('southClinicFTECalc').textContent = '0.4';
+            document.getElementById('southClinicImpact').textContent = '+0.4 need';
+
+            document.getElementById('scenarioSHHExpands').checked = false;
+            document.getElementById('shhExpandsSliderContainer').style.display = 'none';
+            document.getElementById('shhExpandsBeds').value = 160;
+            document.getElementById('shhExpandsBedsValue').textContent = '160';
+            document.getElementById('shhExpandsFTECalc').textContent = '0.7';
+            document.getElementById('shhExpandsAddFTE').textContent = '0.2';
+            document.getElementById('shhExpandsImpact').textContent = '+0.2 need';
+
+            document.getElementById('scenarioSDMHExpands').checked = false;
+            document.getElementById('sdmhExpandsSliderContainer').style.display = 'none';
+            document.getElementById('sdmhExpandsBeds').value = 230;
+            document.getElementById('sdmhExpandsBedsValue').textContent = '230';
+            document.getElementById('sdmhExpandsFTECalc').textContent = '1.0';
+            document.getElementById('sdmhExpandsAddFTE').textContent = '0.4';
+            document.getElementById('sdmhExpandsImpact').textContent = '+0.4 need';
+
+            render();
+        });
+
+        // Initialize slider displays with calculated values
+        updateSDMHPCUDisplay();
+        updateSHHPCUDisplay();
+        updateNorthClinicDisplay();
+        updateSouthClinicDisplay();
+        updateSHHExpandsDisplay();
+        updateSDMHExpandsDisplay();
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
