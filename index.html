@@ -37,11 +37,27 @@
             font-size: 1rem;
         }
 
+        .section {
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
         .card-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            max-width: 900px;
             width: 100%;
         }
 
@@ -155,48 +171,56 @@
         <p class="subtitle">Staff Tools & Resources</p>
     </div>
 
-    <div class="card-container">
-        <a href="today.html" class="card card-today">
-            <div class="card-icon">🌤️</div>
-            <div class="card-title">Today</div>
-            <div class="card-description">Daily snapshot showing sites, on-call, leave, and weather at a glance.</div>
-        </a>
+    <div class="section">
+        <div class="section-header">Everyday Tools</div>
+        <div class="card-container">
+            <a href="today.html" class="card card-today">
+                <div class="card-icon">🌤️</div>
+                <div class="card-title">Today</div>
+                <div class="card-description">Daily snapshot showing sites, on-call, leave, and weather at a glance.</div>
+            </a>
 
-        <a href="oncall.html" class="card card-oncall">
-            <div class="card-icon">📞</div>
-            <div class="card-title">On-Call Roster</div>
-            <div class="card-description">View the after-hours on-call roster and personal schedules.</div>
-        </a>
+            <a href="oncall.html" class="card card-oncall">
+                <div class="card-icon">📞</div>
+                <div class="card-title">On-Call Roster</div>
+                <div class="card-description">View the after-hours on-call roster and personal schedules.</div>
+            </a>
 
-        <a href="roster.html" class="card card-roster">
-            <div class="card-icon">🏥</div>
-            <div class="card-title">Consultant Roster</div>
-            <div class="card-description">Weekly timetable showing which consultant is at each site.</div>
-        </a>
+            <a href="roster.html" class="card card-roster">
+                <div class="card-icon">🏥</div>
+                <div class="card-title">Consultant Roster</div>
+                <div class="card-description">Weekly timetable showing which consultant is at each site.</div>
+            </a>
 
-        <a href="leave.html" class="card card-leave">
-            <div class="card-icon">📅</div>
-            <div class="card-title">Leave Calendar</div>
-            <div class="card-description">View and plan annual leave, conference leave, and other absences across the team.</div>
-        </a>
+            <a href="leave.html" class="card card-leave">
+                <div class="card-icon">📅</div>
+                <div class="card-title">Leave Calendar</div>
+                <div class="card-description">View and plan annual leave, conference leave, and other absences across the team.</div>
+            </a>
 
-        <a href="summary.html" class="card card-summary">
-            <div class="card-icon">📊</div>
-            <div class="card-title">Leave Summary</div>
-            <div class="card-description">Check leave entitlements and balances for each staff specialist.</div>
-        </a>
+            <a href="summary.html" class="card card-summary">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Leave Summary</div>
+                <div class="card-description">Check leave entitlements and balances for each staff specialist.</div>
+            </a>
+        </div>
+    </div>
 
-        <a href="generator.html" class="card card-generator">
-            <div class="card-icon">🔧</div>
-            <div class="card-title">Roster Generator</div>
-            <div class="card-description">Generate FTE-equitable, leave-aware on-call rosters (Admin tool).</div>
-        </a>
+    <div class="section">
+        <div class="section-header">Admin & Planning</div>
+        <div class="card-container">
+            <a href="generator.html" class="card card-generator">
+                <div class="card-icon">🔧</div>
+                <div class="card-title">Roster Generator</div>
+                <div class="card-description">Generate FTE-equitable, leave-aware on-call rosters.</div>
+            </a>
 
-        <a href="planning.html" class="card card-planning">
-            <div class="card-icon">📈</div>
-            <div class="card-title">Workforce Planning</div>
-            <div class="card-description">Scenario modelling for FTE projections, infrastructure changes, and recruitment planning.</div>
-        </a>
+            <a href="planning.html" class="card card-planning">
+                <div class="card-icon">📈</div>
+                <div class="card-title">Workforce Planning</div>
+                <div class="card-description">Scenario modelling for FTE projections and recruitment planning.</div>
+            </a>
+        </div>
     </div>
 
     <div class="footer">
