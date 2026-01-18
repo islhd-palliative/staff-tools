@@ -561,7 +561,14 @@
                 <!-- North Region -->
                 <div class="card">
                     <div class="card-header north">North</div>
-                    <div class="card-content">
+                    <!-- Leave roster message (shown before 9 Feb 2026) -->
+                    <div id="northLeaveRoster" class="card-content" style="display: none;">
+                        <div style="color: #6b7280; font-style: italic; padding: 8px 0;">
+                            Leave roster in effect until 9 Feb
+                        </div>
+                    </div>
+                    <!-- Regular site display (shown from 9 Feb 2026) -->
+                    <div id="northSitesContent" class="card-content">
                         <div class="site-row">
                             <span class="site-name">PCU (Bulli)</span>
                             <span class="site-doctor" id="site-pcu">Thomas</span>
@@ -797,6 +804,12 @@
             return dow === 0 || dow === 6;
         }
 
+        // Check if North roster is active (on or after 9 Feb 2026)
+        function isNorthRosterActive(date) {
+            const northStartDate = new Date(2026, 1, 9); // 9 Feb 2026
+            return date >= northStartDate;
+        }
+
         // ==================== NAVIGATION ====================
         function previousDay() {
             currentDate.setDate(currentDate.getDate() - 1);
@@ -882,6 +895,20 @@
         }
 
         function renderSites(dow, date) {
+            // Check if North roster is active
+            const northActive = isNorthRosterActive(date);
+            const northLeaveRoster = document.getElementById('northLeaveRoster');
+            const northSitesContent = document.getElementById('northSitesContent');
+
+            if (northActive) {
+                northLeaveRoster.style.display = 'none';
+                northSitesContent.style.display = 'block';
+            } else {
+                northLeaveRoster.style.display = 'block';
+                northSitesContent.style.display = 'none';
+                // Still render South sites below
+            }
+
             // North region sites
             const northSites = {
                 'pcu': '—',
@@ -908,26 +935,30 @@
                 const location = schedule[dow];
                 if (location) {
                     const surname = staffNames[code].split(' ').pop();
-                    // North sites
-                    if (location === 'PCU') northSites.pcu = surname;
-                    if (location === 'Community' && !['SR', 'Fadz'].includes(code)) northSites.community = surname;
-                    if (location === 'TWH') northSites.twh = surname;
-                    if (location === 'SHH') northSites.shh = surname;
-                    if (location === 'Clinic') northSites.clinic = surname;
+                    // North sites (only if roster is active)
+                    if (northActive) {
+                        if (location === 'PCU') northSites.pcu = surname;
+                        if (location === 'Community' && !['SR', 'Fadz'].includes(code)) northSites.community = surname;
+                        if (location === 'TWH') northSites.twh = surname;
+                        if (location === 'SHH') northSites.shh = surname;
+                        if (location === 'Clinic') northSites.clinic = surname;
+                    }
                     // South sites
                     if (location === 'SDMH') southSites.sdmh.push(surname);
                     if (location === 'Community' && ['SR', 'Fadz'].includes(code)) southSites['south-community'].push(surname);
                 }
             });
 
-            // Update North DOM
-            Object.entries(northSites).forEach(([site, doctor]) => {
-                const el = document.getElementById(`site-${site}`);
-                if (el) {
-                    el.textContent = doctor;
-                    el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
-                }
-            });
+            // Update North DOM (only if active)
+            if (northActive) {
+                Object.entries(northSites).forEach(([site, doctor]) => {
+                    const el = document.getElementById(`site-${site}`);
+                    if (el) {
+                        el.textContent = doctor;
+                        el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
+                    }
+                });
+            }
 
             // Update South DOM
             Object.entries(southSites).forEach(([site, doctors]) => {

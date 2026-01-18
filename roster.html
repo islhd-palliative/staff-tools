@@ -316,13 +316,20 @@
         </div>
     </div>
 
-    <div class="info-banner">
+    <div class="info-banner" id="infoBanner">
         <strong>Effective from 9 February 2026</strong> — This roster shows the typical weekly consultant allocation. Actual coverage may vary due to leave or service needs.
     </div>
 
     <!-- North Region -->
     <div class="region-section">
         <div class="region-header">North (Illawarra)</div>
+
+        <!-- Coming Soon placeholder (shown before 9 Feb 2026) -->
+        <div id="northComingSoon" class="coming-soon" style="display: none;">
+            <div style="font-size: 1.2rem; margin-bottom: 8px; color: #374151;">Leave Roster Currently in Effect</div>
+            <div style="color: #6b7280;">The new consultant roster begins <strong>9 February 2026</strong>.</div>
+            <div style="color: #9ca3af; font-size: 0.85rem; margin-top: 12px;">Please check your email or StaffLink for the current leave coverage arrangements.</div>
+        </div>
 
         <!-- Service View -->
         <div id="northServiceView" class="service-table-container">
@@ -533,7 +540,7 @@
         </div>
     </div>
 
-    <div class="last-updated">Last updated: 16 January 2026</div>
+    <div class="last-updated">Last updated: 19 January 2026</div>
 
     <script>
         const btnServiceView = document.getElementById('btnServiceView');
@@ -546,8 +553,11 @@
         btnServiceView.addEventListener('click', () => {
             btnServiceView.classList.add('active');
             btnDoctorView.classList.remove('active');
-            northServiceView.style.display = 'block';
-            northDoctorView.style.display = 'none';
+            // Only show North views if roster is active
+            if (isNorthRosterActive()) {
+                northServiceView.style.display = 'block';
+                northDoctorView.style.display = 'none';
+            }
             southServiceView.style.display = 'block';
             southDoctorView.style.display = 'none';
         });
@@ -555,11 +565,43 @@
         btnDoctorView.addEventListener('click', () => {
             btnDoctorView.classList.add('active');
             btnServiceView.classList.remove('active');
-            northServiceView.style.display = 'none';
-            northDoctorView.style.display = 'grid';
+            // Only show North views if roster is active
+            if (isNorthRosterActive()) {
+                northServiceView.style.display = 'none';
+                northDoctorView.style.display = 'grid';
+            }
             southServiceView.style.display = 'none';
             southDoctorView.style.display = 'grid';
         });
+
+        // Check if North roster is active (on or after 9 Feb 2026)
+        function isNorthRosterActive() {
+            const today = new Date();
+            const northStartDate = new Date(2026, 1, 9); // 9 Feb 2026
+            return today >= northStartDate;
+        }
+
+        // Initialize view based on date
+        function initDateAwareViews() {
+            const northComingSoon = document.getElementById('northComingSoon');
+            const infoBanner = document.getElementById('infoBanner');
+
+            if (isNorthRosterActive()) {
+                // Show the full roster
+                northComingSoon.style.display = 'none';
+                northServiceView.style.display = 'block';
+                infoBanner.innerHTML = '<strong>North:</strong> Effective from 9 February 2026 · <strong>South:</strong> Effective from 16 January 2026 — Actual coverage may vary due to leave or service needs.';
+            } else {
+                // Show coming soon for North
+                northComingSoon.style.display = 'block';
+                northServiceView.style.display = 'none';
+                northDoctorView.style.display = 'none';
+                infoBanner.innerHTML = '<strong>South:</strong> Effective from 16 January 2026 · <strong>North:</strong> New roster begins 9 February 2026 — Actual coverage may vary due to leave or service needs.';
+            }
+        }
+
+        // Run on page load
+        initDateAwareViews();
     </script>
 </body>
 </html>
