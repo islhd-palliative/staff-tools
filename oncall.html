@@ -413,7 +413,7 @@
         <div id="upcomingList" class="upcoming-list"></div>
         <div class="stats">
             <div class="stat-item">
-                <span>Total on-calls this month:</span>
+                <span id="statsMonthLabel">Total on-calls this month:</span>
                 <span id="totalOncalls" class="stat-value">0</span>
             </div>
             <div class="stat-item">
@@ -452,7 +452,7 @@
     <div id="calendar" class="calendar-container"></div>
 
     <div class="summary-section">
-        <h3>On-Call Load Summary - January 2026</h3>
+        <h3 id="summaryTitle">On-Call Load Summary - January 2026</h3>
         <table class="summary-table">
             <thead>
                 <tr>
@@ -598,6 +598,10 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
+            // Get selected month for filtering stats
+            const { year, month } = getSelectedMonth();
+            const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
             let upcoming = [];
             let firstCount = 0;
             let secondCount = 0;
@@ -609,10 +613,12 @@
 
                 if (data.first === staffCode) {
                     role = '1st';
-                    firstCount++;
+                    // Only count for selected month
+                    if (dateKey.startsWith(monthPrefix)) firstCount++;
                 } else if (data.second === staffCode) {
                     role = '2nd';
-                    secondCount++;
+                    // Only count for selected month
+                    if (dateKey.startsWith(monthPrefix)) secondCount++;
                 }
 
                 if (role && date >= today) {
@@ -623,7 +629,10 @@
             // Sort upcoming by date
             upcoming.sort((a, b) => a.date - b.date);
 
-            // Next on-call
+            // Filter upcoming list to selected month only
+            const upcomingThisMonth = upcoming.filter(item => item.dateKey.startsWith(monthPrefix));
+
+            // Next on-call (still shows absolute next, regardless of month view)
             const nextOncallDiv = document.getElementById('nextOncall');
             if (upcoming.length > 0) {
                 const next = upcoming[0];
@@ -644,15 +653,18 @@
                 nextOncallDiv.classList.remove('today');
             }
 
-            // Upcoming list
+            // Upcoming list - show only selected month's on-calls
             const upcomingList = document.getElementById('upcomingList');
-            upcomingList.innerHTML = upcoming.slice(0, 10).map(item => `
+            upcomingList.innerHTML = upcomingThisMonth.slice(0, 10).map(item => `
                 <div class="upcoming-item ${item.role === '2nd' ? 'second' : ''}">
                     ${formatDateDisplay(item.date)} (${item.role})
                 </div>
             `).join('');
 
-            // Stats
+            // Stats (now filtered to selected month)
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('statsMonthLabel').textContent = `On-calls in ${months[month]}:`;
             document.getElementById('totalOncalls').textContent = firstCount + secondCount;
             document.getElementById('firstOncalls').textContent = firstCount;
             document.getElementById('secondOncalls').textContent = secondCount;
@@ -812,6 +824,11 @@
             // Get selected month
             const { year, month } = getSelectedMonth();
             const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            // Update summary title
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('summaryTitle').textContent = `On-Call Load Summary - ${months[month]} ${year}`;
 
             // Count on-calls per person
             const counts = {};
