@@ -1,0 +1,107 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "palliative-emergencies",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "There are several non-related conditions for which crisis management in the palliative care setting is crucial, either to reverse if reversal is indicated, or to provide rapid symptom relief in the dying patient. These are outlined below.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "malignant-spinal-cord-compression",
+    "chapterId": "palliative-emergencies",
+    "title": "Malignant Spinal Cord Compression",
+    "sortOrder": 2,
+    "content": {
+      "overview": "MSCC can occur with most tumour types, and should be considered where red flags exist. Severe pain in the back that wraps around to the front and is worst on lying flat is a significant cause for concern in a patient with known malignancy. Pain is almost always the first presenting symptom, and can proceed other neurological changes by many weeks. Weakness is present more than half the time at time of diagnosis but almost always follows pain. Paraesthesias or numbness are less common but still present in approximately 50% of patients. Bowel and bladder dysfunction are typically late signs. There needs to be a high index of suspicion to avoid irreversible neurological damage.\n\nThe approach is combination depending on the tumour type. If the clinical suspicion exists, dexamethasone should be given as a priority at 16mg PO or SC, followed by rapid imaging. MRI is recommended, as CT is often inadequate to visualise tumours. Maintain dexamethasone dosing of 8-16mg daily until a plan is developed.\n\nDepending on findings and fitness of patient, a combination of radiotherapy, chemotherapy and neurosurgery can be considered. Radiotherapy can be offered as analgesic and stabilisation for the older and frailer, while those with chemotherapy sensitive tumour should have this expedited with their medical oncology specialist. For the younger or fitter patients with reasonable prognosis, urgent neurosurgical input is suggested.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "superior-vena-cava-obstruction",
+    "chapterId": "palliative-emergencies",
+    "title": "Superior Vena Cava Obstruction",
+    "sortOrder": 3,
+    "content": {
+      "overview": "SVCO is due to the obstruction of blood flow through the SVC, through compression of the SVC by extrinsic or intrinsic tumour, from thrombosis, or from both coexisting. Most commonly this is due to a malignancy, although it can be due to issues with long lines indwelling for treatments like chemotherapy. It is quite common in patients suffering from primary lung carcinoma, especially small cell.\n\nSVCO commonly presents with facial and arm oedema, cough and breathlessness, as well as potentially positive Pemberton’s sign\n\nSimilarly to cord compression, urgent treatment with high dose dexamethasone 16mg, followed by urgent imaging and oncological input is suggested. Radiotherapy can be utilised as can chemotherapy in sensitive tumours, and some tumours may be stentable.\n\nIn patients who are approaching the end of life, it is recommended to maintain high dose dexamethasone 8-16mg daily to prevent worsening dyspnoea, and manage with sedation as described below.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "terminal-distress",
+    "chapterId": "palliative-emergencies",
+    "title": "Terminal Distress",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Severe distress at the end of life is not common but can occur due to rapid symptom decompensation, particularly breathlessness. Agitated delirium and uncontrolled pain are also potential causes of distress in the terminal phase of life. Severe distress at the end of life needs to be rapidly controlled for the benefit of the patient, their loved ones and any clinicians involved.\n\nIf a patient is suffering from uncontrolled pain at the end of life, it should be managed with parenteral opioids with rapid escalation to effect. Give subcutaneous PRN dose equivalent to their prior oral dosing every 30-60 minutes until pain control is reasonable, and then if sufficient prognosis remains commence a syringe driver to maintain efficacy. A reasonable syringe driver dose could be the dose required to gain analgesic control x 6 over 24 hours (e.g. if needed 10mg of subcutaneous morphine to become comfortable, consider 60mg/24 hours via syringe driver).\n\nMore detail on delirium management is given elsewhere in this volume (see X) but in the crisis setting, consider midazolam subcutaneously 2.5-5mg every 30 minutes until distress has settled prior to commencing an infusion\n\nFor patients with acute respiratory distress at the end of life with elevated respiratory rate and cyanosis, who are ‘gasping’ for air, the best management can be rapid sedation with some opioid for respiratory control. Provide oxygen if it is available, and administer 10mg of morphine and 10mg of midazolam intramuscularly. Repeat at 15 minutes if the patient is still in distress; the goal is to provide adequate sedation and anxiolysis whilst alleviating consciousness. The subcutaneous route is not preferred in the crisis setting due to slower medication onset. Severe respiratory distress of this nature is typically due to obstruction of main airways (or worsening SVCO as described above) and is not compatible with life for an extended period. If symptoms settle and the patient plateaus, consider a syringe driver of their background opioid dose plus 20-30mg of morphine, as well as a minimum 20-30mg of midazolam over 24 hours.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  },
+  {
+    "id": "terminal-exsanguination",
+    "chapterId": "palliative-emergencies",
+    "title": "Terminal Exsanguination",
+    "sortOrder": 5,
+    "content": {
+      "overview": "Life-threatening bleeding at the end of life can result from tumours around the airway or oesophagus, variceal ruptures, and patients with acute leukaemia in particular. They are good to anticipate as can be frightening to witness, but in clinical practice are rare. Interventions that make the most significant difference are counselling families and patients about the possibility, ensuring that if an event happens someone is with the patient at all times to provide reassurance, and provision of dark-coloured towels to disguise the bleeding.\n\nCrisis doses of morphine and midazolam may be helpful to provide rapid sedation but there is rarely time for these to be efficacious. If they are to be used, consider morphine 10mg with midazolam 10mg IM or IV every 10 minutes until the patient is unresponsive, up to 3 doses in a row. The subcutaneous route is not recommended due to peripheral vascular compromise.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  }
+]

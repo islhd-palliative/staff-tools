@@ -1,0 +1,332 @@
+[
+  {
+    "id": "nausea-and-vomiting",
+    "chapterId": "gi-symptoms",
+    "title": "Nausea and Vomiting",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Common causes of nausea and vomiting in the palliative care setting may include:\n\nThe choice of anti-emetic depends on the cause as there are three primary areas where drug therapy may be effective:\n\nOther agents include the broad-spectrum neuroleptics olanzapine and levomepromazine (which work in multiple areas), and the NK-1 inhibitors aprepitant and netupitant.\n\nChemoreceptor Trigger Zone Blockade\n\nFor metabolic, opioid and other drug-induced nausea:\n\nHaloperidol: 0.5-1mg immediately orally or SC, then 1.5mg orally at night. Haloperidol has the advantage of a long half-life enabling successful control with once-daily administration. Depending on response, can increase up to 3mg/24 hours. If poor control can give as BD divided dosing. Can be utilised as its own PRN medication, usually at 0.5-1mg TDS.\n\nMetoclopramide: 10-20mg orally or SC, then every 4–8 hours orally, maximum 60mg/24 hours (typically 30-40mg).\n\nOndansetron: 4-8mg orally or SC, then every 8–12 hours orally\n\nProchlorperazine: 10-25mg every 4–8 hours orally. Whilst prochlorperazine can be given subcutaneously, it has a high risk of tissue necrosis and is best avoided if possible.\n\nIf unsuccessful, or only partially successful, add a different class of drug to combine the effects with increased gastric emptying or vomiting centre blockade. Ondansetron may have an additive effect when used with other drugs that act on the CTZ.\n\nIncreasing Gastric Emptying\n\nFor gastric stasis (the aetiology in up to 10% of opioid-induced vomiting) and for combination with CTZ-blocking drugs, if needed:\n\nMetoclopramide: 10-20mg orally or SC, then every 4–8 hours orally or SC\n\nDomperidone: 10-20mg every 4–8 hours orally\n\nErythromycin: 75mg oral elixir every 8 hours (this may be useful in patients with denervated stomachs, eg following oesophagectomy)\n\nThese drugs may increase colic in patients with constipation or bowel obstruction. With upper gut obstruction vomiting may be increased due to reverse peristalsis, in which case this class of drug should be withdrawn.\n\nVomiting Centre Blockade\n\nThe following drugs may be used in combination with other classes of drugs in resistant cases and may be considered first-line treatment in vomiting due to gastrointestinal obstruction and steroid-resistant raised intracranial pressure:\n\nCyclizine: 25-50mg orally or SC, then 25-50mg every 8-12 hours orally or SC (the tablets are available on the special access scheme in Australia, or OTC in small packets as a trial). Usually requires hospital dispensing\n\nHyoscine hydrobromide: 0.3–0.6mg every 8 hours orally or 0.2-0.4mg SC every 8–12 hours\n\nPromethazine: 10–25mg orally, then every 12 hours orally\n\nBroad-Spectrum Anti-Emetic\n\nRecommended as a third line antiemetic, or where other measures are unsuccessful, these medications impact multiple receptors including dopaminergic, histamine and serotonin. The most common side effects are sedative and dry mouth:\n\nOlanzapine 5mg nocte (2.5mg in frail/elderly), increasing to maximum of 10mg nocte. Not subsidised for this indication on PBS. The oral wafer is well tolerated; the IM injection can be given SC.\n\nLevomepromazine ⚠ 6-12.5mg PO or SC stat, then every 6-12 hours. Levomepromazine is only available on the special access scheme in Australia. Doses above 20-25mg begin to favour sedation over antiemesis.\n\nImportant Points\n\nFor intractable symptoms consider:",
+      "causes": [
+        "Metabolic problems (including opioids)",
+        "Drug-induced",
+        "Upper gastrointestinal inflammation",
+        "Raised intracranial pressure",
+        "Constipation",
+        "Bowel obstruction",
+        "Chemoreceptor trigger zone (CTZ; D2 and 5HT3 receptors): haloperidol, prochlorperazine metoclopramide, ondansetron",
+        "Gastric emptying: domperidone, metoclopramide, erythromycin",
+        "Vomiting centre (H1 and cholinergic receptors): promethazine, cyclizine, hyoscine hydrobromide",
+        "Faecal loading or impaction (P.R. examination, x-ray)",
+        "Hypercalcaemia. Consider treatment with pamidronate 30-90mg IV, or Zoledronic acid (Zometa) 4-8mg IV. Denosumab 60-120mg SC may provide sustained benefit. Pamidronate can be infused subcutaneously on the palliative care unit.",
+        "Upper GI inflammation. All PPIs may assist here, we tend to utilise pantoprazole orally (20mg – 40mg once daily). Esomeprazole can be given by SC injection (20-40mg)",
+        "Bowel obstruction. Avoid bowel stimulants such as metoclopramide, senna, bisacodyl; see below for guidance on medical management",
+        "Raised intracranial pressure. Use steroids - dexamethasone 8-16mg daily and consider further investigation if within goals of care",
+        "Poor oral tolerance: consider treatment through the SC route using medication options already discussed. Continue with regular SC injections in place of the oral regimens, or consider a syringe driver for at least 48 hours. Haloperidol Is the typical first line antiemetic, as a once or twice daily bolus SC injection of 1-1.5mg can be quite effective. All medications that can be given as bolus injections described above can be given as equivalent syringe driver infusions (e.g., cyclizine 25mg TDS can be 75mg via syringe driver), but compatibility with other medications may vary",
+        "Consider rehydration with SC fluids, using 1-2 litres of normal saline or 4% dextrose and 1/5th normal saline, if desirable, if not within terminal phase of life"
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "aprepitant",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "cyclizine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "domperidone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "erythromycin",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "haloperidol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "levomepromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      },
+      {
+        "drugId": "metoclopramide",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 7
+      },
+      {
+        "drugId": "olanzapine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 8
+      },
+      {
+        "drugId": "ondansetron",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 9
+      },
+      {
+        "drugId": "prochlorperazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 10
+      },
+      {
+        "drugId": "promethazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 11
+      }
+    ]
+  },
+  {
+    "id": "constipation-faecal-impaction",
+    "chapterId": "gi-symptoms",
+    "title": "Constipation & Faecal Impaction",
+    "sortOrder": 2,
+    "content": {
+      "overview": "There is a considerable range of options for the management of these symptoms even in our local service. The following guidelines reflect a personal approach, which is not necessarily better than others. The most important recipe for success however is to have a systematized approach that includes regular review and sensible medication changes if required, using faecal softeners, bowel stimulants, contact evacuants, with or without rectal measures.\n\nProphylaxis When Commencing Regular Opioids\n\nIt is recommended that all patients on opioid treatment receive prophylaxis, even when reporting ‘normal’ bowel habit. The use of plain docusate is not recommended without the use of a stimulant, as docusate alone has been shown to provide no benefit in opioid-induced constipation.\n\nThe following stepwise approach is recommended:\n\nEvaluation of the Constipated Patient\n\nManagement of the Constipated Patient\n\nConsider the rationale for constipation, and address appropriately if possible\n\nSome patients are resistant to all these measures and require the combined use of oral aperients and rectal measures, using suppositories every 2-3 days and/or enemas once or twice a week.\n\nLactulose is less preferred in palliative care patients, outside those with liver cirrhosis who require it to assist in prevention or management of encephalopathy, due to its propensity to cause bloating and abdominal discomfort. If its use is desired, I tend to start at 10mls TDS and titrate gradually to effect.\n\nManagement of Severe Constipation with High Colonic Loading\n\nFor high colonic loading with ‘hard’ faeces in rectum, the following stepwise approach may be followed:\n\nAfter success, commence an aperients regimen, which must be more aggressive than previous (failed) aperient regimen. If the macrogol 3350 flushing approach succeeded then it is often easy to maintain on 1-2 sachets Movicol (or 2-3 scoops Osmolax) every morning or night plus or minus docusate with senna.\n\nFor high colonic loading with ‘soft’ faeces or with an empty rectum on PR, the following steps are recommended:\n\nThese approaches may be inappropriate in the last days of life when bowel management should be dictated by symptoms and common sense.",
+      "causes": [
+        "Docusate with senna: 2 tablets initially at night time, if ineffective add in two tablets in the morning. It is reasonable to prescribe senna alone, however it is harder to aquire. If ineffective after 48 hours, proceed to the next step.",
+        "Bisacodyl: 5-10mg. If effective, continue with this and consider reducing the dose if it causes abdominal pain or diarrhoea. If ineffective after 48 hours, proceed to the next step.",
+        "Glycerine or bisacodyl suppository immediately. Increase docusate sodium with senna or bisacodyl to 2-3 tablets twice-daily. If ineffective after 48 hours, consider addition of a macrogol or trial of methylnaltrexone.",
+        "Take a history of duration, extent and nature of constipation including whether stool is hard, soft or spurious (diarrhoea)",
+        "Abdominal examination to detect colonic loading. Rectal examination to determine whether stool is hard or soft, impacted or not impacted. Dilated rectum suggests high colonic loading or impaction. A lax anal tone suggests a neurological problem, such as disease affecting the cauda equina.",
+        "Obtain x-ray when extensive faecal loading is suspected",
+        "Proceed to disimpaction of the rectum if indicated following adequate analgesia and sedation (e.g. midazolam 2.5–5mg plus an opioid, both by SC injection).",
+        "For opioid induced constipation, see above for agents used in prophylaxis. The addition of more stimulant (as the opioids decrease prokinesis) as well as ensuring there are no hard stool in the rectum is the first approach. For severe constipation with opioid use, trial methylnaltrexone adjusted for weight and renal function",
+        "For patients >62kg, give 12mg SC",
+        "For patients between 38 – 62kg, give 8mg SC",
+        "For patients below 38kg, give 0.15mg/kg SC",
+        "Reduce dose by 50% if moderate renal impairment",
+        "Repeat dose after 2 days if minimal effect. Some patients may require regular dosing.",
+        "Consider use of a macrogol 3350 in addition to senna or bisacodyl. These agents act as iso-osmotic medications, and do not have a substantial effect on body hydration, although the brand Movicol can cause electrolyte dyscrasia in renal impairment and Osmolax or Clearlax may be preferred.",
+        "Low dose bowel-preparations similar to colonoscopy medicines can be tried. Oral fleet drops (5-10mls of Fleet Phosphate solution) given 1-2 times daily can be quite efficacious, although there is a need to be mindful of hyperphosphataemia in chronic use. Oral sodium picosulfate drops (1-2mls ducolax) given BD can be similarly effective.",
+        "Oral Epsom salts 5-10gm (1-0 teaspoons) twice daily dissolved in less than 40mls of water provides a potent alternative to the above.",
+        "If needing rectal intervention, trial Microlax enema initially, and proceed to fleet if poor response",
+        "Softening regimen avoiding bowel stimulants: e.g. daily Microlax enemas plus oral liquid paraffin 30mL 2-3 times daily; or docusate sodium 240mg 3 times daily",
+        "Try macrogol 3350 as a bowel flusher. Begin at 2 sachets twice daily, increasing up to 4 sachets twice daily if minimal effect.",
+        "Consider addition of a low-dose bowel preparation agent, oral fleet phosphate 10mls twice daily, or sodium picosulfate 2.5mls twice daily. Epsom salts 10g twice daily (2 teaspoons) can be used as substitute",
+        "If unsuccessful with the above, consider full-dose bowel preparation agent, and repeat if necessary",
+        "If opioid use is a contributor, consider addition of methylnaltrexone as described above.",
+        "Evacuation: Try macrogol as described above. If insufficient, consider addition of fleet phosphate or sodium picosulfate as above, or Epsom salts as substitute.",
+        "If opioid use is a contributor, consider addition of methylnaltrexone as described above."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "docusate",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "lactulose",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "macrogol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "senna",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  },
+  {
+    "id": "diarrhoea",
+    "chapterId": "gi-symptoms",
+    "title": "Diarrhoea",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Diarrhoea in the palliative setting can be complex to manage. Excluding contributing factors such as faecal impaction leading to overflow as described above is crucial, to ensure a hidden constipation is not missed. Modern cancer therapeutics can cause an inflammatory diarrhoea which is best managed acutely by oncologists, and often requires high dose steroids and sometimes monoclonal antibodies.\n\nFor patients with bowel resection, particularly those with significant loops of bowel gone, diarrhoea can be incredibly challenging to manage, as there are not sufficient receptors present for pharmacological agents to have impact. Regular nursing care, dietary modifications and stoma input (if stoma present) can be the mainstay in these patients.\n\nIn patients with pancreatic insufficiency due to prior surgery or tumour, who present with fatty diarrhoea, ensure adequate provision of Creon at mealtimes, titrating to effect. Patients suffering neuroendocrine tumours may require somatostatin injection to assist in diarrhoea control. Specific dose guidance for these patients is outside the scope of this book.\n\nIf anti-motility agents are required, consider the following:\n\nLoperamide 2-4mg statim and then regularly as required, typically 3-4 times daily.\n\nDiphenoxylate/Atropine (Lomotil) 2.5-5mg 3 times daily, up to 4 times daily if poor control.\n\nCodeine phosphate 30-60mg every 4 hours.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "atropine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "codeine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "loperamide",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "malignant-bowel-obstruction",
+    "chapterId": "gi-symptoms",
+    "title": "Malignant Bowel Obstruction",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Malignant bowel obstruction (MBO) is common, particularly in GI primary cancers, although many other malignancies can result in an MBO due to metastasis. Increasing peritumoural oedema or a metastatic deposit can ‘trap’ the bowel resulting in a twisting and trapping. Sometimes this can wax and wane, with intermittent transit of intestinal contents – this is a partial obstruction. Complete obstruction tends to result in obstipation with altered bowel sound pitch. The most common symptoms that occur with an MBO are nausea, abdominal pain, bowel changes and distention.\n\nSurgical Management\n\nThis should be considered first. Generally surgical treatment is the best form of management of bowel obstruction under the following conditions:\n\nA fit and willing patient\n\nA single site of obstruction or a potentially reversible cause.\n\nModern stenting techniques should be considered for patients with proximal obstruction of the duodenum or gastric outlet where appropriate and not in the terminal phase. Otherwise medical palliation should be the approach.\n\nMedical Management\n\nThe goals of management are to:\n\nConsider the following approach:\n\nFor patients with refractory nausea despite the above, we prefer levomepromazine as discussed earlier. Patients will hopefully become free of nausea but may still vomit. This is worth explaining to the patient and family. Some patients require continual parenteral treatment, while others may be subsequently managed using the same drugs orally. Some patients have repeated episodes of acute obstruction that can be well-managed at home with a few days of treatment, avoiding repeated episodes of hospitalization. Good planning with available drugs in the household and written orders for nurses to follow are required for this. The availability of subcutaneous or intravenous fluids may be required.\n\nIf recurrent obstructions become a feature and prognosis is reasonable, consideration of a venting gastrostomy (a “backwards PEG tube”) may be beneficial for symptom control, and allow patients to self-empty their gastric contents (or with assistance) rather than requiring ongoing nasogastric tube placement. These can be done in consultation with interventional radiology, which can be very useful in patients who are high risk for endoscopic procedure.",
+      "causes": [
+        "Reduce nausea and vomiting using antiemetics by the injectable route. Some patients may continue to experience vomiting once or twice a day in the absence of nausea.",
+        "Reduce high secretory volumes with octreotide or hyoscine butylbromide. If there is ongoing high volume output, consider a nasogastric tube for symptomatic relief in the amenable patent.",
+        "Reduce abdominal pain and colic utilising analgesics and anti-peristaltic agents",
+        "Reduce peritumoural oedema with high dose corticosteroids.",
+        "Add dexamethasone 8mg subcutaneously daily, or 4mg twice daily, to assist with pain and decrease peritumoural oedema",
+        "Utilise haloperidol as the first line antiemetic, either via regular SC injection or via syringe driver. Avoid metoclopramide as it can worsen colic, unless trying to “push through” a partial obstruction. Cyclizine can used but be aware that it will slow kinesis further.",
+        "Hyoscine butylbromide 40mg daily via infusion will assist with colic, can utilise 60-80mg if secretory control is desired",
+        "If secretions persist despite hyoscine, add octreotide 500mcg/24 hours via syringe driver. This can be increased to 1000mcg if minimal effect, but increasing further is rarely beneficial.",
+        "Manage pain with opioids added to the syringe driver as needed: if the patient is already taking oral opioids convert to infusion and add as appropriate. If opioid-naïve, consider 10-15mg of morphine over 24 hours as a starting dose."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "levomepromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "colic",
+    "chapterId": "gi-symptoms",
+    "title": "Colic",
+    "sortOrder": 5,
+    "content": {
+      "overview": "Often associated with bowel obstruction above. If an MBO is suspected, should investigate and manage as above, otherwise consider cessation of stimulant laxatives and switch to liquid paraffin 30mls two-three times daily, considering enemas if required, until bowels move well.\n\nUtilise SC hyoscine butylbromide 20mg every 4-8 hours, via syringe driver if needed.\n\nOnce the oral route is manageable and bowels are opening, consider an oral antispasmodic such as Lomotil 2.5-5mg three times daily, or mebeverine 135-270mg three times daily. Can also continue oral hyoscine butylbromide 20mg four times daily, although this is poorly bioavailable. May benefit from hyoscine hydrobromide 0.3mg every 8 hours instead.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "hyoscine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "squashed-stomach-syndrome",
+    "chapterId": "gi-symptoms",
+    "title": "Squashed Stomach Syndrome",
+    "sortOrder": 6,
+    "content": {
+      "overview": "This condition is characterised by dyspeptic symptoms associated with compression of the stomach from hepatomegaly or an upper abdominal tumour. Symptoms include: fullness, early satiety, epigastric pain, flatulence, nausea, vomiting, heartburn, hiccups. Treatment is as follows:",
+      "causes": [
+        "Antiflatulent: mylanta 10mL every 4–6 hours; simethicone 100-200mg with meals or every 6 hours.",
+        "Acid reduction: PPI at effective dose in the morning, esomeprazole 20mg equivalent or higher.",
+        "Increase gastric emptying: metoclopramide 10–20mg every 4–8 hours; domperidone 10-20mg every 6 hours.",
+        "Dietary advice regarding small meals."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "anorexia",
+    "chapterId": "gi-symptoms",
+    "title": "Anorexia",
+    "sortOrder": 7,
+    "content": {
+      "overview": "This is a common and sometimes distressing symptom in people with advanced cancer or in other terminal care situations often associated with weakness, decreased energy and low well-being. The evidence for pharmacological management is poor, with signals only and recent trial evidence non-promising. Appetite stimulation may be possible, but weight loss will typically continue. Referral to dietician may be helpful. The best management is often reassurance and permission to eat foods that provide joy, rather than attempting to hit nutrient goals. If desired, pharmacological options include:\n\nDexamethasone 4mg daily, discontinue after 5 days if no effect. Reduce the dose to a minimal effective level where there is a good response. Dexamethasone may also enhance well-being, strength and energy. Dexamethasone may not be appropriate in patients with a life expectancy beyond 2 or 3 months due to progressive side effects including the potential to cause proximal myopathy.\n\nMirtazepine 15mg at night (start at 7.5mg for frail/elderly), increasing to up to 30mg at night - higher doses lose appetite and sleep benefits.\n\nMegestrol acetate 160mg –800mg daily (may require the largest dose to be effective)",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "hiccups-singultus",
+    "chapterId": "gi-symptoms",
+    "title": "Hiccups (Singultus)",
+    "sortOrder": 8,
+    "content": {
+      "overview": "The aetiology of hiccup is complex and may be multifactorial. Causes may include gastric distention, diaphragmatic or phrenic nerve irritation, cerebral oedema from brain tumours, and infection. We attempt to remove any stimulating issues if possible, and consider the following pharmacological options. Local practice would be to typically consider haloperidol as a first line agent, followed by gabapentin. Baclofen is considered particularly in suspicion of oesophageal spasm. Other cases are outlined below.\n\nHaloperidol 1-1.5mg statim then 1.5mg at night is a good starting point, especially for patients who have nausea, to decrease the hiccup reflex. SC doses can be given in the distressed patient who is struggling to swallow. Can increase up to 3mg at night for maintenance if needed\n\nChlorpromazine 12.52-25 statim, then up to 25mg every 8 hours orally can be used as an alternative to haloperidol. Chlorpromazine 25mg IV may be used in a distressed patient if access is available.\n\nGabapentin 100-300mg at night, lower doses in the elderly.\n\nBaclofen may be beneficial although it can be sedating or cause postural hypotension even in small doses. Start with 10mg statim then 5mg three times a day, can gradually increase with caution up to 10-20mg three times daily if needed.\n\nDexamethasone 8-16mg PO if raised intracranial pressure from tumour suspected or seen on imaging, reduce as tolerated to a maintenance dose as able.\n\nMetoclopramide (20mg orally or SC) plus antiflatulent (e.g. mylanta 20mL or simethicone 200mg) can be utilised to promote gastric emptying, with maintenance of 10mg three times daily as required.\n\nPharyngeal stimulation: swallow 2 heaped teaspoons of granulated sugar or 2 glasses of a liqueur; drink from ‘wrong’ side of a cup\n\nNotably patients on dexamethasone may experience hiccup secondary to commencing the steroid medication, thought to be due to lowering the reflex arc associated with hiccup. It is more common with higher doses, i.e. more than 4mg of dexamethasone daily. If this is a consideration, we recommend withdrawal of dexamethasone and substitution with another steroid medication, if ongoing steroids are necessary for other symptom control. Our preference is to utilise prednisone at a 1:5 ratio (so 1mg of dexamethasone is approximately 5mg of prednisone).",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "baclofen",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "chlorpromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "gabapentin",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "haloperidol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "metoclopramide",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      }
+    ]
+  }
+]

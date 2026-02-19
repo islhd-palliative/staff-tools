@@ -1,0 +1,206 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "urinary-symptoms",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Urinary problems in palliative care can be a significant limitation on quality of life. There is an increased prevalence as the end of life approaches, with many patients proceeding to requiring catheterisation to relieve bladder retention.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "frequency-and-urgency",
+    "chapterId": "urinary-symptoms",
+    "title": "Frequency and Urgency",
+    "sortOrder": 2,
+    "content": {
+      "overview": "For patients suffering from frequency or urgency, should consider reversing treatable causes whenever possible, including:",
+      "causes": [
+        "Bladder outlet obstruction, irritation or compression by pelvic tumour:",
+        "TURP for prostatomegaly in the fit and well",
+        "Dexamethasone 8mg daily for 5 days followed by 4mg maintenance where pelvic tumour is implicated.",
+        "Chemotherapy or radiotherapy may be options in the appropriate patient",
+        "Infection, consider trial of appropriate antibiotics",
+        "Diuretic therapy, wean back on over-diuresis",
+        "Oversedation leading to loss of control",
+        "Polyuria which will not respond to the treatment options outlined below (check BSL in patients on steroids or with upper-GI tumours)"
+      ],
+      "sections": [
+        {
+          "heading": "Treatment",
+          "content": "Treatment options include the following:\n\nUral sachets (urgency): 1-2 orally, four times a day\n\nCranberry juice or tablets for urgency (available in most pharmacies): Adjust dose to response.\n\nAnticholinergic drugs, local practice prefers amitriptyline first line, starting at 10mg nocte and titrating up to 25mg if minimal improvement. These doses will generally not result in urinary retention but be mindful of the potential side effect and consider the need to bladder scan. Propantheline 15-30mg every 6-8 hours can be an alternative, particularly in the diaphoretic patient. Consider oxybutynin as a patch in patients with poor oral tolerance although this can cause skin reactions, and has the potential to make the frail more likely to fall. Solinefacin can be trialled at 5mg at night if the above is ineffective, it is unfortunately not subsidised on the PBS.\n\nNSAIDs can be used, although there is a small risk of aggravating haematuria. Choice depends on prescriber preference, locally we utilise celexocib 200mg daily as our first line NSAID. Be cautious in renal failure, although short courses of NSAIDs should not be avoided if considered beneficial as they are usually well tolerated with only transient effects.\n\nMirabegron is a beta3-adrenoreceptor agonist that may be more effective than anticholinergic medicines, but is not currently on the PBS. Start at 25mg once daily, consider increasing to 50mg once daily if needed and if well tolerated.\n\nNon-drug measures including regular time-contingent voiding (every 1–3 hours), ready availability of bottle, bedpan or commode, proximity to toilet and a rapid nursing response time.",
+          "drugReferences": [
+            {
+              "drugId": "amitriptyline",
+              "contextNote": null,
+              "dosingInContext": "Anticholinergic drugs, local practice prefers amitriptyline first line, starting at 10mg nocte and titrating up to 25mg if minimal improvement",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "oxybutynin",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "propantheline",
+              "contextNote": null,
+              "dosingInContext": "Propantheline 15-30mg every 6-8 hours can be an alternative, particularly in the diaphoretic patient",
+              "sortOrder": 3
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "bladder-spasm",
+    "chapterId": "urinary-symptoms",
+    "title": "Bladder Spasm",
+    "sortOrder": 3,
+    "content": {
+      "overview": "This is usually experienced as painful spasm in the lower abdomen, and can occur in both catetherised and non-catheterised patients. Leaking around an indwelling catheter is a sign of bladder spasm. Treatable causes should be considered. These include:",
+      "causes": [
+        "Infection requiring antibiotics, with change of indwelling catheter or using intermittent catheterisation every 4–6 hours",
+        "Catheter irritation requiring reduction in balloon volume",
+        "Catheter sludging requiring bladder washouts or continuous irrigation."
+      ],
+      "sections": [
+        {
+          "heading": "Treatment",
+          "content": "Treatment options include the following:\n\nEffective analgesia with an NSAID such as naproxen 250–500mg every 12 hours + morphine if required every 4 hours titrated upward until there is effective relief of pain\n\nAnticholinergic drugs, consider amitriptyline at night time as a first line choice. Oxybutinin orally 5-10mg twice daily (2.5mg in the elderly) can be helpful. Mirabegron is useful in patients with overactive or as a patch can\n\nAmitriptyline 10–50mg at night is recommended as a first line. Can consider trialling oxybutynin, solinfacin, propantheline or mirabegron as described above although evidence is more limited.\n\nConsider hyoscine butylbromide 20mg SC twice daily (or 40mg via infusion).\n\nNerve blocks may be trialled by intervention radiology, with intervention possible at the inferior hypogastric plexus.\n\nChange the catheter if one is present, and consider decreasing the gauge to prevent spasm recurrence.",
+          "drugReferences": [
+            {
+              "drugId": "amitriptyline",
+              "contextNote": null,
+              "dosingInContext": "Treatment options include the following:\n\nEffective analgesia with an NSAID such as naproxen 250–500mg every 12 hours + morphine if required every 4 hours titrated upward until there is effective relief of pain\n\nAnticholinergic drugs, consider amitriptyline at night time as a first line choice",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "hyoscine",
+              "contextNote": null,
+              "dosingInContext": "Consider hyoscine butylbromide 20mg SC twice daily (or 40mg via infusion)",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "Treatment options include the following:\n\nEffective analgesia with an NSAID such as naproxen 250–500mg every 12 hours + morphine if required every 4 hours titrated upward until there is effective relief of pain\n\nAnticholinergic drugs, consider amitriptyline at night time as a first line choice",
+              "sortOrder": 3
+            },
+            {
+              "drugId": "naproxen",
+              "contextNote": null,
+              "dosingInContext": "Treatment options include the following:\n\nEffective analgesia with an NSAID such as naproxen 250–500mg every 12 hours + morphine if required every 4 hours titrated upward until there is effective relief of pain\n\nAnticholinergic drugs, consider amitriptyline at night time as a first line choice",
+              "sortOrder": 4
+            },
+            {
+              "drugId": "oxybutynin",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            },
+            {
+              "drugId": "propantheline",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "hesitancy",
+    "chapterId": "urinary-symptoms",
+    "title": "Hesitancy",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Consider treatable causes including:",
+      "causes": [
+        "Withdrawal of drugs with anticholinergic side effects",
+        "Opioid induced hesitancy may respond to changing the opioid, and is often relieved by co-prescribing prazosin (see below).",
+        "Assisted posture where there is difficulty voiding lying down",
+        "Prostatomegaly.",
+        "Loaded rectum"
+      ],
+      "sections": [
+        {
+          "heading": "Treatment",
+          "content": "Treatment options include the following:\n\nPrazosin 0.5–1mg once or twice daily. Mode of action is sympathetic antagonism, which promotes voiding\n\nTamsulosin 400mcg once daily. Same mode of action as prazosin but more selective for receptors in the bladder. Also more expensive unless the patient qualifies for the RPBS scheme, although generics are now available.\n\nDutasteride 500mcg daily, this is given in combination with tamsulosin. Potentially useful in male patients with prostatomegaly; alters levels of serum testosterone.",
+          "drugReferences": [
+            {
+              "drugId": "dutasteride",
+              "contextNote": null,
+              "dosingInContext": "Dutasteride 500mcg daily, this is given in combination with tamsulosin",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "prazosin",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "tamsulosin",
+              "contextNote": null,
+              "dosingInContext": "Mode of action is sympathetic antagonism, which promotes voiding\n\nTamsulosin 400mcg once daily",
+              "sortOrder": 3
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "haematuria",
+    "chapterId": "urinary-symptoms",
+    "title": "Haematuria",
+    "sortOrder": 5,
+    "content": {
+      "overview": "The primary medication utilised in our setting is tranexamic acid. Consider 1gm three times daily until bleeding has ceased, then stop and evaluate. If bleeding returns, the patient may need a maintenance dose of 500mg two to three times daily. Half doses in patients with severe renal failure. There is a theoretical risk of clot retention in the bladder although this has not been seen locally.\n\nFor patients with ongoing severe bleeding with clots, urological input is required to consider continuous bladder irrigation for severe bleeding and clots.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "tranexamic",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "retention-at-the-end-of-life",
+    "chapterId": "urinary-symptoms",
+    "title": "Retention at the End of Life",
+    "sortOrder": 6,
+    "content": {
+      "overview": "Urinary retention at the end of life is common, likely due to a combination of iatrogenic factors from medications utilised, as well as from general physical decline and frailty. The primary concern is discomfort leading to severe restlessness in the otherwise poorly responsive patient who is too unwell to void, which may lead to inappropriate treatment with sedatives and tranquilisers.\n\nFor patients at the end of life, regular examination of the lower abdomen, preferably with non-invasive bladder scan, is recommended, with progression to an indwelling catheter strongly recommended in patients who demonstrate increasing urinary volumes without relief. Proactive discussion with family members and with patients themselves when able will often make this process less distressing.\n\nUse of low dose midazolam as an amnestic (consider 2.5mg subcut) to aid in passing a catheter is quite reasonable in this setting.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  }
+]

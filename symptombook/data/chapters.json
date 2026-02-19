@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pain-control",
+    "title": "Pain Control",
+    "sortOrder": 1
+  },
+  {
+    "id": "gi-symptoms",
+    "title": "Gastrointestinal Symptoms",
+    "sortOrder": 2
+  },
+  {
+    "id": "respiratory-symptoms",
+    "title": "Respiratory Symptoms",
+    "sortOrder": 3
+  },
+  {
+    "id": "urinary-symptoms",
+    "title": "Urinary Symptoms",
+    "sortOrder": 4
+  },
+  {
+    "id": "itch",
+    "title": "Itch",
+    "sortOrder": 5
+  },
+  {
+    "id": "motor-neurone-disease",
+    "title": "Motor Neurone Disease",
+    "sortOrder": 6
+  },
+  {
+    "id": "delirium-seizures",
+    "title": "Delirium & Seizures",
+    "sortOrder": 7
+  },
+  {
+    "id": "palliative-emergencies",
+    "title": "Palliative Emergencies",
+    "sortOrder": 8
+  },
+  {
+    "id": "last-days",
+    "title": "The Last Days of Life",
+    "sortOrder": 9
+  }
+]

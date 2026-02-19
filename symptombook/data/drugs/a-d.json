@@ -1,0 +1,624 @@
+[
+  {
+    "id": "adrenaline",
+    "name": "Adrenaline",
+    "drugClass": "Sympathomimetic",
+    "aliases": [
+      "Epinephrine",
+      "EpiPen"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "adrenaline: 1:10,000 adrenaline-soaked non-adherent gauze dressings applied to wound surface. adrenaline 2-3 fold.",
+    "warningLevel": "caution",
+    "indicationIds": [
+      "haemorrhagic-areas"
+    ]
+  },
+  {
+    "id": "amitriptyline",
+    "name": "Amitriptyline",
+    "drugClass": "Tricyclic Antidepressant",
+    "aliases": [
+      "Endep"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "amitriptyline 10mg at night, increasing up to 50mg. amitriptyline, gabapentin, and dexamethasone. amitriptyline in patients with insomnia, clonidine for patients with hallucinations, or valproate for patients with irritability or seizure risk.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "cough",
+      "frequency-and-urgency",
+      "neuropathic-pain",
+      "sialorrhoea-bronchial-secretions"
+    ]
+  },
+  {
+    "id": "aprepitant",
+    "name": "Aprepitant",
+    "drugClass": "NK1 Antagonist",
+    "aliases": [
+      "Emend"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "165mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "aprepitant and netupitant. aprepitant 165mg every three days can resolve this rapidly, although expense and availabity may limit access.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch",
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "atropine",
+    "name": "Atropine",
+    "drugClass": "Anticholinergic",
+    "aliases": null,
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "1%",
+        "frequency": "three times daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Atropine (Lomotil) 2. Atropine drops (ophthalmic) can be given orally, the 1% formulation, 1-2 drops three times daily (poor lip seal can limit use).",
+    "warningLevel": "none",
+    "indicationIds": [
+      "diarrhoea",
+      "sialorrhoea-bronchial-secretions"
+    ]
+  },
+  {
+    "id": "baclofen",
+    "name": "Baclofen",
+    "drugClass": "Muscle Relaxant",
+    "aliases": [
+      "Lioresal"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "5mg",
+        "frequency": "three times daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Baclofen is considered particularly in suspicion of oesophageal spasm. Baclofen may be beneficial although it can be sedating or cause postural hypotension even in small doses. baclofen 5mg two-three times daily, up to 20mg three times daily with cautious titration.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hiccups-singultus",
+      "spasticity"
+    ]
+  },
+  {
+    "id": "buprenorphine",
+    "name": "Buprenorphine",
+    "drugClass": "Strong Opioid (Partial Agonist)",
+    "aliases": [
+      "Norspan",
+      "Subutex",
+      "Temgesic"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "12mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "buprenorphine patches are generally continued with the addition of SC morphine or hydromorphone. buprenorphine patches, controlled-release oxycodone, modified release hydromorphone, a wider dose range and flexibility of immediate-release formulations of oxycodone, hydromorphone and fentanyl, and a growing place for the use of methadone in opioid rotation for resistant pain situations. Buprenorphine patches are useful in situations where a low initial opioid dose is indicated (Buprenorphine 5 ≡ 12mg morphine / 24 hours) and can be supplemented by immediate release preparations as for fentanyl.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "intravenous-drug-users",
+      "opioid-conversions",
+      "renal-failure",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "capsaicin",
+    "name": "Capsaicin",
+    "drugClass": "Topical Analgesic",
+    "aliases": [
+      "Zostrix"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "capsaicin cream if itch is local only, 0.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "carbamazepine",
+    "name": "Carbamazepine",
+    "drugClass": "Anticonvulsant",
+    "aliases": [
+      "Tegretol"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "100-400mg",
+        "frequency": "every 12 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Carbamazepine (Tegretol) 100-400mg every 12 hours (but high frequency of side effects) may also be considered.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "celecoxib",
+    "name": "Celecoxib",
+    "drugClass": "COX-2 Inhibitor",
+    "aliases": [
+      "Celebrex"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "200mg",
+        "frequency": "twice daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "celecoxib 200mg daily for 5 days and assess response, this can be given as 100mg twice daily if preferred.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nonsteroidal-anti-inflammatories"
+    ]
+  },
+  {
+    "id": "cetirizine",
+    "name": "Cetirizine",
+    "drugClass": "Antihistamine",
+    "aliases": [
+      "Zyrtec"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "cetirizine.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "chlorpromazine",
+    "name": "Chlorpromazine",
+    "drugClass": "Phenothiazine / Antipsychotic",
+    "aliases": [
+      "Largactil"
+    ],
+    "dosing": [
+      {
+        "route": "iv",
+        "dose": "25mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "chlorpromazine 12. chlorpromazine. Chlorpromazine 12.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hiccups-singultus",
+      "the-non-terminal-patient",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "cholestyramine",
+    "name": "Cholestyramine",
+    "drugClass": "Bile Acid Sequestrant",
+    "aliases": [
+      "Questran"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "4g",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "cholestyramine 4gm twice-daily or ursodeoxycholic acid 10mg/kg/day (rounded to nearest tablet) at night although both cholestyramine and Ursofalk are poorly tolerated.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "clonazepam",
+    "name": "Clonazepam",
+    "drugClass": "Benzodiazepine",
+    "aliases": [
+      "Rivotril",
+      "Paxam"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "clonazepam 0. Clonazepam may be used as an alternative or as an adjunct to midazolam, and may be administered either as regular injection or via syringe driver. clonazepam over 24 hours.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "anxiolytics",
+      "continuing-symptom-control",
+      "seizure",
+      "terminal-care",
+      "the-non-terminal-patient",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "clonidine",
+    "name": "Clonidine",
+    "drugClass": "Alpha-2 Agonist",
+    "aliases": [
+      "Catapres"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Clonidine shows promise in the treatment of delirium without dementia, due to decreasing catecholamines within the central nervous system. clonidine for patients with hallucinations, or valproate for patients with irritability or seizure risk. Clonidine is an alpha-2 receptor agonist widely utilised for its blood pressure effects at the alpha-1 receptor that has benefit in neuropathic pain due to disinhibition on pain transmission in the spinal horn, amongst other central effects.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "epidural-and-intrathecal-pain-control",
+      "intractable-pain",
+      "neuropathic-pain",
+      "the-non-terminal-patient"
+    ]
+  },
+  {
+    "id": "codeine",
+    "name": "Codeine",
+    "drugClass": "Weak Opioid",
+    "aliases": null,
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "30-60mg",
+        "frequency": "every 4 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Codeine phosphate 30-60mg every 4 hours. codeine or tramadol without good effect. codeine it is dependent on CYP2D6 metabolism, and can vary from practically none to substantial.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "cough",
+      "diarrhoea",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "cyclizine",
+    "name": "Cyclizine",
+    "drugClass": "Antihistamine / Antiemetic",
+    "aliases": [
+      "Valoid"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "25-50mg",
+        "frequency": "every 8-12 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Cyclizine: 25-50mg orally or SC, then 25-50mg every 8-12 hours orally or SC (the tablets are available on the special access scheme in Australia, or OTC in small packets as a trial).",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "dexamethasone",
+    "name": "Dexamethasone",
+    "drugClass": "Corticosteroid",
+    "aliases": [
+      "Decadron"
+    ],
+    "dosing": [
+      {
+        "route": "subcut",
+        "dose": "8-16mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "oral",
+        "dose": "4mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Dexamethasone 8-16mg SC and reduce after 3-5 days to lowest effective dose\n\nMidazolam for seizure interrupt 2. dexamethasone dosing if present (reduce to lowest possible dose) and utilise benzodiazepines via infusion as described above for agitation. Dexamethasone 4mg daily, discontinue after 5 days if no effect.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "anorexia",
+      "continuing-symptom-control",
+      "cough",
+      "haemoptysis",
+      "hiccups-singultus",
+      "intractable-pain",
+      "malignant-spinal-cord-compression",
+      "neuropathic-pain",
+      "seizure",
+      "superior-vena-cava-obstruction",
+      "visceral-pain"
+    ]
+  },
+  {
+    "id": "dexmedetomidine",
+    "name": "Dexmedetomidine",
+    "drugClass": "Alpha-2 Agonist",
+    "aliases": [
+      "Precedex"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Dexmedetomidine ⚠ may prove helpful by infusion, although most of the experience in its use has been in the terminal-adjacent setting. Dexmedetomidine ⚠ has local evidence for the management of terminal delirium with reasonable communication, for patients who do not yet wish to be deeply sedated and wish potential communication to continue with families/loved ones. dexmedetomidine is finding increasing interest as a sedative in palliative care, however it also has analgesic benefits worth commenting on.",
+    "warningLevel": "specialist",
+    "indicationIds": [
+      "intractable-pain",
+      "the-non-terminal-patient",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "diazepam",
+    "name": "Diazepam",
+    "drugClass": "Benzodiazepine",
+    "aliases": [
+      "Valium",
+      "Antenex"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "5mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "diazepam 5mg two times daily is reasonable, titrate gradually. diazepam, midazolam or haloperidol can settle hallucinations or ‘strange feelings’. Diazepam can be given at 2-5mg initially, titrating up to 10mg if required.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "anxiolytics",
+      "intractable-pain",
+      "spasticity"
+    ]
+  },
+  {
+    "id": "docusate",
+    "name": "Docusate with Senna",
+    "drugClass": "Laxative (Stimulant + Softener)",
+    "aliases": [
+      "Coloxyl with Senna"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "docusate is not recommended without the use of a stimulant, as docusate alone has been shown to provide no benefit in opioid-induced constipation. docusate with senna. docusate alone in patients on opioids, increased stimulation via prokinesis is required.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "constipation-faecal-impaction",
+      "principles-of-pain-management"
+    ]
+  },
+  {
+    "id": "domperidone",
+    "name": "Domperidone",
+    "drugClass": "Prokinetic / Antiemetic",
+    "aliases": [
+      "Motilium"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10-20mg",
+        "frequency": "every 8 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Domperidone: 10-20mg every 4–8 hours orally\n\nErythromycin: 75mg oral elixir every 8 hours (this may be useful in patients with denervated stomachs, eg following oesophagectomy)\n\nThese drugs may increase colic in patients with constipation or bowel obstruction.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "duloxetine",
+    "name": "Duloxetine",
+    "drugClass": "SNRI Antidepressant",
+    "aliases": [
+      "Cymbalta"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "30mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "duloxetine have the most evidence to support their use at this time, although a number of SSRI drugs may be effective. Duloxetine: commence 30mg daily increasing to 60mg daily in patients without severe renal failure (EGFR < 30mls/min).",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "dutasteride",
+    "name": "Dutasteride",
+    "drugClass": "5-Alpha Reductase Inhibitor",
+    "aliases": [
+      "Avodart",
+      "Duodart"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "500mcg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Dutasteride 500mcg daily, this is given in combination with tamsulosin.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hesitancy"
+    ]
+  }
+]

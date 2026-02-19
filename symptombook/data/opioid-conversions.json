@@ -1,0 +1,170 @@
+[
+  {
+    "opioidId": "morphine",
+    "opioidName": "Morphine",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 1.0,
+        "doseUnit": "mg",
+        "notes": null
+      },
+      {
+        "route": "subcutaneous",
+        "toOMEDFactor": 2.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": false
+  },
+  {
+    "opioidId": "oxycodone",
+    "opioidName": "Oxycodone",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 1.5,
+        "doseUnit": "mg",
+        "notes": null
+      },
+      {
+        "route": "subcutaneous",
+        "toOMEDFactor": 3.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": false
+  },
+  {
+    "opioidId": "hydromorphone",
+    "opioidName": "Hydromorphone",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 5.0,
+        "doseUnit": "mg",
+        "notes": null
+      },
+      {
+        "route": "subcutaneous",
+        "toOMEDFactor": 10.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": false
+  },
+  {
+    "opioidId": "codeine",
+    "opioidName": "Codeine",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 0.1,
+        "doseUnit": "mg",
+        "notes": "Range conversion — safe estimate"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": true
+  },
+  {
+    "opioidId": "tramadol",
+    "opioidName": "Tramadol",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 0.1,
+        "doseUnit": "mg",
+        "notes": "Range conversion — safe estimate"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": true
+  },
+  {
+    "opioidId": "tapentadol",
+    "opioidName": "Tapentadol",
+    "routes": [
+      {
+        "route": "oral",
+        "toOMEDFactor": 0.15,
+        "doseUnit": "mg",
+        "notes": "Range conversion — conservative estimate (100mg tapentadol ≈ 15mg OMED)"
+      }
+    ],
+    "warningLevel": "caution",
+    "notes": "Tapentadol is primarily a noradrenaline reuptake inhibitor (NRI), not a pure opioid. This conservative ratio (100mg tapentadol ≈ 15mg OMED) provides a safe starting dose. Published ratios vary widely — clinical judgement required.",
+    "isRangeConversion": true
+  },
+  {
+    "opioidId": "fentanyl-patch",
+    "opioidName": "Fentanyl patch",
+    "routes": [
+      {
+        "route": "transdermal",
+        "toOMEDFactor": 3.0,
+        "doseUnit": "mcg/hr",
+        "notes": "Patch strength (mcg/hr) × 3 = daily oral morphine equivalent (mg)"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": true
+  },
+  {
+    "opioidId": "fentanyl-sc",
+    "opioidName": "Fentanyl SC",
+    "routes": [
+      {
+        "route": "subcutaneous",
+        "toOMEDFactor": 0.1,
+        "doseUnit": "mcg",
+        "notes": "Range conversion — safe buffer. Published range is 100mcg fentanyl = 8–12mg morphine."
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": true
+  },
+  {
+    "opioidId": "buprenorphine-patch",
+    "opioidName": "Buprenorphine patch",
+    "routes": [
+      {
+        "route": "transdermal",
+        "toOMEDFactor": 2.4,
+        "doseUnit": "mcg/hr",
+        "notes": "Patch strength (mcg/hr) × 2.4 = daily oral morphine equivalent (mg)"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": false
+  },
+  {
+    "opioidId": "buprenorphine-sl",
+    "opioidName": "Buprenorphine SL",
+    "routes": [
+      {
+        "route": "sublingual",
+        "toOMEDFactor": 0.04,
+        "doseUnit": "mcg",
+        "notes": "200mcg sublingual = 8mg oral morphine equivalent"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "isRangeConversion": false
+  }
+]

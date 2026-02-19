@@ -1,0 +1,174 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "delirium-seizures",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Delirium is very common in palliative care patients, particularly approaching the end of life. Organ failure leading to biochemical abnormalities, disease progression, medication side effects and general frailty can all contribute to this state. Management differs based on the clinical trajectory.\n\nIt may be appropriate to exclude or manage reversible organic factors that cause acute brain syndrome and delirium. This is especially important in a patient who had been functioning well before a rapid change. Such factors include:\n\nThe physician needs to determine who is being adversely affected by the restlessness or agitation, which will involve discussion with:\n\nIt is also important to determine the severity of distress and the level of co-operation that may be expected from the patient. Patients may fight if held down and given parenteral medication when they may have taken oral medicine easily.",
+      "causes": [
+        "Sepsis: especially urinary, respiratory, cellulitis, infected ulcers",
+        "Metabolic factors – hypercalcaemia, hypoglycaemia, hyponatraemia, renal failure with obstructive uropathy, liver failure with biliary obstruction",
+        "Drug reactions and interactions (e.g. recently introduced benzodiazepines)",
+        "Urinary retention",
+        "Inadequate pain control.",
+        "The patient – if possible",
+        "The family – who are often greatly distressed and will probably support immediate sedation of the patient",
+        "The nursing staff – to assess if the patient’s condition is distressing other patients and/or making their proper care impossible."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "the-non-terminal-patient",
+    "chapterId": "delirium-seizures",
+    "title": "The Non-Terminal Patient",
+    "sortOrder": 2,
+    "content": {
+      "overview": "The approach above of investigating and reversing causes as appropriate should be followed, and management will often be dictated by investigations and results. For symptomatic control, consider the following\n\nBenzodiazepines for relaxation, although there is some evidence these can worsen the symptoms of delirium. Consider clonazepam 0.25-0.5mg at night time, or lorazepam 0.5mg three times daily.\n\nNeuroleptic medications will not resolve delirium but may have a settling effect on paranoia. Consider haloperidol 1-2mg stat and then twice daily, or olanzapine 2.5-5mg at night time. For refractory cases, chlorpromazine 12.5-25mg three times daily may be helpful.\n\nClonidine shows promise in the treatment of delirium without dementia, due to decreasing catecholamines within the central nervous system. Consider starting at 150microg at night time, to aid in both sleep and as a relaxant. It can be increased by 50mcg at a time to a maximum of 300mcg if desired. Be mindful of potential postural blood pressure changes.\n\nSodium Valproate may help resolve agitated behaviours in some patients. Consider starting at 100mg twice daily, increasing gradually up to 300mg twice daily if needed.\n\nDexmedetomidine ⚠ may prove helpful by infusion, although most of the experience in its use has been in the terminal-adjacent setting. 0.3-0.5mcg/kg/hour subcutaneously via infusion is a reasonable dose for delirium treatment.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "chlorpromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "clonidine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "dexmedetomidine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "haloperidol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "lorazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      },
+      {
+        "drugId": "olanzapine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 7
+      },
+      {
+        "drugId": "valproate",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 8
+      }
+    ]
+  },
+  {
+    "id": "the-terminal-patient",
+    "chapterId": "delirium-seizures",
+    "title": "The Terminal Patient",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Terminal Delirium, also referred to as terminal agitation, terminal restlessness, and hyperactive delirium at the end of life. Management is focussed on relieving agitation and reducing distress. The focus is classically sedative, with parenteral medication delivery. There is a recent shift towards cooperative sedative medications, which are discussed towards the end of this section, but these are specialist in nature.\n\nBenzodiazepines are the traditional first line choice. Midazolam 2.5-5mg statim subcutaneously, then followed by 15-20mg via continues infusion initially and titrated to effect. Rapid tachyphylaxis can develop with midazolam and for patients with prolonged dying it may be necessary to increase dosing. Doses in excess of 100mg are used in some centres, although locally we rarely exceed 60mg over 24 hours. Clonazepam may be used as an alternative or as an adjunct to midazolam, and may be administered either as regular injection or via syringe driver. When prescribed via syringe driver, 1mg/24 hours is ‘lost’ to PVC absorption, so we typically overprescribe to compensate. Consider 1-2mg as a loading dose subcutaneous statim, then 4-5mg (3-4mg actual) as a starting dose over 24 hours. This can be increased up to 15mg over 24 hours if needful, although escalating dose of either benzodiazepine without relief is often a sign other sedatives are required. If combining the two benzodiazepines, consider 20-30mg of midazolam and 6-8mg of clonazepam over 24 hours.\n\nLevomepromazine ⚠ is a broad-spectrum neuroleptic similar to chlorpromazine. It is an SAS scheduled agent in Australia, but has a streamline (SAS-C) code for agitation at the end of life. It is an excellent tranquiliser in many patients who respond poorly to benzodiazepines alone. Consider 25mg SC statim and repeat at 60 minutes if poor response, then start 150-200mg SC infusion over 24 hours depending on response. Maximum infusion should be 250mg/24 hours; levomepromazine can be given as a 2-4 hourly breakthrough dose for agitation if required.\n\nPhenobarbital ⚠ is an older highly sedative barbiturate utilised as a third-line sedative, which provides deep relaxation that is especially useful in patients who may be poorly responsive to the above agents. Consider especially patients who have intracranial disease like leptomeningeal carcinomatosis, prior severe epilepsy, prior heavy benzodiazepine or neuroleptic use, etc. Local practice is to give a loading dose of 400mg (IM is preferred over SC), and commence a separate syringe driver of phenobarbital of 1800-2400mg depending on prior agitation and response to loading dose. Some patients may require a second loading dose of another 200-400mg after 1-2 hours if still significantly unsettled. The infusion can be titrated up to 3200mg over 24 hours if required and agitation persists.\n\nDexmedetomidine ⚠ has local evidence for the management of terminal delirium with reasonable communication, for patients who do not yet wish to be deeply sedated and wish potential communication to continue with families/loved ones. It is not currently recommended outside of specialist palliative care settings, however statim doses of 0.5mcg/kg subcut, as well as infusions of 12-18mcg/kg over 24 hours have reasonable efficacy.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "chlorpromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "dexmedetomidine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "levomepromazine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "phenobarbital",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      }
+    ]
+  },
+  {
+    "id": "seizure",
+    "chapterId": "delirium-seizures",
+    "title": "Seizure",
+    "sortOrder": 4,
+    "content": {
+      "overview": "In the non-terminal patient, we recommend the involvement of neurology if able. Patients with brain tumour are more likely to seize due to increased cranial oedema. Consider the following:\n\nDexamethasone 8-16mg SC and reduce after 3-5 days to lowest effective dose\n\nMidazolam for seizure interrupt 2.5-5mg parenterally as needed\n\nLeviteracetam can be given via syringe driver (alone), up to 1500mg over 24 hours. Note that leviteracetam can worsen aggression and agitation in patients with frontal lobe disease.\n\nClonazepam 0.25-0.5mg twice to three times daily regularly as prophylaxis, titrating as needed.\n\nFor patients in the terminal phase, maintain dexamethasone dosing if present (reduce to lowest possible dose) and utilise benzodiazepines via infusion as described above for agitation. Consider phenobarbital for refractory seizures, 200mg as a loading dose and 3-5mg/kg over 24 hours as an infusion dose – between 500-800mg is typically sufficient for seizure prophylaxis.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "phenobarbital",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  }
+]

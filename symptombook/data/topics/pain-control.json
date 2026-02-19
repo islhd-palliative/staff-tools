@@ -1,0 +1,914 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "pain-control",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Relieving pain in advanced incurable illness is essential to alleviate the suffering experienced by both patients and their extended family. Understanding the principles of pain management and the application of clinical therapeutics using appropriate drugs for different situations is of vital importance in achieving success. The aim, for the patient to be continually pain free or for pain to not significantly impact their quality of life, is achievable in the majority of cases.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "principles-of-pain-management",
+    "chapterId": "pain-control",
+    "title": "Principles of Pain Management",
+    "sortOrder": 2,
+    "content": {
+      "overview": "The following steps are recommended:\n\nEstablish the cause of pain through a thorough history, examination and selected investigations. Especially consider the possibility of neuropathic pain which is often missed and may not respond well to traditional analgesics.\n\nReduce sensory input by considering a peripherally active drug (paracetamol 500–1000mg every 6 hours and/or a nonsteroidal anti-inflammatory drug [NSAID]). Choice of paracetamol SR 665mg versus IR paracetamol should be dictated by tablet load and cost, as the analgesic effect is equivalent.\n\nIf pain persists, add the following medicines (depending on the intensity & type of pain):\n\nNever depend on ‘as required’ or pro re nata (PRN) prescribing alone unless pain is very sporadic. The aim is to control pain and prevent its recurrence through regular prescribing. Use the oral route whenever possible.\n\nConsider interventions that raise the ‘pain threshold’, including discussion of the disease, its treatment and prognosis, counselling, relaxation techniques and anxiolytic therapy.\n\nAlways prescribe aperients when starting an opioid. Do not rely on plain docusate alone in patients on opioids, increased stimulation via prokinesis is required.\n\nBe prepared to prescribe treatment for nausea when commencing regular opioid therapy – most patients who experience nausea are suffering an adverse reaction that can be ameliorated, not an allergic reaction. Consider haloperidol 0.5-1mg immediately then 1.5mg at night regularly to reduce the severity of this. Regular anti-emetics may not be required after the first week in these patients (see page 14).",
+      "causes": [
+        "an strong opioid (details below): such as morphine, oxycodone, hydromorphone, fentanyl, methadone",
+        "an adjuvant (if non-responsive): gabapentin, pregabalin, dexamethasone, tapentadol, amitriptyline/nortriptyline, venlafaxine, amongst others."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "haloperidol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "paracetamol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  },
+  {
+    "id": "strong-opioids",
+    "chapterId": "pain-control",
+    "title": "Strong Opioids",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Initiating treatment with strong opioids has changed in recent years as a result of gaining experience in the clinical application of newer products. These include fentanyl patches, buprenorphine patches, controlled-release oxycodone, modified release hydromorphone, a wider dose range and flexibility of immediate-release formulations of oxycodone, hydromorphone and fentanyl, and a growing place for the use of methadone in opioid rotation for resistant pain situations.\n\nTraditionally regular immediate release morphine was titrated to effect, then converted to a slow-release twice-daily regimen when the appropriate dose was reached. This approach should still be considered for patients with severe or unstable pain where the opioid requirement is difficult to predict and titration is needed. It is however a reasonable practice these days for experienced practitioners to initiate treatment with a long acting opioid (slow release morphine or oxycodone) but it may necessary to co-prescribe a number of tablet, capsule or patch sizes to allow titration of the opioid. It is also important to prescribe a suitable immediate-release preparation for ‘breakthrough pain’, usually in one-sixth of the total daily opioid requirement (see opioid conversion table on Page 20 for guidance). The amount of opioid used for breakthrough pain gives an indication about how much to increase the long acting opioid formulation when reviewed.\n\nThis range of opioids has increased flexibility and choice with regard to appropriate prescribing. Patients who have severe side effects, e.g., nausea and vomiting, on one may tolerate another easily. A fentanyl patch is less constipating and can be preferred by patients as it doesn’t have to be taken orally, however it doesn’t have a readily accessible breakthrough product so immediate-release morphine, oxycodone or hydromorphone are generally used for this. Fentanyl patches are cumbersome in unstable or progressive pain situations. Buprenorphine patches are useful in situations where a low initial opioid dose is indicated (Buprenorphine 5 ≡ 12mg morphine / 24 hours) and can be supplemented by immediate release preparations as for fentanyl. In renal failure morphine accumulates active metabolites that complicate its use, and hydromorphone or fentanyl are preferred as eGFR dips below 30ml/min.",
+      "causes": null,
+      "sections": [
+        {
+          "heading": "Morphine",
+          "content": "Morphine is available in immediate release liquid and tablet forms; as well long-acting preparations including sustained-release capsules, and controlled-release tablets. The suspension has unfortunately been discontinued.\n\nIn most patients commence a long-acting preparation in combination with liquid morphine for breakthrough pain. In an opioid naïve patient, a starting maximum could be 30mg daily given as 15mg BD. Doses should be reduced in the case of elderly patients, or those with advanced frailty, such as 5-10mg BD. Most patients should also be considered for regular paracetamol.\n\nThe breakthrough dose of liquid morphine should be 1/6th of the total daily dose for most patients (eg 5mg 4-hourly PRN for a patient prescribed 30mg morphine a day). It will have a clinical analgesic effect lasting 4-6 hours. Half the breakthrough dose if it causes drowsiness. Ask the patient to record the number of breakthrough doses required per day over the first few days, then increase the long-acting preparation to account for this. The breakthrough dose will also have to be increased to reflect this too. Repeat this process to titrate the morphine to effective pain relief or drowsiness. If the patient becomes drowsy without good relief they may have neuropathic pain and require specialist review if available. Once on a stable dose it is acceptable to need occasional ‘breakthroughs’ without further escalating the long-acting preparation.\n\nIn older patients it may be better to start regular liquid morphine in a dose of 1-2mg every 4-6 hours to establish its effect and tolerance before introducing the long-acting forms. This dose can be titrated up to effect then appropriately replaced by the long-acting form. It would be pointless, however to start such a low dose in a patient who has been taking regular codeine or tramadol without good effect.\n\nIn renal failure choose another opioid (fentanyl or hydromorphone are recommended) as active morphine metabolites can accumulate with unpleasant or dangerous side effects. If morphine is the only option, consider reducing the dose intended by 25-75%, or increasing the interval from 4-8 hours. If the eGFR is below 30ml/min, caution is strongly advised.",
+          "drugReferences": [
+            {
+              "drugId": "codeine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "fentanyl",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "hydromorphone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "The breakthrough dose of liquid morphine should be 1/6th of the total daily dose for most patients (eg 5mg 4-hourly PRN for a patient prescribed 30mg morphine a day)",
+              "sortOrder": 4
+            },
+            {
+              "drugId": "paracetamol",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            },
+            {
+              "drugId": "tramadol",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "heading": "Oxycodone",
+          "content": "Oxycodone is available in immediate-release liquid, capsules and tablets, as well as long-acting, controlled-release formulations of various strengths. This gives it as much flexibility as morphine for initiating strong opioid analgesia. Like morphine, its short acting formulations have a duration of 4-6 hours of analgesia, while its long-acting formulations are given 12-hourly. The outline above for initiating treatment with liquid or long-acting morphine also applies to these oxycodone preparations, bearing in mind that oxycodone is considered more potent in a ratio 1:1.5 (e.g. 20mg of oxycodone is equivalent to 30mg of morphine orally). It is safer than morphine in renal failure and can be prescribed in normal dose for EGFR>10mls/min.\n\nOxycodone with Naloxone (Targin) is a recently introduced combination of long-acting oxycodone and naloxone. The naloxone is an opioid antagonist with little oral bioavailability (< 3%) and is used for its local effect on the bowel to reduce the side effect of constipation. Naloxone does have a significant systemic effect, especially in patients with liver failure, renal failure, and in higher doses. This can lead to patients with moderate to severe liver or renal failure experiencing systemic naloxone leak, causing reversal of analgesia. Additionally, rotating patients to other opioids can lead to accidental narcotisation, as the oxycodone component was to some degree reversed. Targin is not recommended in patients with known liver or renal disease, or in the very elderly.",
+          "drugReferences": [
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "20mg of oxycodone is equivalent to 30mg of morphine orally)",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "naloxone",
+              "contextNote": null,
+              "dosingInContext": "The naloxone is an opioid antagonist with little oral bioavailability (< 3%) and is used for its local effect on the bowel to reduce the side effect of constipation",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": "20mg of oxycodone is equivalent to 30mg of morphine orally)",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Fentanyl",
+          "content": "Fentanyl is a potent strong opioid available as long-acting transdermal patches, immediate-acting sublingual tablets and as fentanyl injections. Transdermal fentanyl works well alongside breakthrough morphine, oxycodone or hydromorphone. It may be constipating than other opioids and is excellent for continuing the management of stable pain. It is not such a good option for controlling unstable or progressive pain problems due to its delayed onset of action after dose adjustments, with dose adjustments taking up to 24 hours to take effect. The transdermal patches release fentanyl in a controlled manner over 72 hours, with an onset of analgesic action at 12-24 hours after application. It works by forming a sub-dermal drug reservoir, which then drives the serum levels. This accounts for the delayed onset of action and a ‘wash-out’ period of up to 24 hours after removing the patch. Patches are changed every 3 days. Patients should be advised that the first dose and any subsequent dose increase will not be effective for 12-24 hours, and that they will need to rely on breakthrough (‘as required’) doses of morphine, oxycodone or hydromorphone in the meantime.\n\nTransdermal patches are available in multiple strengths. The daily oral morphine equivalent can be estimated by multiplying the fentanyl patch strength by 3, for example, a Fentanyl 12 patch would be approximately equivalent to 36mg of oral morphine daily (12 x 3), or 6mg every 4 hours. The actual conversion is a range, and the above calculation provides a dose which errs towards the more conservative side. These figures can be used to calculate the appropriate breakthrough doses of pain (usually 1/6th the calculated daily oral morphine dose).\n\nFor opioid naïve patients, fentanyl should be started with caution, as the lowest patch (the 12) is at minimum equivalent to 36mg oral morphine daily, which might be too much for opioid naïve patients, especially the elderly. An alternative approach would be wiser in some of these patients (eg Norspan 5 which is equivalent to 12 mg oral morphine daily).\n\nFentanyl sublingual tablets are now available on the PBS (for palliative care patients with cancer pain) for breakthrough pain. They are soluble and have an effect in a short number of minutes, then wear off within 1-2 hours for the majority of patients. There is no equivalent morphine dose for these, due to variable buccal absorption. It is reasonable to start at 100-200mcg q2hrly and titrate to effect.",
+          "drugReferences": [
+            {
+              "drugId": "buprenorphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "fentanyl",
+              "contextNote": null,
+              "dosingInContext": "The daily oral morphine equivalent can be estimated by multiplying the fentanyl patch strength by 3, for example, a Fentanyl 12 patch would be approximately equivalent to 36mg of oral morphine daily (12 x 3), or 6mg every 4 hours",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "hydromorphone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "The daily oral morphine equivalent can be estimated by multiplying the fentanyl patch strength by 3, for example, a Fentanyl 12 patch would be approximately equivalent to 36mg of oral morphine daily (12 x 3), or 6mg every 4 hours",
+              "sortOrder": 4
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            }
+          ]
+        },
+        {
+          "heading": "Hydromorphone",
+          "content": "Hydromorphone is a synthetic derivative of morphine and is available in a long-acting modified-release tablet and as instant-release tablets. The oral liquid has been discontinued and is difficult to source affordably. Hydromorphone is also available in injectable form. Its efficacy and side-effects are similar to morphine, although it has a higher potency (1mg hydromorphone ≡ 5mg of morphine). Hydromorphone has less active metabolites than morphine with respect to neurological toxicity and is a better choice of analgesic in patients with renal failure, particularly as eGFR falls below 30ml/min.\n\nHydromorphone is not typically recommended in the opioid-naïve patient due to its potency, with the lowest dose of slow release being equivalent to 20mg of daily morphine, unless circumstances dictate otherwise. Rotating an established patient to slow-release hydromorphone is practical; a crossover period of 12 hours is recommended as unlike other slow-release oral opioids, there is a substantive time delay to efficacy. For patients requiring breakthrough analgesia for whom the tablets are impractical – they are not easily split – local practice is becoming a mixture of oxycodone or morphine liquid, depending on tolerance and renal function, with IR hydromorphone tablets being reserved for patients on 12mg or more slow release daily.\n\nIn the elderly and the opioid naïve who do not tolerate 4mg of slow-release hydromorphone, it may be better to cautiously use slow-release morphine or oxycodone and be mindful of side effects, rather than risk the potential for narcotisation.",
+          "drugReferences": [
+            {
+              "drugId": "hydromorphone",
+              "contextNote": null,
+              "dosingInContext": "Its efficacy and side-effects are similar to morphine, although it has a higher potency (1mg hydromorphone ≡ 5mg of morphine)",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "Its efficacy and side-effects are similar to morphine, although it has a higher potency (1mg hydromorphone ≡ 5mg of morphine)",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": "For patients requiring breakthrough analgesia for whom the tablets are impractical – they are not easily split – local practice is becoming a mixture of oxycodone or morphine liquid, depending on tolerance and renal function, with IR hydromorphone tablets being reserved for patients on 12mg or more slow release daily",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Methadone",
+          "content": "Methadone is a drug with some complicated characteristics, available as tablets, syrup and injections. Methadone can be used in the place of other strong opioids such as morphine, oxycodone or hydromorphone for the management of cancer pain and also indicated as an anti-tussive in refractory cough.\n\nMethadone is a synthetic compound with multiple-receptor binding affinity. It is an opioid receptor (mu and delta) agonist, as well as a serotonin reuptake inhibitor and an NMDA-receptor antagonist. This combination allows for analgesia, as well as the potential prevention of tolerance and opioid-induced hypersensitivity. Complicating matters further, methadone has a biphasic half-life, where in early non-steady states it is eliminated in several hours (alpha phase), but once at steady state (beta phase) half-life can range anywhere from 15-60 hours, and even up to 120 hours! Reaching this steady state can take multiple days to a week or more of continuous dosage: as such methadone should be prescribed by the experienced practitioner and under close supervision. Importantly, methadone can prolong the QT interval on ECG, although evidence in the palliative care setting is that this is not usually harmful, it is worth considering monitoring in patients at risk of prolonged QT from other causes such as electrolyte disturbance and other prolonging drugs. Consider obtaining an ECG before commencing methadone, especially in the context of other QT prolonging medications such as haloperidol..",
+          "drugReferences": [
+            {
+              "drugId": "haloperidol",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "hydromorphone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 4
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            }
+          ],
+          "warningLevel": "specialist"
+        },
+        {
+          "heading": "Initiating Treatment with Methadone",
+          "content": "For the opioid naïve patient, the starting daily dose of methadone should be maximum 15mg in divided dosing (such as 5mg TDS). For the elderly, the unwell and the frail, consider reducing this dose by 50%. Doses should be titrated upwards to effect, with 1-2 day gaps between dose titration to allow for accumulation.",
+          "drugReferences": [
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": "For the opioid naïve patient, the starting daily dose of methadone should be maximum 15mg in divided dosing (such as 5mg TDS)",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "heading": "Transferring from Morphine",
+          "content": "There are multiple methods of transferring patients from other strong opioids to methadone. The first step should be to calculate the oral morphine equivalence, prior to starting methadone. The two most common local variations on how to commence methadone are described here:",
+          "drugReferences": [
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "heading": "Classic Conversion",
+          "content": "• Stop regular short-acting opioid when starting the methadone. If switching from a slow-release formulation give the first dose of 6 hours after the last dose of the 12-hourly preparation, or 12 hours after the last dose of methadone a 24-hour preparation. This should be timed with the loading dose below.\n\n• Give a loading dose of 1/10th the previous total 24-hour oral morphine dose, up to a maximum of 30mg of methadone. If very elderly or cachectic, omit the loading dose. Round dose down to the nearest 5mg.\n\n• Give 1/3rd of the loading dose q6-hourly regularly, maximum dose 10mg, round down to nearest 5mg, then commence regular dosing.\n\n• Use the previous breakthrough medication (i.e. morphine, oxycodone, etc).\n\n• Make a daily phone call or review daily to assess progress.\n\n• Continue current dosing if the patient is in pain for 24-48 hours. Reduce interval but not dose if patients become pain free, initially to q8-hourly, and then consider changing interval to BD if patient remains pain free 24-48 hours after. This anticipates accumulation of methadone, and attempts to avoid drowsiness\n\n• If patients remain in pain without drowsiness after 48 hours, increase dose by approximately 50%, but watch carefully for drowsiness.\n\n• Once patients are pain free or at a tolerable point for 48 hours, the total daily dose can be divided to BD or TDS dosing, whichever is most convenient and provides good analgesic benefit to the patient.\n\nNB: if the patient becomes persistently drowsy, this is unlikely to wear off in less than 24 hours. Stop methadone and recommence at ~50% the prior dose, then titrate according to pain and drowsiness.",
+          "drugReferences": [
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": "• Give a loading dose of 1/10th the previous total 24-hour oral morphine dose, up to a maximum of 30mg of methadone",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "• Give a loading dose of 1/10th the previous total 24-hour oral morphine dose, up to a maximum of 30mg of methadone",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Mathematical",
+          "content": "Calculate the initial daily methadone dose. Locally both the Nomogram Method, and the BJR Equation are used, which can provide similar results. The dose calculated should be rounded down to the nearest 5mg.\n\nFigure 1. Methadone nomogram, from Ayonrinde OT, Bridge DT. The rediscovery of methadone for cancer pain management. Med J Aust. 2000 Nov 20;173(10):536–40.\n\nFigure 2. BJR equation from Baumrucker. A new mathematical approach to methadone conversion. J Pharmacol Pharmacother. Medknow Publications; 2016 Apr 1;7(2):93–5. 7\n\n• Stop regular short-acting opioid when starting the methadone. If switching from a slow-release morphine formulation give the first dose of methadone 6 hours after the last dose of the 12-hourly preparation, or 12 hours after the last dose of a 24-hour preparation. This should be timed with the loading dose below.\n\n• Divide the calculated methadone dose into either q6-hourly or q8-hourly dosing, whichever is simpler. This is the regular starting dose\n\n• Give a loading dose of three times the regular starting dose as calculated above, then commence regular dosing.\n\n• Use the previous breakthrough medication (i.e. morphine, oxycodone, etc).\n\n• Assess daily (in person or telephone) for progress.\n\n• Continue current dosing if the patient is in pain for 24-48 hours. Reduce interval if patients become pain free, initially to q8-hourly, and then consider changing interval to BD if patient remains pain free 24-48 hours after. This anticipates accumulation of methadone, and attempts to avoid drowsiness\n\n• If patients remain in pain without drowsiness after 48 hours, increase dose by approximately 50%, but watch carefully for drowsiness.\n\n• Once patients are pain free or at a tolerable point for >48 hours without bothersome side effects, the total daily dose can be divided to BD or TDS dosing, whichever is most convenient and provides good analgesic benefit to the patient.\n\nNB: if the patient becomes persistently drowsy, this is unlikely to wear off in less than 24 hours. Stop methadone and recommence at ~50% the prior dose, then titrate according to pain and drowsiness.",
+          "drugReferences": [
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": "This anticipates accumulation of methadone, and attempts to avoid drowsiness\n\n• If patients remain in pain without drowsiness after 48 hours, increase dose by approximately 50%, but watch carefully for drowsiness",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "oxycodone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Buprenorphine",
+          "content": "Buprenorphine is an interesting drug, being a mixed opioid agonist and antagonist. Despite this, it does not seem to have a significant ceiling to its analgesic effect. It is available in transdermal patches, and in subligual tablets – the tablets are not subsidised on the PBS.\n\nBuprenorphine has been more commonly prescribed over the past few years, particularly in the elderly, as the side effect profile seems to be kinder with respect to constipation and hyperalgesia. The dose equivalence for buprenorphine patches are also significantly lower than fentanyl, making it much safer in the opioid naïve.\n\nThe major limitation of buprenorphine patches in palliative care is the long time to effect; the patches are changed weekly, and take a minimum 24 hours (and up to 72 hours) to have a clinical effect. For patients with unstable or escalating pain, they are therefore unsuitable for use. They do have a place in patients with more chronic and stable pain, and are particularly useful in the Residential Aged Care setting.\n\nThe daily morphine equivalence can be estimated by multiplying the patch strength by 2.4, so a 5mcg/hr Norspan patch is approximately equivalent to 12mg oral morphine daily. When a Norspan patch is removed its effect reduces by approximately 50% in the first 24hrs and it then takes 2-3 days to wear off completely.\n\nInflammation and urticaria at the patch site are relatively common. This can be prevented in some cases by waving the patch in the air before application to enable alcohol to evaporate. Avoid re-using inflamed sites and cease altogether if the reactions are severe or upsetting to the patient.\n\nBuprenorphine is a relatively safe opioid analgesic in renal failure. The parent drug doesn’t accumulate and isn’t removed by dialysis, while its principal metabolite norbuprenorphine has no central action of clinical significance.",
+          "drugReferences": [
+            {
+              "drugId": "buprenorphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "fentanyl",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "4, so a 5mcg/hr Norspan patch is approximately equivalent to 12mg oral morphine daily",
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Tapentadol",
+          "content": "Tapentadol is a relatively new analgesic available in Australia. The slow release tapentadol is currently subsidised on the PBS, while the IR is not. Similar in concept to tramadol, it works primarily as a noradrenaline reuptake inhibitor, with a small effect on the opioid receptor. Tapentadol is often described as an “equivalent analgesic” in terms of potency, however it is essential to note that while it might have equivalent effect, much of its analgesia does not come from its opioid subcomponent. Conversions that rely on converting tapentadol to oral morphine equivalent often require adjustment, as there is a substantial risk of side effects.\n\nTapentadol is still finding its place in palliative medicine but may be considered as an adjunct for patients with neuropathic pain, for those with poor opioid tolerance, or for those suffering bone-pain related to malignancy who have a contraindication to non-steroidal or steroidal anti-inflammatories.\n\nIt does not typically replace the need for strong opioids in the management of cancer pain.",
+          "drugReferences": [
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "tapentadol",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "tramadol",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            }
+          ]
+        },
+        {
+          "heading": "Tramadol",
+          "content": "Tramadol is a dirty drug that is metabolised by the liver into two components an opioid receptor agonist (M1) and an SNRI similar but not identical to venlafaxine, causing enhanced serotonin and noradrenaline neurotransmission. The ratio of M1:SNRI is unpredictable; like codeine it is dependent on CYP2D6 metabolism, and can vary from practically none to substantial. The interaction profile and risks of side effects of tramadol such as serotonin syndrome and high incidence of withdrawal are substantial. It is no longer recommended for use in the palliative care setting.\n\nTo convert tramadol to another agent, a safe ratio is 100mg tramadol = 10mg oral morphine.",
+          "drugReferences": [
+            {
+              "drugId": "codeine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": "To convert tramadol to another agent, a safe ratio is 100mg tramadol = 10mg oral morphine",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "tramadol",
+              "contextNote": null,
+              "dosingInContext": "To convert tramadol to another agent, a safe ratio is 100mg tramadol = 10mg oral morphine",
+              "sortOrder": 3
+            },
+            {
+              "drugId": "venlafaxine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 4
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "buprenorphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "fentanyl",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "hydromorphone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "methadone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      }
+    ]
+  },
+  {
+    "id": "nonsteroidal-anti-inflammatories",
+    "chapterId": "pain-control",
+    "title": "Nonsteroidal Anti-inflammatories",
+    "sortOrder": 4,
+    "content": {
+      "overview": "NSAIDs are commonly utilised in the community but are often neglected in palliative or cancer pain management. Alone they may not be sufficient to control pain but they can provide very good adjuvant analgesia, especially for patients with metastasis in bone, local oedema or irritation, and in combination with opioids. Consider prescribing a PPI when using an NSAID to prevent gastric irritation.\n\nOrally, consider celecoxib 200mg daily for 5 days and assess response, this can be given as 100mg twice daily if preferred. Other oral agents commonly used locally include naproxen, ibuprofen, and meloxicam, although PBS restrictions may dictate preference. NSAIDs are considered to be roughly equianalgesic, with the side effect profile and dose intervals varying.\n\nParenterally, consider ketorolac as a short acting NSAID with significant potency, given 10-20mg SC three to four times daily. Be mindful that ketorolac is associated with rapid development of renal failure with ongoing use. For patients requiring regular NSAID, consider parecoxib 40mg SC once daily, increasing to twice daily if unsatisfactory response. Both agents can also be administered via SC infusion, although compatibility is limited.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "celecoxib",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "ibuprofen",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "naproxen",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "neuropathic-pain",
+    "chapterId": "pain-control",
+    "title": "Neuropathic Pain",
+    "sortOrder": 5,
+    "content": {
+      "overview": "Neuropathic pain may not respond fully to the approaches described above. It may be due to compression or infiltration of nerves by tumour, or to painful peripheral neuropathy secondary to causes such as chemotherapy, organ failure or diabetes. It may be associated with clinical evidence of deafferentation (abnormal or absent sensation in the painful area). The following approaches should be considered in addition to the use of opioids and peripherally active analgesics.\n\nIn local practice, our three most commonly utilised neuropathic agents are amitriptyline, gabapentin, and dexamethasone. The choice of neuropathic agent may also vary depending upon other symptoms, such as the preference for amitriptyline in patients with insomnia, clonidine for patients with hallucinations, or valproate for patients with irritability or seizure risk. For dose guidance, see below.",
+      "causes": [
+        "Steroids are recommended for a rapid response, while",
+        "Adjuvants such as amitriptyline, gabapentin and pregabalin have been shown to be effective in clinical trials, with a trend to benefit of amitriptyline > gabapentin > pregabalin.",
+        "Using gabapentin and amitriptyline together has not been shown to have significant extra benefit, although it is sometimes trialled in particularly refractory cases.",
+        "It may be better to favour amitriptyline where there is numbness, burning or painful paraesthesia, although the evidence-base for this is limited.",
+        "Consultation with a palliative care or pain specialist is also recommended.",
+        "In the elderly, gabapentin is often better tolerated than pregabalin"
+      ],
+      "sections": [
+        {
+          "heading": "Nerve root compression/infiltration:",
+          "content": "Dexamethasone: Give 8mg immediately then 8mg in the morning daily OR 4mg morning & midday for 72 hours, reducing to 4mg each morning for 48 hours. If pain control remains good, maintain with 2–4mg each morning in patients who are in the terminal phase. Otherwise attempt to withdraw completely over three weeks while introducing another adjuvant for long-term control. Consider addition of a proton pump inhibitor for gastrointestinal cover whilst on high doses of dexamethasone (over 4mg), or on prolonged courses.",
+          "drugReferences": [
+            {
+              "drugId": "dexamethasone",
+              "contextNote": null,
+              "dosingInContext": "Dexamethasone: Give 8mg immediately then 8mg in the morning daily OR 4mg morning & midday for 72 hours, reducing to 4mg each morning for 48 hours",
+              "sortOrder": 1
+            }
+          ]
+        },
+        {
+          "heading": "Anticonvulsants",
+          "content": "Pregabalin (Lyrica) is now PBS-listed and so may be the drug of choice for some patients. Start with 50-75mg every 12 hours, and increase to 150mg every 12 hours after 3 days if necessary (initiate treatment in a lower dose of 25-50mg every 12 hours for the frail and elderly). If the symptoms persist after another 7 days, increase to 300mg every 12 hours. See appendix for dosing patients with renal failure.\n\nGabapentin (Neurontin) is the best option where pregabalin is either toxic or ineffective, and is likely more effective than pregabalin; however it is not listed on the PBS scheme for neuropathic pain (it is on the RPBS [repatriation] scheme), and can be used in patients with mesothelioma covered by the dust-diseases board. With gabapentin, start at 100mg every 8 hours increasing by 100mg every 8 hours daily, up to 300mg every 8hours unless pain is controlled on a lower dose (introduce more gradually in the frail and elderly). It is not generally recommended to increase the dosage when titrating by more than 200mg every 24 hours. If there has no response at 1200mg/daily, there are not many patients worth pushing further. See appendix for dosing patients with renal failure.\n\nCarbamazepine (Tegretol) 100-400mg every 12 hours (but high frequency of side effects) may also be considered. Good efficacy in trigeminal neuralgia, and should be the first line agent for this indication.\n\nSodium valproate (Epilim) is accessible and easy to prescribe, starting with 200mg at night, increasing to 1G if no benefit after 3 days (start with 100mg in the elderly, quickly increasing to twice daily if well tolerated). The evidence for sodium valproate is less robust.",
+          "drugReferences": [
+            {
+              "drugId": "carbamazepine",
+              "contextNote": null,
+              "dosingInContext": "Carbamazepine (Tegretol) 100-400mg every 12 hours (but high frequency of side effects) may also be considered",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "gabapentin",
+              "contextNote": null,
+              "dosingInContext": "With gabapentin, start at 100mg every 8 hours increasing by 100mg every 8 hours daily, up to 300mg every 8hours unless pain is controlled on a lower dose (introduce more gradually in the frail and elderly)",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "pregabalin",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "valproate",
+              "contextNote": null,
+              "dosingInContext": "Sodium valproate (Epilim) is accessible and easy to prescribe, starting with 200mg at night, increasing to 1G if no benefit after 3 days (start with 100mg in the elderly, quickly increasing to twice daily if well tolerated)",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "heading": "Antidepressants",
+          "content": "Amitripyline is a reasonable first choice with plenty of evidence based research to support its use. However nortriptyline and imipramine are also considered effective if it is not well tolerated. Of the other classes of antidepressants the SNRI drugs venlafaxine and duloxetine have the most evidence to support their use at this time, although a number of SSRI drugs may be effective. Of these sertraline or citalopram are recommended for their lower incidence of side-effects.\n\nAmitriptyline: commence 10mg nocte, increasing by 5-10mg 2nd-daily up to a maximum dose of 50mg nocte (the max dose of amitriptyline is 150mg nocte but there is little evidence for benefit on neuropathic pain above 50mg nocte). Add an anticonvulsant if there is residual pain a week after reaching 50mg nocte. Amitriptyline should be given in the early evening rather than at bedtime, as it takes 4 hours for peak concentration to be achieved, and later dosing results in worsened morning side effects of dry mouth and fatigue. If no benefit is seen at 30mg, it is unlikely worth pushing the dose to 50mg.\n\nNortiptyline & Imipramine: as for amitriptyline above.\n\nDuloxetine: commence 30mg daily increasing to 60mg daily in patients without severe renal failure (EGFR < 30mls/min). Further increase to a maximum of 120mg/day can be considered if symptoms persist.\n\nVenlafaxine: commence 37.5mg nocte, increasing to 75mg nocte in 1 week if necessary. A further increase to 150mg nocte could be considered for residual pain 2 weeks later in patients with normal renal function.",
+          "drugReferences": [
+            {
+              "drugId": "amitriptyline",
+              "contextNote": null,
+              "dosingInContext": "Amitriptyline: commence 10mg nocte, increasing by 5-10mg 2nd-daily up to a maximum dose of 50mg nocte (the max dose of amitriptyline is 150mg nocte but there is little evidence for benefit on neuropathic pain above 50mg nocte)",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "duloxetine",
+              "contextNote": null,
+              "dosingInContext": "Duloxetine: commence 30mg daily increasing to 60mg daily in patients without severe renal failure (EGFR < 30mls/min)",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "imipramine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "nortriptyline",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 4
+            },
+            {
+              "drugId": "sertraline",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            },
+            {
+              "drugId": "venlafaxine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "heading": "Others",
+          "content": "Clonidine is an alpha-2 receptor agonist widely utilised for its blood pressure effects at the alpha-1 receptor that has benefit in neuropathic pain due to disinhibition on pain transmission in the spinal horn, amongst other central effects. Because of the antihypertensive effect, it is recommended to go slowly. Commence at 25mcg three times daily, with an increase of 25mcg per dose every 1-2 days, as long as tolerated. If no effect at 100mcg three times daily, benefit is unlikely to be achieved with further dose escalation.",
+          "drugReferences": [
+            {
+              "drugId": "clonidine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "amitriptyline",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "clonidine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "gabapentin",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  },
+  {
+    "id": "intractable-pain",
+    "chapterId": "pain-control",
+    "title": "Intractable Pain",
+    "sortOrder": 6,
+    "content": {
+      "overview": null,
+      "causes": null,
+      "sections": [
+        {
+          "heading": "Ketamine",
+          "content": "Ketamine, an anaesthetic induction agent, had an established role in control of intractable pain including reported efficacy with neuropathic pain, incident pain (i.e. caused by movement) and cytotoxic-induced mucositis. However an Australian study has shown it to be not superior to placebo across this range of complex pain, although patient selection and pain types have made the generalisation of the study findings unclear. We utilise ketamine for severely escalating pain, refractory to other agents, with neuropathic components in the inpatient setting. There is also developing evidence that ketamine has anti-depressant properties, and potentially its use in this setting is assisting the management of total or existential pain. It is also useful for reducing the symptoms of opioid-induced hyperalgesia.\n\nKetamine has a propensity to cause tachycardia, a sense of disassociation and hallucinations. The latter may be dose-limiting, though co-prescribing diazepam, midazolam or haloperidol can settle hallucinations or ‘strange feelings’. In our unit we usually mix haloperidol 2-3mg OR midazolam 5mg with the ketamine dose, given as a subcutaneous infusion over 24 hours.\n\nA common approach is referred to as ‘burst ketamine’ in which a short burst of ketamine is given over a number of days then stopped. This is thought to reset pain transmission and inhibitory pathways in the central nervous system such that pain may respond dramatically and then continue to be controlled on the previously ineffective analgesic regimen. Care must be taken as opioid toxicity can result due to a rapid reduction in analgesic requirements (see below).\n\nBurst Ketamine: Begin with 1-2.5mg/kg/24 hours by continual subcutaneous infusion, and titrate to effect. In practical terms start with 100mg/24 hours on day 1; 150mg/24 hours in severe pain/more robust patient. If effective, continue this dose for three days then cease. If not, then increase to 300mg/24 hours on day 2. If this dose is effective continue for three days, then cease. If not, then increase to 500mg/24 hours on day 3 and continue for 3 days if effective. This upper limit of 500mg/24 hours is arbitrary and higher doses are safe if the patient tolerates the treatment (3.6g/24 hours have been reported). Our service has gone higher than 500mg, although we have not used more than 700mg/24 hours.\n\nResponses: In the best-case scenario the pain remains controlled after stopping the infusion. It may return again after an interval of weeks or months and can then respond to another ‘burst’. If pain returns after stopping the infusion then the patient will need to be maintained on continual subcutaneous or oral ketamine (see below).\n\nOral ketamine: When used for maintenance, oral ketamine is given (from the ampoules) in 1/3rd of the total daily dose that was effective by subcutaneous infusion. This allows for ‘first pass’ enhancement of its effect through active metabolites. It has a bitter taste but can be flavoured in cordial (50mg/5ml). The oral dose needs to be divided into four or more administrations daily as it can give a ‘hit’ effect with unpleasant side effects compared to the steady state levels of a continual infusion. If treatment is to be initiated orally start with 10mg q6-hourly. Increase the dose in 10mg steps up to a maximum of 50mg q6-houlry (again this is arbitrary and doses up to 200mg q6-hourly have been reported). Continue the effective dose for three days then cease, and follow the steps given for infusions above thereafter.\n\nConcurrent Treatment: Ketamine, if effective, may lead to a substantial reduction in the concurrent opioid dose through improved analgesia. Bear in mind that your patient may become excessively drowsy or develop hallucinations due to opioid toxicity. This is relatively easy to manage by dose reduction of short-acting morphine but it could be more of a problem with slow-release preparations, methadone or transdermal fentanyl. It is wise to recommend transfer to a short-acting product before starting the infusion.\n\nSite reactions: Some patients develop inflammatory reactions, including sterile abscesses at the infusion sites. These can be stopped by adding 0.5-1mg of dexamethasone to the infusion, or giving daily dexamethasone priming to the driver site.",
+          "drugReferences": [
+            {
+              "drugId": "dexamethasone",
+              "contextNote": null,
+              "dosingInContext": "5-1mg of dexamethasone to the infusion, or giving daily dexamethasone priming to the driver site",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "diazepam",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "fentanyl",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "haloperidol",
+              "contextNote": null,
+              "dosingInContext": "In our unit we usually mix haloperidol 2-3mg OR midazolam 5mg with the ketamine dose, given as a subcutaneous infusion over 24 hours",
+              "sortOrder": 4
+            },
+            {
+              "drugId": "ketamine",
+              "contextNote": null,
+              "dosingInContext": "In our unit we usually mix haloperidol 2-3mg OR midazolam 5mg with the ketamine dose, given as a subcutaneous infusion over 24 hours",
+              "sortOrder": 5
+            },
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            },
+            {
+              "drugId": "midazolam",
+              "contextNote": null,
+              "dosingInContext": "In our unit we usually mix haloperidol 2-3mg OR midazolam 5mg with the ketamine dose, given as a subcutaneous infusion over 24 hours",
+              "sortOrder": 7
+            },
+            {
+              "drugId": "morphine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 8
+            }
+          ],
+          "warningLevel": "specialist"
+        },
+        {
+          "heading": "Lidocaine",
+          "content": "There is developing evidence around the use of subcutaneous lidocaine (lignocaine) via infusion, for complex or refractory pain particularly with neuropathic components. Most palliative care physicians would occasionally consider the introduction of a lignocaine infusion when severe residual neuropathic symptoms persist despite the above measures, as well as the failure to control symptoms with ketamine and/or opioid rotation to methadone. It is noted here that the place of ketamine is now controversial, and many units have moved to utilising lidocaine. In the most severe cases a subcutaneous infusion of lignocaine can be trialled with maintenance on oral flecainide or mexilitene (not used locally). Each patient should be considered on an individual basis and practitioners are requested to consult with MIMS with regard to risk factors. We always order an ECG prior to lidocaine infusion to assess the QT interval.\n\nLignocaine infusion: Give 50mg SC statim, followed by 200-300mg by continual SC infusion over 24hrs. If pain persists the next day, increase by 100-200mg/24 hours. The maximum dose is theoretically 1800mg/24 hours, although we rarely prescribe over 1200mg/24 hours. If pain is well-controlled, stop lidocaine and commence oral flecainide 50mg twice daily, increasing to 100mg twice daily after 4 days if symptoms return, up to a maximum of 150mg twice daily. If pain not well-controlled, abandon the trial of local anaesthetic infusion. Side effects of concern include perioral paraesthesia, dizziness, metallic taste and drowsiness, as there are signs of initial toxicity that could worsen towards seizure and potential cardiorespiratory collapse.",
+          "drugReferences": [
+            {
+              "drugId": "ketamine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "lidocaine",
+              "contextNote": null,
+              "dosingInContext": "If pain is well-controlled, stop lidocaine and commence oral flecainide 50mg twice daily, increasing to 100mg twice daily after 4 days if symptoms return, up to a maximum of 150mg twice daily",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "methadone",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            }
+          ],
+          "warningLevel": "specialist"
+        },
+        {
+          "heading": "Dexmedetomidine",
+          "content": "The novel sedative dexmedetomidine is finding increasing interest as a sedative in palliative care, however it also has analgesic benefits worth commenting on. Similar to clonidine, it is an alpha-2 receptor agonist, but is far more potent. Its analgesic uses fall into two primary spaces: a procedural analgesic, where its unique sedative profile allows for interactive sedation with opioid sparing analgesia, and neuropathic/opioid sparing analgesia. It may also have some use in the areas of hyperalgesia and hypersensitisation.\n\nSignificant dosing information is not provided here as it is not currently recommended outside the hospital setting, but for interest, it is dosed per kilogram, with a dose between 0.5-1.0microg/kg subcut statim sufficient to provide sedoanalgesia to the majority of patients. Doses up to double this should be safe, under close observation.",
+          "drugReferences": [
+            {
+              "drugId": "clonidine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "dexmedetomidine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            }
+          ],
+          "warningLevel": "specialist"
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "visceral-pain",
+    "chapterId": "pain-control",
+    "title": "Visceral Pain",
+    "sortOrder": 7,
+    "content": {
+      "overview": "Like neuropathic pain, visceral pain is relatively insensitive to opioids. It is related to pain within the organs, and in the cancer setting can be due to tumour infiltrating into organ space. Unlike somatic pain, the pain is often more vague and feels like a deep ache or pressure pain. The following treatments are recommended:\n\nHepatic pain which is secondary to capsular distension: dexamethasone 8mg daily (often 4mg morning and midday) in addition to other analgesic measures for 3 days, then reduce, similar to nerve root compression.\n\nGenito-urinary pain (dysuria, bladder spasms, renal colic, see page 24)\n\nGastrointestinal colic (see page 19)",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "epidural-and-intrathecal-pain-control",
+    "chapterId": "pain-control",
+    "title": "Epidural and Intrathecal Pain Control",
+    "sortOrder": 8,
+    "content": {
+      "overview": "Patients with intractable pain (especially neuropathic) may only respond to epidural or intrathecal infusions of opioids, local anaesthetics, clonidine or ketamine. Specific guidance is not included her, as it is substantially outside of scope, however it is useful to know the basic medications utilised for success and safety, though consultation with a pain specialist is essential. Medications utilised may include morphine and bupivacaine. A fall in blood pressure indicates that the infusion is producing an effect. Most people tolerate a systolic of 85-90mm Hg. Be aware that pain relief may dramatically improve requiring a sharp reduction in systemic opioids to prevent toxicity.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "clonidine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "ketamine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ],
+    "warningLevel": "specialist"
+  },
+  {
+    "id": "interventional-procedures",
+    "chapterId": "pain-control",
+    "title": "Interventional Procedures",
+    "sortOrder": 9,
+    "content": {
+      "overview": "Patients with complex pain (especially visceral or neuropathic) may find interventional injections beneficial, which may help escalating systemic analgesics and worsening side effect profiles of strong opioids. In principal a temporary block with local anaesthetic +/- corticosteroid is often performed to assess effect, before proceeding to a semi-permanent block via neurolytic agents such as ethanol or phenol. Neurolysis usually last for 3-6 months before nerve budding occurs.\n\nA common example is coeliac plexopathy seen in upper GI tumours like pancreas cancer, presenting with deep pain radiating to the back and wrap-around discomfort around the lower thorax. This may respond to guided injection of local anaesthetic and corticosteroid, which can be performed endoscopically by gastroenterologists, via fluoroscopic imaging by interventional radiologists, and by some pain specialists.\n\nSome patients with mesothelioma benefit from a paraspinal block, especially those with diaphragmatic irritation.\n\nFractures may also be amenable to intervention analgesia, to minimise need of systemic agents.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null,
+    "warningLevel": "specialist"
+  },
+  {
+    "id": "renal-failure",
+    "chapterId": "pain-control",
+    "title": "Renal Failure",
+    "sortOrder": 10,
+    "content": {
+      "overview": "Morphine: In patients with abnormal renal function (including some elderly or cachectic people with a normal creatinine) highly active metabolites of morphine accumulate. Patients typically develop good analgesia initially, but this may be followed by myoclonus, coma and respiratory depression over the next 48 hours. With alternate opioid options available today morphine is best avoided in patients with an EGFR < 60mls/min. If it must be used then careful supervision aiming initially to relieve pain, then reducing the morphine dose by 75% (EGFR 20-60ml/min) over the next 1–2 days to a lower maintenance level is recommended. Extreme caution is recommended for EGFR <20ml/min. These patients should not be commenced on sustained-release preparations until the steady-state morphine dose has been established with liquid morphine.\n\nHydromorphone also accumulates the parent drug and metabolites, but these are relatively inactive compared with morphine. It can be introduced in about half its normal dose in patients with severe renal failure (EGFR < 30ml/min).\n\nOxycodone has no significant active metabolites but the parent drug accumulates. It is a safer choice but should be used in about half the usual dosage after an initial ‘loading dose’ for 24hours in patients with EGFR < 30ml/min. It is recommended not to use in patients with EGFR < 10ml/min due to high risk of excess sedation.\n\nFentanyl has no active metabolites and about 75% is eliminated through the kidneys. It is a safe option, though the elimination time may be increased in severe renal failure and a lower dose may be effective. Some authorities recommend using about 75% of the usual dose for EGFR 10-20ml/min and half-doses for less than this.\n\nMethadone has few active metabolites and is considered by some authorities to be the drug of choice in renal failure, with excretion being both hepatic and renal. However it already has complex, unpredictable pharmacokinetics and the parent drug can accumulate in renal failure. It is not recommended here except under the supervision of a pain specialist experienced in its use.\n\nBuprenorphine has no significant active metabolites and is considered safe in renal failure patients, although it is dialysed, which may make its use complex in these patients.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "buprenorphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "fentanyl",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "hydromorphone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "methadone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      }
+    ]
+  },
+  {
+    "id": "hepatic-failure",
+    "chapterId": "pain-control",
+    "title": "Hepatic Failure",
+    "sortOrder": 11,
+    "content": {
+      "overview": "All the opioids are metabolized through the liver, so may have increased bioavailablity in liver failure. This doesn’t usually present clinical problems in patients already stabilized on opioid analgesics, although it might be a cause of increasing drowsiness or other toxicity in patients with deteriorating liver function. If opioids are introduced for patients with marked liver dysfunction, careful introduction of lower-than-usual initial doses are recommended.\n\nAs detailed elsewhere, there is particular concern around the use of combination oxycodone/naloxone in patients with moderate-severe hepatic failure as naloxone can bypass hepatic metabolism and enter circulation, providing analgesic reversal and complicating opioid efficacy. The combination should be avoided in these patients, or in patients with potential to develop such complications (such as patients with liver metastases, or cirrhosis for example).",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "naloxone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  },
+  {
+    "id": "intravenous-drug-users",
+    "chapterId": "pain-control",
+    "title": "Intravenous Drug Users",
+    "sortOrder": 12,
+    "content": {
+      "overview": "Reluctance to prescribe adequate analgesic doses of opioids to this group of patients is a significant cause of morbidity. Concern about addiction should be secondary to good symptom management, and ‘limit setting’ used only in patients clearly misusing prescribed regular medications. For patients who are maintained on opioid replacement therapy with methadone, a reasonable practice is to treat their pain as if they were opioid naïve whilst maintaining their methadone background. For patients who are maintained on opioid replacement therapy with buprenorphine/naloxone, consultation with Drug & Alcohol services in the first instance is recommended.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "buprenorphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "methadone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "naloxone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "opioid-conversions",
+    "chapterId": "pain-control",
+    "title": "Opioid Conversions",
+    "sortOrder": 13,
+    "content": {
+      "overview": "Commonly used conversions as applied in our service are given here. It is emphasized that while these guidelines have reliable clinical application they are, at best, good estimates and there is individual variability. Conversions are given here from different opioids to the oral equivalence of morphine. To convert between other opioids you can work back from their morphine equivalence. Conversions from oral to parenteral routes of administration are also given for the drugs where relevant, although note that injectable oxycodone is very difficult to source, and that injectable fentanyl is rarely recommended due to rapid tachyphylaxis.\n\nAs can be seen from the above table, local practice is to halve the dose of the oral medication to ascertain the injectable dose, although in elderly patients and patients who are pain free at conversion, consider a PO:SC ratio of 3:1 instead of 2:1,\n\n.\n\nSC, IM and IV doses are equivalent, however the SC route is almost always preferred\n\nConversions from patches (fentanyl, buprenorphine) can be found earlier in the relevant segments. Briefly:\n\nMultiply fentanyl patch by 3 to get total daily morphine equivalence\n\ne.g. Fentanyl 12 = morphine 36mg/day\n\nMultiply buprenorphine patch by 2.4 to get total daily morphine equivalence\n\ne.g. buprenorphine 5 = morphine 12mg/day\n\nRecall that for breakthrough pain, the recommended dose is 1/6th the total daily opioid dose",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "buprenorphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "fentanyl",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  }
+]

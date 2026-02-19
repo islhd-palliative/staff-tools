@@ -1,0 +1,267 @@
+[
+  {
+    "id": "itch",
+    "chapterId": "itch",
+    "title": "Itch",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Itch is a very complicated pathology with multiple aetiologies. There are dozens of potential pathways involved in palliative care patients, including serotonin, substance P, hyperbilirubinaemia, uraemia, and histamine, among others.",
+      "causes": null,
+      "sections": [
+        {
+          "heading": "Dry skin",
+          "content": "Dry skin is among the commonest causes of pruritus in patients with advanced cancer. Itch should also be treated when present in patients with pruritus of other origins.\n\nLocally applied emollients are the mainstay of successful management. Substantial evidence does not exist for one agent over another, with plain sorbolene being reasonable to start. Paraffin or other oil-based emollients may prove helpful if simple moisturisers are ineffective.",
+          "drugReferences": []
+        },
+        {
+          "heading": "Histamine-mediated",
+          "content": "Histamine is often blamed but uncommonly responsible for itch in palliative care patients. Only about 10% of palliative care patients with itch will have a beneficial response to antihistamine therapy. Some predictors of positive response include recent commencement of opioids (although this is rare), allergy and prior history of dermatitis.\n\nTrial loratadine 10mg daily, or promethazine 25mg at night if sleep is disrupted. Consider a brief course of steroid medications, topical over systemic. Deeper sedatives may be required if itch does not respond, including benzodiazepines.",
+          "drugReferences": [
+            {
+              "drugId": "loratadine",
+              "contextNote": null,
+              "dosingInContext": "Trial loratadine 10mg daily, or promethazine 25mg at night if sleep is disrupted",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "promethazine",
+              "contextNote": null,
+              "dosingInContext": "Trial loratadine 10mg daily, or promethazine 25mg at night if sleep is disrupted",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "heading": "Cholestasis",
+          "content": "Itch is due to build-up of bilirubin deposits in skin, leading to jaundice. The itch may be present before significant jaundice is observed but hyperbilirubinemia is seen on bloods and scleral icterus may be developing.\n\nTrial sertraline 25mg at night, titrating up to 50mg if poor response (can go to 100mg in some patients). Can also trial paroxetine 10mg at night, up to 20mg.\n\nRifampicin 150mg daily initially if available and increase to 150mg twice-daily if needed, can work second line.\n\nMethylnaltrexone 4mg to 8mg SC second daily can assist some patients, without reversing analgesic benefits of opioids.\n\nCan consider either cholestyramine 4gm twice-daily or ursodeoxycholic acid 10mg/kg/day (rounded to nearest tablet) at night although both cholestyramine and Ursofalk are poorly tolerated.\n\nAntihistamines do not help in this setting.",
+          "drugReferences": [
+            {
+              "drugId": "cholestyramine",
+              "contextNote": null,
+              "dosingInContext": "Can consider either cholestyramine 4gm twice-daily or ursodeoxycholic acid 10mg/kg/day (rounded to nearest tablet) at night although both cholestyramine and Ursofalk are poorly tolerated",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "methylnaltrexone",
+              "contextNote": null,
+              "dosingInContext": "Methylnaltrexone 4mg to 8mg SC second daily can assist some patients, without reversing analgesic benefits of opioids",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "paroxetine",
+              "contextNote": null,
+              "dosingInContext": "Can also trial paroxetine 10mg at night, up to 20mg",
+              "sortOrder": 3
+            },
+            {
+              "drugId": "rifampicin",
+              "contextNote": null,
+              "dosingInContext": "Rifampicin 150mg daily initially if available and increase to 150mg twice-daily if needed, can work second line",
+              "sortOrder": 4
+            },
+            {
+              "drugId": "sertraline",
+              "contextNote": null,
+              "dosingInContext": "Trial sertraline 25mg at night, titrating up to 50mg if poor response (can go to 100mg in some patients)",
+              "sortOrder": 5
+            },
+            {
+              "drugId": "ursodeoxycholic",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            }
+          ]
+        },
+        {
+          "heading": "Uraemia",
+          "content": "Consider and optimise renal function as able, correct iron deficiency and hyperphosphatemia in patients with renal failure to lessen symptom impact.\n\nConsider capsaicin cream if itch is local only, 0.025% up to four times daily – this is often poorly tolerated.\n\nFor systemic therapy, the first line choice should be a gabapentinoid. Start gabapentin at 100mg at night and titrate up slowly, or pregablin at 25mg. In patients on haemodialysis, give the gabapentinoid three times a week on the night after dialysis. Be prepared to dose reduce depending on severity of renal failure, as gabapentinoids accumulate.\n\nEvening primrose oil tablets (Blackmore’s) can help some patients.\n\nAntihistamines do not help in this setting.",
+          "drugReferences": [
+            {
+              "drugId": "capsaicin",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "gabapentin",
+              "contextNote": null,
+              "dosingInContext": "Start gabapentin at 100mg at night and titrate up slowly, or pregablin at 25mg",
+              "sortOrder": 2
+            }
+          ]
+        },
+        {
+          "heading": "Opioid-induced",
+          "content": "If early (or spinal intervention), give stat dose of a H1-antagonist like loratadine or cetirizine. Consider opioid-rotation if ongoing issues, use of low-does methylnaltrexone, or ondansetron 8mg twice daily.",
+          "drugReferences": [
+            {
+              "drugId": "cetirizine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 1
+            },
+            {
+              "drugId": "loratadine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 2
+            },
+            {
+              "drugId": "methylnaltrexone",
+              "contextNote": null,
+              "dosingInContext": "Consider opioid-rotation if ongoing issues, use of low-does methylnaltrexone, or ondansetron 8mg twice daily",
+              "sortOrder": 3
+            },
+            {
+              "drugId": "ondansetron",
+              "contextNote": null,
+              "dosingInContext": "Consider opioid-rotation if ongoing issues, use of low-does methylnaltrexone, or ondansetron 8mg twice daily",
+              "sortOrder": 4
+            }
+          ]
+        },
+        {
+          "heading": "Malignant Itch",
+          "content": "Cancer can drive itch especially in lymphoma and paraneoplastic syndromes.\n\nFirst line trial a gabapentinoid, prefer gabapentin 100mg twice-daily and titrate to effect.\n\nIf there is ongoing itch, aprepitant 165mg every three days can resolve this rapidly, although expense and availabity may limit access.\n\nMirtazapine 7.5mg at night, increasing to 15mg, can assist.\n\nSSRIs as above, sertraline or paroxetine, can assist.\n\nLidocaine by infusion can help with refractory itch, particularly in the malignant setting. Consider 100mg/24 hours via syringe driver, increasing by 100mg daily with caution, This option would not be recommended outside the palliative care unit.",
+          "drugReferences": [
+            {
+              "drugId": "aprepitant",
+              "contextNote": null,
+              "dosingInContext": "If there is ongoing itch, aprepitant 165mg every three days can resolve this rapidly, although expense and availabity may limit access",
+              "sortOrder": 1
+            },
+            {
+              "drugId": "gabapentin",
+              "contextNote": null,
+              "dosingInContext": "First line trial a gabapentinoid, prefer gabapentin 100mg twice-daily and titrate to effect",
+              "sortOrder": 2
+            },
+            {
+              "drugId": "lidocaine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 3
+            },
+            {
+              "drugId": "mirtazapine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 4
+            },
+            {
+              "drugId": "paroxetine",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 5
+            },
+            {
+              "drugId": "sertraline",
+              "contextNote": null,
+              "dosingInContext": null,
+              "sortOrder": 6
+            }
+          ]
+        }
+      ],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "malignant-and-infected-ulcers",
+    "chapterId": "itch",
+    "title": "Malignant and infected ulcers",
+    "sortOrder": 2,
+    "content": {
+      "overview": "It is not in the scope of this booklet to cover decubitus ulcers or specific approaches to dressings and debridement. The main point to put across is the importance of managing and preventing odours when ulcers have a necrotic base and are infected by anaerobic bacteria.\n\nMetronidazole gel dressings: Apply twice daily or with each dressing. This can be very expensive and an alternative option is to make up a gel by suspending 100mg of the intravenous formulation in 10gm of hydrogel (can use lubricant gel) and applying to the wound surface. This can also be combined with morphine (10mg/10g gel) for local pain relief and/or sucralfate 1gm tablet crushed and mixed in the gel for haemostasis. Care should be taken not to have topical contact with metronidazole preparations.\n\nMetronidazole tablets can be crushed and sprinkled, or a suspension of metronidazole for injection can be sprayed on the wound surface using an atomizer prior to dressings without mixing in a gel. Note that complete sterility is not a primary concern where we are aiming to palliate symptoms rather than heal wounds.\n\nOral or rectal metronidazole can be given in addition, or as an alternative to local wound applications. To clean up an infected ulcer combination with a suitable broad-spectrum antibiotic can be successful. This is best guided by a wound swab and culture for sensitivities, and a long-term plan that might include continuing low-dose antibiotics or antibiotic rotations. Serious infections complicated by large areas of ulceration or systemic symptoms are best managed by initial intra-venous antibiotics if this is clinically appropriate.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "metronidazole",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "sucralfate",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "painful-ulcers",
+    "chapterId": "itch",
+    "title": "Painful Ulcers",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Morphine gel applications as outlined in the metronidazole section above.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "metronidazole",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  },
+  {
+    "id": "haemorrhagic-areas",
+    "chapterId": "itch",
+    "title": "Haemorrhagic Areas",
+    "sortOrder": 4,
+    "content": {
+      "overview": "In addition to the use of commercial non-adherent haemostatic dressings, consider:\n\nTopical sucralfate: 1g crushed and mixed in 10g of gel as outlined above in the metronidazole section. Apply 3 times a day.\n\nTopical tranexamic acid: 500mg tablet crushed and mixed in lubricant gel, applied locally 3 times a day. This can also be used in refractory epistaxis or in vaginal bleeding, using a gel and applicator.\n\nSystemic tranexamic acid: 1g every 6-8hours orally, reducing to 500mg every 8 hours if effective.\n\nTopical adrenaline: 1:10,000 adrenaline-soaked non-adherent gauze dressings applied to wound surface. For large areas it is wise to dilute the adrenaline 2-3 fold. Note that systemic absorption is possible from this method, so proceed with caution.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "adrenaline",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "metronidazole",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "sucralfate",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "tranexamic",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  }
+]

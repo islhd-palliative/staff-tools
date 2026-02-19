@@ -1,0 +1,118 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "motor-neurone-disease",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "MND is perhaps best thought of as a heterogeneous syndrome overlapping with a number of other diseases. It is due to degeneration of the upper and lower motor neurones, and can result in progressive weakness of bulbar, limb, thoracic and abdominal muscles. Cognitive function can be affected in 20-50% of patients, with around 5% developing a dementia (typically FTD). The median survival is about 30 months, although can be very variable from short months to a number of years. It usually takes over a year to diagnose once symptoms develop, and the vast majority (almost 95%) are not genetically related. Symptoms associated with poor prognosis are respiratory symptoms at diagnosis, with rapid progression, and cognitive impairment.\n\nThis section details some of the more common symptoms associated with MND in palliative care.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "sialorrhoea-bronchial-secretions",
+    "chapterId": "motor-neurone-disease",
+    "title": "Sialorrhoea / Bronchial Secretions",
+    "sortOrder": 2,
+    "content": {
+      "overview": "Sialorrhoea due to impaired swallow rather than over-production, and can be quite disabling. There are two main kinds of saliva, thin and watery (seen in drool) and thicker, more bronchial secretions. Involvement of the allied health team for swallow technique (Speech Pathology), cough management (physiotherapy) and head and neck support (occupational therapy) should be done. Consider barrier creams to support skin, portable suction units, and side sleeping to reduce pooling.\n\nIt is important to clarify the type of secretions as treatment for thin/watery can make thick/bronchial secretions even more difficult to expectorate.\n\nFor thin/watery secretions: Pharmacological options include amitriptyline 10mg at night, increasing up to 50mg. Can use up to 50mg three times daily in refractory cases. Atropine drops (ophthalmic) can be given orally, the 1% formulation, 1-2 drops three times daily (poor lip seal can limit use). Can also utilise glycopyrronium (available from the hospital pharmacy) 200mcg three times daily initially up to 1mg three time daily. Other options include hyoscine hydrobromide patches which can be started as a half patch daily behind the ear and titrate to effect – noting that these patches are Special Access only.\n\nInterventional options can include botulinum A toxin injections to the salivary glands, which can last up to three months although be mindful this can make dysphagia worse. Radiotherapy to the parotid and/or submandibular glands may assist and can sometimes be repeated. Consider the use of a portable suction device.\n\nBronchial secretions can occur throughout the airway, with typically thick mucus secretions causing difficulty coughing or swallowing, and sometimes partial airway blockage with a feeling of choking. This can be worsened by dehydration, mouth breathing and non-invasive ventilation.\n\nImproving oral hygiene can assist, as can rehydration. Avoidance of mouth breathing should be attempted, although for bulbar patients this may not be practical. Some patients find papaya or pineapple juice with a meal helpful (has enzymes to help breakdown the secretions. Sucking on lozenges can assist, as can nebulised saline or humidifiers. Consider mucolytics like bromhexine 16mg three times daily, or nebulised acetylcystine (available from the hospital pharmacy).",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "amitriptyline",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "atropine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "glycopyrronium",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "spasticity",
+    "chapterId": "motor-neurone-disease",
+    "title": "Spasticity",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Consider non-pharmacological interventions to spasticity including minimisation of precipitating factors like tight clothing, constipation, postural discomfort in wheelchairs, orthotics. This is regardless of site of spasticity due to autonomic nervous pathway feedback loop. Hydrotherapy and movement therapy from physio is helpful.\n\nPharmacological treatments vary depending on level of muscle tone. The critical question is whether muscle tone is important for mobility/transfers as anti-spasticity medications risk loss of useful muscle tone and compromising mobility. If muscle tone is important (patient not bedbound), Gabapentin is the typical first line choice, start 100mg three times daily and titrate to effect. Consider benzodiazepines; diazepam 5mg two times daily is reasonable, titrate gradually. If no muscle tone or the patient is bedbound, consider baclofen 5mg two-three times daily, up to 20mg three times daily with cautious titration. In select patients, low doses can be used nocte only to balance symptom control nocte and maintaining mobility. Can also consider dantrolene.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "baclofen",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "diazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "gabapentin",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  },
+  {
+    "id": "cramp",
+    "chapterId": "motor-neurone-disease",
+    "title": "Cramp",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Consider non-pharmacological interventions similar to above. Can trial quinine sulphate, 200mg BD.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "dysphagia",
+    "chapterId": "motor-neurone-disease",
+    "title": "Dysphagia",
+    "sortOrder": 5,
+    "content": {
+      "overview": "Gradually occurs as disease progresses. Earlier in bulbar disease. Initially, speech pathologist input is recommended as well as dietician. Consider a good trigger for advance care planning and goals of care discussion as a hallmark of progressive decline\n\nIn the later stages, supplemental nutrition may become necessary. PEG or RIG may be necessary, ideally patients should be referred before weight loss of >10% body weight and should have a vital capacity of 50% or greater. Earlier intervention is better, particularly where there is risk of respiratory deterioration as this may limit the ability to go through the procedure.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "respiratory-failure",
+    "chapterId": "motor-neurone-disease",
+    "title": "Respiratory Failure",
+    "sortOrder": 6,
+    "content": {
+      "overview": "As MND progresses, the development of respiratory muscle weakness progressing to failure is a common trajectory leading to death. Clinical features that enhance suspicion of this developing include orthopnoea, nocturia and frequent awakenings during sleep, as well as early morning headaches, increasing daytime somnolence, and memory/concentration deficits. Respiratory symptoms typically worsen, with exertional dyspnoea, tachypnoea, accessory muscle use and weakened cough potentially developing. Patients may also develop syncope, confusion, hallucinations, diaphoresis, tachycardia and weight loss, among other symptoms.\n\nRespiratory insufficiency can be worsened by aspiration and pneumonias, with nocturnal oximetry being useful. Muscle function can be measured with vital capacity and sniff nasal pressure, although these are not helpful if there is severe bulbar weakness.\n\nThe best symptomatic management of respiratory failure in MND is ventilation, usually non-invasive although invasive does occur. BiPAP or bilevel positive airway pressure improves survival, eases symptoms and improves quality of life, with a median survival of 7 months. Notably around a third of patients do not tolerate BiPAP, and compliance can be limited in patients with cognitive or bulbar dysfunction.\n\nIt is important to have advanced care discussions with patients developing respiratory symptoms and progressing to failure, as the pathway away from ventilation is often the provision of sedation while withdrawing ventilator support, and this should be discussed prior to initiation or even referral for ventilator assessment.\n\nNotably, oxygen therapy is not recommended in patients with MND and respiratory muscle weakness, as impaired breathing effort and oxygen provision can lead to hypercapnia and progress to further respiratory depression and hasten death. If patients are hypoxic, oxygen may be considered with close monitoring under specialist support, and often requiring regular arterial monitoring.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  }
+]

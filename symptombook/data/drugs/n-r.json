@@ -1,0 +1,431 @@
+[
+  {
+    "id": "naloxone",
+    "name": "Naloxone",
+    "drugClass": "Opioid Antagonist",
+    "aliases": [
+      "Narcan"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "3%",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Naloxone (Targin) is a recently introduced combination of long-acting oxycodone and naloxone. naloxone is an opioid antagonist with little oral bioavailability (< 3%) and is used for its local effect on the bowel to reduce the side effect of constipation. Naloxone does have a significant systemic effect, especially in patients with liver failure, renal failure, and in higher doses.",
+    "warningLevel": "caution",
+    "indicationIds": [
+      "hepatic-failure",
+      "intravenous-drug-users",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "naproxen",
+    "name": "Naproxen",
+    "drugClass": "NSAID",
+    "aliases": [
+      "Naprosyn"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "500mg",
+        "frequency": "every 12 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "naproxen, ibuprofen, and meloxicam, although PBS restrictions may dictate preference. naproxen 250–500mg every 12 hours + morphine if required every 4 hours titrated upward until there is effective relief of pain\n\nAnticholinergic drugs, consider amitriptyline at night time as a first line choice.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "nonsteroidal-anti-inflammatories"
+    ]
+  },
+  {
+    "id": "nortriptyline",
+    "name": "Nortriptyline",
+    "drugClass": "Tricyclic Antidepressant",
+    "aliases": [
+      "Allegron"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "nortriptyline and imipramine are also considered effective if it is not well tolerated.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "olanzapine",
+    "name": "Olanzapine",
+    "drugClass": "Atypical Antipsychotic",
+    "aliases": [
+      "Zyprexa"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "5mg",
+        "frequency": "nocte",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "olanzapine 2. olanzapine and levomepromazine (which work in multiple areas), and the NK-1 inhibitors aprepitant and netupitant. Olanzapine 5mg nocte (2.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nausea-and-vomiting",
+      "the-non-terminal-patient"
+    ]
+  },
+  {
+    "id": "ondansetron",
+    "name": "Ondansetron",
+    "drugClass": "5-HT3 Antagonist / Antiemetic",
+    "aliases": [
+      "Zofran"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "4-8mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Ondansetron: 4-8mg orally or SC, then every 8–12 hours orally\n\nProchlorperazine: 10-25mg every 4–8 hours orally. Ondansetron may have an additive effect when used with other drugs that act on the CTZ. ondansetron 8mg twice daily.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch",
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "oxybutynin",
+    "name": "Oxybutynin",
+    "drugClass": "Anticholinergic / Antispasmodic",
+    "aliases": [
+      "Ditropan"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "oxybutynin as a patch in patients with poor oral tolerance although this can cause skin reactions, and has the potential to make the frail more likely to fall. oxybutynin, solinfacin, propantheline or mirabegron as described above although evidence is more limited.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "frequency-and-urgency"
+    ]
+  },
+  {
+    "id": "oxycodone",
+    "name": "Oxycodone",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Endone",
+      "OxyContin",
+      "Targin"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "30mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "oxycodone is available parenterally but is expensive and hard to access; it is recommended to convert this to either morphine or hydromorphone and utilise these agents. oxycodone, modified release hydromorphone, a wider dose range and flexibility of immediate-release formulations of oxycodone, hydromorphone and fentanyl, and a growing place for the use of methadone in opioid rotation for resistant pain situations. oxycodone) but it may necessary to co-prescribe a number of tablet, capsule or patch sizes to allow titration of the opioid.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "hepatic-failure",
+      "opioid-conversions",
+      "opioids",
+      "renal-failure",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "paracetamol",
+    "name": "Paracetamol",
+    "drugClass": "Simple Analgesic",
+    "aliases": [
+      "Panadol",
+      "Acetaminophen"
+    ],
+    "dosing": [
+      {
+        "route": "subcut",
+        "dose": "40mg",
+        "frequency": "every 8-12 hours",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "oral",
+        "dose": "1000mg",
+        "frequency": "every 6 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "paracetamol or anti-inflammatories with parecoxib SC 40mg once daily, or with ketorolac 10-20mg SC every 8-12 hours in patients with complex pain. Paracetamol is available as a suppository, although is not commonly used in local practice. paracetamol 500–1000mg every 6 hours and/or a nonsteroidal anti-inflammatory drug [NSAID]).",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "principles-of-pain-management",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "paroxetine",
+    "name": "Paroxetine",
+    "drugClass": "SSRI Antidepressant",
+    "aliases": [
+      "Aropax",
+      "Paxil"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "paroxetine 10mg at night, up to 20mg. paroxetine, can assist. Paroxetine 5-20mg has been reported to be very effective though its site of action is unknown, particularly in dry cough secondary to tumours within the thorax.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "cough",
+      "itch"
+    ]
+  },
+  {
+    "id": "phenobarbital",
+    "name": "Phenobarbital",
+    "drugClass": "Barbiturate / Anticonvulsant",
+    "aliases": [
+      "Phenobarbitone"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "1800-2400mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Phenobarbital ⚠ is an older highly sedative barbiturate utilised as a third-line sedative, which provides deep relaxation that is especially useful in patients who may be poorly responsive to the above agents. phenobarbital of 1800-2400mg depending on prior agitation and response to loading dose. phenobarbital for refractory seizures, 200mg as a loading dose and 3-5mg/kg over 24 hours as an infusion dose – between 500-800mg is typically sufficient for seizure prophylaxis.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "seizure",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "prazosin",
+    "name": "Prazosin",
+    "drugClass": "Alpha Blocker",
+    "aliases": [
+      "Minipress"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Prazosin 0. prazosin but more selective for receptors in the bladder.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hesitancy"
+    ]
+  },
+  {
+    "id": "pregabalin",
+    "name": "Pregabalin",
+    "drugClass": "Anticonvulsant / Neuropathic Agent",
+    "aliases": [
+      "Lyrica"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Pregabalin (Lyrica) is now PBS-listed and so may be the drug of choice for some patients. pregabalin is either toxic or ineffective, and is likely more effective than pregabalin; however it is not listed on the PBS scheme for neuropathic pain (it is on the RPBS [repatriation] scheme), and can be used in patients with mesothelioma covered by the dust-diseases board.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "prochlorperazine",
+    "name": "Prochlorperazine",
+    "drugClass": "Phenothiazine / Antiemetic",
+    "aliases": [
+      "Stemetil"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10-25mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Prochlorperazine: 10-25mg every 4–8 hours orally. prochlorperazine can be given subcutaneously, it has a high risk of tissue necrosis and is best avoided if possible.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "promethazine",
+    "name": "Promethazine",
+    "drugClass": "Antihistamine / Sedating",
+    "aliases": [
+      "Phenergan"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "25mg",
+        "frequency": "every 12 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Promethazine: 10–25mg orally, then every 12 hours orally\n\nBroad-Spectrum Anti-Emetic\n\nRecommended as a third line antiemetic, or where other measures are unsuccessful, these medications impact multiple receptors including dopaminergic, histamine and serotonin. promethazine 25mg at night if sleep is disrupted.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch",
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "propantheline",
+    "name": "Propantheline",
+    "drugClass": "Anticholinergic",
+    "aliases": [
+      "Pro-Banthine"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "15-30mg",
+        "frequency": "every 6-8 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Propantheline 15-30mg every 6-8 hours can be an alternative, particularly in the diaphoretic patient. propantheline or mirabegron as described above although evidence is more limited.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "frequency-and-urgency"
+    ]
+  },
+  {
+    "id": "rifampicin",
+    "name": "Rifampicin",
+    "drugClass": "Antibiotic",
+    "aliases": [
+      "Rifadin"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "150mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Rifampicin 150mg daily initially if available and increase to 150mg twice-daily if needed, can work second line.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  }
+]

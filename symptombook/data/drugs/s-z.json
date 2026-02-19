@@ -1,0 +1,269 @@
+[
+  {
+    "id": "senna",
+    "name": "Senna",
+    "drugClass": "Stimulant Laxative",
+    "aliases": [
+      "Senokot"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "senna.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "constipation-faecal-impaction"
+    ]
+  },
+  {
+    "id": "sertraline",
+    "name": "Sertraline",
+    "drugClass": "SSRI Antidepressant",
+    "aliases": [
+      "Zoloft"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "25mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "sertraline 25mg at night, titrating up to 50mg if poor response (can go to 100mg in some patients). sertraline or paroxetine, can assist. sertraline or citalopram are recommended for their lower incidence of side-effects.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch",
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "sucralfate",
+    "name": "Sucralfate",
+    "drugClass": "Mucosal Protectant",
+    "aliases": [
+      "Carafate"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "1g",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "topical",
+        "dose": "1g",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "sucralfate 1gm tablet crushed and mixed in the gel for haemostasis. sucralfate: 1g crushed and mixed in 10g of gel as outlined above in the metronidazole section.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "haemorrhagic-areas",
+      "malignant-and-infected-ulcers"
+    ]
+  },
+  {
+    "id": "tamsulosin",
+    "name": "Tamsulosin",
+    "drugClass": "Alpha Blocker",
+    "aliases": [
+      "Flomaxtra"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "400mcg",
+        "frequency": "once daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Tamsulosin 400mcg once daily. tamsulosin.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hesitancy"
+    ]
+  },
+  {
+    "id": "tapentadol",
+    "name": "Tapentadol",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Palexia"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Tapentadol is a relatively new analgesic available in Australia. tapentadol is currently subsidised on the PBS, while the IR is not. Tapentadol is often described as an “equivalent analgesic” in terms of potency, however it is essential to note that while it might have equivalent effect, much of its analgesia does not come from its opioid subcomponent.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "tramadol",
+    "name": "Tramadol",
+    "drugClass": "Weak Opioid",
+    "aliases": [
+      "Tramal",
+      "Zydol"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "100mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "tramadol without good effect. tramadol, it works primarily as a noradrenaline reuptake inhibitor, with a small effect on the opioid receptor. Tramadol is a dirty drug that is metabolised by the liver into two components an opioid receptor agonist (M1) and an SNRI similar but not identical to venlafaxine, causing enhanced serotonin and noradrenaline neurotransmission.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "tranexamic",
+    "name": "Tranexamic Acid",
+    "drugClass": "Antifibrinolytic",
+    "aliases": [
+      "Cyklokapron"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "500mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "tranexamic acid: 500mg tablet crushed and mixed in lubricant gel, applied locally 3 times a day. tranexamic acid: 1g every 6-8hours orally, reducing to 500mg every 8 hours if effective. Tranexamic acid: Local practice is to commence at 1gm every 8 hours, and then continue for 48 hours after bleeding ceases.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "haematuria",
+      "haemoptysis",
+      "haemorrhagic-areas"
+    ]
+  },
+  {
+    "id": "ursodeoxycholic",
+    "name": "Ursodeoxycholic Acid",
+    "drugClass": "Bile Acid",
+    "aliases": [
+      "Ursofalk",
+      "Urso"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "ursodeoxycholic acid 10mg/kg/day (rounded to nearest tablet) at night although both cholestyramine and Ursofalk are poorly tolerated.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "valproate",
+    "name": "Sodium Valproate",
+    "drugClass": "Anticonvulsant",
+    "aliases": [
+      "Epilim",
+      "Valpro"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "200mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Valproate may help resolve agitated behaviours in some patients. valproate in similar fashion. valproate for patients with irritability or seizure risk.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "neuropathic-pain",
+      "the-non-terminal-patient"
+    ]
+  },
+  {
+    "id": "venlafaxine",
+    "name": "Venlafaxine",
+    "drugClass": "SNRI Antidepressant",
+    "aliases": [
+      "Efexor"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "venlafaxine, causing enhanced serotonin and noradrenaline neurotransmission. venlafaxine and duloxetine have the most evidence to support their use at this time, although a number of SSRI drugs may be effective. Venlafaxine: commence 37.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain",
+      "strong-opioids"
+    ]
+  }
+]

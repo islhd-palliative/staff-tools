@@ -1,0 +1,269 @@
+[
+  {
+    "id": "introduction",
+    "chapterId": "respiratory-symptoms",
+    "title": "Introduction",
+    "sortOrder": 1,
+    "content": {
+      "overview": "Respiratory symptoms are very common in palliative care patients, and particularly those with primary lung pathologies like cancers or obstructive airways disease. Breathlessness is the commonest symptom at the end of life, regardless of pathology, and an ordered and stepwise approach to its management is crucial in providing good palliative care.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "breathlessness",
+    "chapterId": "respiratory-symptoms",
+    "title": "Breathlessness",
+    "sortOrder": 2,
+    "content": {
+      "overview": "Dyspnoea is commonly multifactorial in the palliative care setting. There may be a reversible or organic cause, but equally patients who are losing weight and energy may just as easily experience worsening dyspnoea due to muscle fatigue and general deterioration.\n\nFor patients where death is not imminent, we should consider appropriate investigation and treatment of underlying causes of dyspnoea to improve quality of life. Specific investigations and treatments are not included here; however some of the more frequent causes of dyspnoea that we see in palliative care include:\n\nThe pharmacological management of breathlessness can be considered to fall within four main areas, with opioids for dyspnoea modulation, anxiolytics for panic-associated breathlessness, oxygen for hypoxic states, and targeted therapies for specific areas. These are outlined below.",
+      "causes": [
+        "Bronchospasm",
+        "Cardiac failure occasioning fluid overload",
+        "Pulmonary infection",
+        "Pleural effusion",
+        "Pericardial effusion",
+        "Anaemia",
+        "Chronic airways limitation (CAL)",
+        "Lymphangitis carcinomatosis",
+        "Superior vena cava obstruction (SVCO)"
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "opioids",
+    "chapterId": "respiratory-symptoms",
+    "title": "Opioids",
+    "sortOrder": 3,
+    "content": {
+      "overview": "There is good evidence for the use of low-dose opioids, particularly morphine, in the treatment of symptomatic dyspnoea. Perceptions associated with breathlessness are processed in areas of the brain including the insula, cingulate, sensory cortices and amygdala which are all rich in opioid receptors. Opioid-mediated pulmonary vasodilation may also play a role. There has been a persistent wariness about prescribing opioids in patients particularly at risk of hypercapnia, however at low doses morphine has been proven relatively safe.\n\nNot all dyspnoea will respond to opioids, and it is notable that dyspnoea from pulmonary hypertension has negative evidence for relief from opioids, and dyspnoea from cardiac failure has evidence that is at best equivocal.\n\nMorphine is the drug of choice in patients that can tolerate it, as it has the best evidence of all the opioids for dyspnoea. Low-dose regular oral morphine is typically effective. In patients without pain, commence at 2mg immediate release every 4 hours (half dose for the elderly), and consider titration up to 5mg every 4 hours. Doses higher than this (30mg / daily) will rarely provide relief from dyspnoea if there has been no benefit already observed. Slow release morphine can also be prescribed as a once-nightly capsule, starting at 10mg, to a maximum of 30mg, if this would be well tolerated. For patients for whom morphine must be used with caution (especially renal failure), consider dose reduction and interval increases.\n\nIn patients with pain, if they are taking an opioid other than morphine, especially oxycodone, consider rotation to morphine as a first step. If pain has been troublesome on other regimens, it is possible to utilise morphine as an adjuvant for dyspnoea in a similar fashion above, watching for toxicity with caution.\n\nOther opioids have very mixed evidence in the management of dyspnoea. Oxycodone has negative evidence and has been shown to be worse than placebo. Fentanyl may work but only has evidence as a nebuliser. Hydromorphone has some positive evidence but is very difficult to source. It is reasonable to trial low-dose opioids in equivalence to morphine above (10mg/day OMED) however it is reasonable to abandon these if they do not show benefit with early dosing. The recommendation here is to use morphine if it is well tolerated and to reserve other agents for patients who have undue side effects or allergy.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "fentanyl",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "hydromorphone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  },
+  {
+    "id": "anxiolytics",
+    "chapterId": "respiratory-symptoms",
+    "title": "Anxiolytics",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Many patients with dyspnoea have related anxiety and a feeling of panic, particularly when intermittent acute attacks occur. Fear of a suffocating death is often present. Counselling and reassurance of the patient that breathlessness can be relieved and that they will not be allowed to ‘suffocate’ in the terminal phase can give great relief for patients who have experienced acute attacks of dyspnoea in the past. For a pharmacological approach, we utilise the following:\n\nLorazepam is the benzodiazepine most commonly used for dyspnoea, at 0.5-1mg PRN, and up to three times daily regularly + PRN if needed. Reduce doses in the elderly and frail to 0.25mg, or if patients are particularly sedate. Lorazepam can be given sublingually or orally, as the tablet will disintegrate.\n\nClonazepam is a longer-lasting benzodiazepine that comes in both tablets and liquid formulation. 0.25-0.5mg as an initial dose is reasonable, followed by twice daily maintenance dosing of up to 1mg.\n\nDiazepam can be given at 2-5mg initially, titrating up to 10mg if required. Usual interval is two to three times daily.\n\nMidazolam or Clonazepam can be given by injection or infusion if the parenteral approach is required, further detail below.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "diazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "lorazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      }
+    ]
+  },
+  {
+    "id": "oxygen",
+    "chapterId": "respiratory-symptoms",
+    "title": "Oxygen",
+    "sortOrder": 5,
+    "content": {
+      "overview": "Most patients should not require continuous oxygen where there has been optimal management with morphine and anxiolytics. Studies have shown that in non-hypoxic patients (saturations over 90%) a high-pressure electrical, hand-held fan is equally effective in the management of dyspnoea. Other studies have shown that air is as effective when delivered via nasal prongs as oxygen in the non-hypoxic, and in patients with cardiac failure oxygen has no real benefit over airflow. Oxygen is however often prescribed due to the difficulty in providing pressured air.\n\nThe criteria in our local service for prescription of oxygen via the palliative care service typically includes a short-term prognosis of less than 3 months, with pharmacological management in situ. Smoking must not occur in the vicinity of the oxygen concentrator.\n\nFor patients with a longer-term survival, it may at times be more appropriate to refer oxygen prescriptions via respiratory specialists or via ENABLE.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      }
+    ]
+  },
+  {
+    "id": "cough",
+    "chapterId": "respiratory-symptoms",
+    "title": "Cough",
+    "sortOrder": 6,
+    "content": {
+      "overview": "Cough is another respiratory symptom with multiple potential causes. For fit patients, consider treatable options rather than solely depending on suppressive therapy. Such options may include:\n\nCough suppression should be considered for all patients with persistent symptoms. The following options are available:\n\nReduce pharyngeal stimulation using e.g. simple linctus 10ml, cough lozenges, or 1-2 teaspoons of honey.\n\nOpioids for central cough suppression. Consider a trial of codeine linctus 30mg every four hours PRN, or of morphine elixir 2-3mg every four hours PRN, to suppress the cough reflex. If morphine is beneficial, can consider slow release dosing once-twice daily with the appropriate formulation. It can be argued that morphine should be utilised over codeine, given that codeine is a morphine prodrug; however some patients do find the linctus formulation soothing in and of itself. Pholcodine is less used in our service although is available. Methadone ⚠ can be used for cough suppression in low dose, consider 2.5mg at night time and increase if minimally effective to 5mg at night or to 2.5mg twice daily. Be mindful of drowsiness and be prepared to withhold or reduce doses.\n\nParoxetine 5-20mg has been reported to be very effective though its site of action is unknown, particularly in dry cough secondary to tumours within the thorax.\n\nLocal anaesthetic blockade of cough receptors may be used in patients whose symptoms persist despite central suppression. Options include: lidocaine 2%, 5mL by nebuliser every 4-12 hours or bupivacaine 0.25%, 10mL by nebuliser every 4-12 hours. Only one or two doses a day may be required when effective. Mechanical cough receptors at the level of the carina will be blocked with standard nebuliser. If symptom control is not achieved, an ultrasonic nebuliser (e.g. Bird nebulizer) can produce a smaller particle size that will additionally block chemical cough receptors in bronchioles. Patients should be advised not to eat or drink for an hour following the treatment as they may be at risk of aspiration.\n\nSecretions occasioning cough. Consider amitriptyline 10-20mg at night, glycopyrrolate 0.2mg initially, then 1.2-2.4mg by SC infusion per 24 hours, or hyoscine butylbromide 20mg initially then 40-60mg by SC infusion per 24 hours.\n\nDexamethasone 8mg orally daily for 5 days, reducing to 4mg daily as maintenance, may be a useful adjunct in patients with lymphangitis carcinomatosis or upper airways compression.\n\nRadiotherapy in a small, single fractionated dose may stop cough in lung cancer.",
+      "causes": [
+        "Mucolytics for sputum",
+        "Treatment of gastro-oesophageal reflux",
+        "Antihistamines or steroid nasal sprays for post-nasal drip",
+        "Antibiotics for chest infection",
+        "Bronchodilators for bronchospasm",
+        "Stopping (or substituting for) ACE inhibitors",
+        "Treatment of cardiac failure",
+        "Radiotherapy, chemotherapy or corticosteroids to modify pathological processes."
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "amitriptyline",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "codeine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "glycopyrronium",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "hyoscine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "lidocaine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      },
+      {
+        "drugId": "methadone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 7
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 8
+      },
+      {
+        "drugId": "paroxetine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 9
+      }
+    ]
+  },
+  {
+    "id": "haemoptysis",
+    "chapterId": "respiratory-symptoms",
+    "title": "Haemoptysis",
+    "sortOrder": 7,
+    "content": {
+      "overview": "Simple or low-volume haemoptysis may be controlled with any of the following approaches:\n\nDexamethasone: 8mg orally or SC daily for 3 days, reducing to a maintenance of 2-4mg daily if desirable.\n\nRadiotherapy in a single palliative fraction.\n\nTranexamic acid: Local practice is to commence at 1gm every 8 hours, and then continue for 48 hours after bleeding ceases. If the bleeding recurs with withdrawal of tranexamic acid, consider instituting maintenance dosing of 500mg two-three times daily. Can be given subcutaneously (the intravenous formulation) if required.\n\nMassive bleeding at the end of life via the airway is a palliative emergency, and is discussed in that section, on page 35.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "tranexamic",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      }
+    ]
+  },
+  {
+    "id": "death-rattle",
+    "chapterId": "respiratory-symptoms",
+    "title": "Death Rattle",
+    "sortOrder": 8,
+    "content": {
+      "overview": "Death rattles or terminal secretions describes the rattling noise produced during respiration when secretions are retained in large airways, in patients too weak to expectorate effectively. It is thought to be due to a combination of saliva and airway secretions. Patients are often moribund but relatives, other patients and staff may be distressed by it. There is limited data on how affected patients are, although local research implies some distress may be present. Counselling relatives is usually advisable to reassure them that the patient is not suffering. Pharmacological treatments have evidence as prophylaxis in prevention of secretory build up, however use after secretions have already developed tends to be inefficacious.\n\nAny of the following treatment options may be considered:\n\nHyoscine butylbromide 20mg SC initially, then 60-80mg SC infusion per 24 hours. Theoretical maximum is 100mg per 24 hours although unclear if much benefit over 80mg.\n\nGlycopyrronium 0.4mg SC initially, then 1.2-2.4mg SC infusion per 24 hours.\n\nHyoscine hydrobromide 0.4mg every 4 hours SC, or 1.2-2.4 mg by continuous SC infusion after an initial dose of 0.4mg (same dosing as glycopyrronium)\n\nIf severe symptoms are present, we typically ensure sufficient sedative medication is on board – see the End of Life care section for details.\n\nIf associated with purulent sputum consider a statim subcutaneous injection of ceftriaxone (1g reconstituted in 3.75 mls 2% lignocaine, in two injection sites.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "glycopyrronium",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "hyoscine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "lidocaine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      }
+    ]
+  }
+]

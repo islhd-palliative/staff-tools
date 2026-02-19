@@ -1,0 +1,242 @@
+[
+  {
+    "id": "erythromycin",
+    "name": "Erythromycin",
+    "drugClass": "Macrolide / Prokinetic",
+    "aliases": [
+      "EES",
+      "Eryc"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "75mg",
+        "frequency": "every 8 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Erythromycin: 75mg oral elixir every 8 hours (this may be useful in patients with denervated stomachs, eg following oesophagectomy)\n\nThese drugs may increase colic in patients with constipation or bowel obstruction.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "fentanyl",
+    "name": "Fentanyl",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Durogesic",
+      "Abstral"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "30ml",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "transdermal",
+        "dose": "36mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "fentanyl or buprenorphine patches are generally continued with the addition of SC morphine or hydromorphone. fentanyl patches, buprenorphine patches, controlled-release oxycodone, modified release hydromorphone, a wider dose range and flexibility of immediate-release formulations of oxycodone, hydromorphone and fentanyl, and a growing place for the use of methadone in opioid rotation for resistant pain situations. fentanyl patch is less constipating and can be preferred by patients as it doesn’t have to be taken orally, however it doesn’t have a readily accessible breakthrough product so immediate-release morphine, oxycodone or hydromorphone are generally used for this.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "intractable-pain",
+      "opioid-conversions",
+      "opioids",
+      "renal-failure",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "gabapentin",
+    "name": "Gabapentin",
+    "drugClass": "Anticonvulsant / Neuropathic Agent",
+    "aliases": [
+      "Neurontin"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "100-300mg",
+        "frequency": "at night",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "gabapentin. Gabapentin 100-300mg at night, lower doses in the elderly. gabapentin at 100mg at night and titrate up slowly, or pregablin at 25mg.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hiccups-singultus",
+      "itch",
+      "neuropathic-pain",
+      "spasticity"
+    ]
+  },
+  {
+    "id": "glycopyrronium",
+    "name": "Glycopyrronium",
+    "drugClass": "Anticholinergic",
+    "aliases": [
+      "Glycopyrrolate",
+      "Robinul"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "200mcg",
+        "frequency": "three times daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "glycopyrronium (available from the hospital pharmacy) 200mcg three times daily initially up to 1mg three time daily. glycopyrrolate 0. Glycopyrronium 0.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "cough",
+      "death-rattle",
+      "sialorrhoea-bronchial-secretions"
+    ]
+  },
+  {
+    "id": "haloperidol",
+    "name": "Haloperidol",
+    "drugClass": "Butyrophenone / Antipsychotic",
+    "aliases": [
+      "Serenace",
+      "Haldol"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "1-2mg",
+        "frequency": "twice daily",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "csci",
+        "dose": "2-3mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "subcut",
+        "dose": "2-3mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "haloperidol 1-2mg stat and then twice daily, or olanzapine 2. Haloperidol: 0. Haloperidol has the advantage of a long half-life enabling successful control with once-daily administration.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hiccups-singultus",
+      "intractable-pain",
+      "nausea-and-vomiting",
+      "principles-of-pain-management",
+      "strong-opioids",
+      "terminal-care",
+      "the-non-terminal-patient"
+    ]
+  },
+  {
+    "id": "hydromorphone",
+    "name": "Hydromorphone",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Dilaudid",
+      "Jurnista"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "50ml",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "hydromorphone may be given in one-half the total daily oral dose divided into intermittent SC injections (4-hourly), or by a continuous 24-hourly SC infusion via a syringe driver (using an in situ SC butterfly). hydromorphone and utilise these agents. hydromorphone.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "opioids",
+      "renal-failure",
+      "strong-opioids",
+      "terminal-care"
+    ]
+  },
+  {
+    "id": "hyoscine",
+    "name": "Hyoscine Butylbromide",
+    "drugClass": "Anticholinergic",
+    "aliases": [
+      "Buscopan"
+    ],
+    "dosing": [
+      {
+        "route": "csci",
+        "dose": "20mg",
+        "frequency": "every 4-8 hours",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "oral",
+        "dose": "20mg",
+        "frequency": "four times daily",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "subcut",
+        "dose": "20mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Hyoscine hydrobromide: 0. hyoscine butylbromide 20mg every 4-8 hours, via syringe driver if needed. hyoscine butylbromide 20mg four times daily, although this is poorly bioavailable.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "colic",
+      "cough",
+      "death-rattle",
+      "nausea-and-vomiting",
+      "sialorrhoea-bronchial-secretions"
+    ]
+  }
+]

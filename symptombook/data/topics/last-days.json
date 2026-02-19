@@ -1,0 +1,179 @@
+[
+  {
+    "id": "assessment",
+    "chapterId": "last-days",
+    "title": "Assessment",
+    "sortOrder": 1,
+    "content": {
+      "overview": "It is important to recognize when someone is dying to ensure that every comfort is provided for the patient and relatives. This includes the withdrawal of unnecessary medications, the assessment and provision of specific medications for symptom control, and medical communication with the patient (if possible) and relatives about what is happening.\n\nPalliative treatment should be offered as a positive and active intervention rather than giving the impression that we are doing nothing for the patient. With skill and kindness this engages relatives and caregivers in the process, and doesn’t leave them anxious that they should have more investigations and treatment. Likewise, they should not be left with the feeling that they have ‘chosen’ to let their loved-one die, which may happen if you ask them if they want medications to be withdrawn or to have sedative drugs started.\n\nIt is better to inform them, to listen and to guide them along the kindest path, imparting the feeling that this is the best medicine. This is particularly pertinent to settings where elderly patients deteriorate with multiple co-morbidities in acute hospitals and nursing homes. It is an opportunity to create good memories for the caregivers of a compassionate process and peaceful death, which has a huge impact on supporting their bereavement.\n\nOral medications are preferred to parenteral or rectal administration of drugs in palliative care although as patients approach the end of life, swallowing difficulties develop and it may become necessary to convert existing medications to the parenteral route. Most patients cannot continue oral medications in their last 24-48 hours of life. Home care in particular requires familiarity with changing to alternative routes of administration while maintaining the existing therapeutic effects of the oral drug regimen.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "principles-of-changing-from-oral-drug-administration",
+    "chapterId": "last-days",
+    "title": "Principles of Changing from Oral Drug Administration",
+    "sortOrder": 2,
+    "content": {
+      "overview": "Maintaining symptomatic control and prevention of worsening symptoms is the primary goal for prescribing in palliative care. The same control of symptoms must be continued when changing to alternative routes of administration. Pain relief must be maintained even in unconscious patients who might otherwise become agitated and distressed. This may require adherence to the appropriate combination of an opioid, an NSAID and other co-analgesics (such as steroids and anticonvulsants) where these previously formed part of the oral regime. Not all medications are available in all routes, and alternatives may be required.\n\nNausea and vomiting control can be maintained by parenteral administration in the vast majority of cases.\n\nIntermittent (4-hourly) or continuous SC administration of drugs via a syringe driver forms the mainstay of management.",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": null
+  },
+  {
+    "id": "continuing-symptom-control",
+    "chapterId": "last-days",
+    "title": "Continuing Symptom Control",
+    "sortOrder": 3,
+    "content": {
+      "overview": "Oral morphine and hydromorphone may be given in one-half the total daily oral dose divided into intermittent SC injections (4-hourly), or by a continuous 24-hourly SC infusion via a syringe driver (using an in situ SC butterfly). Injectable oxycodone is available parenterally but is expensive and hard to access; it is recommended to convert this to either morphine or hydromorphone and utilise these agents. Methadone can be converted to a subcutaneous infusion but the ratio is variable and it is recommended to gain specialist input.\n\nTransdermal fentanyl or buprenorphine patches are generally continued with the addition of SC morphine or hydromorphone. It is common practice to maintain a patch and to add a SC morphine infusion to titrate the analgesic requirements. Be aware of the morphine equivalence of the patient’s patch (page 13) and commence an infusion (or intermittent 4-hourly injections) that represents approximately a one-half to one third increase. Parenteral morphine may be more accessible than the other opioid drugs but hydromorphone is preferred in renal failure EGFR<50mls/min.\n\nPeripherally-effective analgesia should generally be available, although it is possible that some patients can manage without these. Our usual practice is to substitute regular paracetamol or anti-inflammatories with parecoxib SC 40mg once daily, or with ketorolac 10-20mg SC every 8-12 hours in patients with complex pain. We may use ketorolac as a PRN medication in patients we feel could manage without regular. Neither of these medications works well in a syringe driver so are given as intermittent injections.\n\nParacetamol is available as a suppository, although is not commonly used in local practice.\n\nIf patients haven been taking steroids regularly orally, we typically continue subcutaneous dexamethasone as a once a day bolus. As a rough guide, 1mg of dexamethasone is equivalent to 5mg methylprednisolone, 6mg prednisone or 25mg hydrocortisone.\n\nIn patients taking anticonvulsants or antidepressants for neuropathic pain, we sometimes utilise ketamine or clonazepam parenterally, which has some evidence in this setting. If seizure control is desired, it is possible to give leviteracetam via syringe driver in a 1:1 dose to the prior oral daily dose, up to 2000mg daily, or sodium valproate in similar fashion. In the dying patient, we utilise injectable benzodiazepines such as midazolam and clonazepam, as well as infused phenobarbital in the refractory terminal setting (see page 33).",
+      "causes": null,
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "buprenorphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "dexamethasone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "fentanyl",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "hydromorphone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      },
+      {
+        "drugId": "ketamine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 6
+      },
+      {
+        "drugId": "methadone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 7
+      },
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 8
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 9
+      },
+      {
+        "drugId": "oxycodone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 10
+      },
+      {
+        "drugId": "paracetamol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 11
+      },
+      {
+        "drugId": "phenobarbital",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 12
+      },
+      {
+        "drugId": "valproate",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 13
+      }
+    ]
+  },
+  {
+    "id": "terminal-care",
+    "chapterId": "last-days",
+    "title": "Terminal Care",
+    "sortOrder": 4,
+    "content": {
+      "overview": "Stop all unnecessary medications, taking care to counsel family member (and patients if able) that this is not a life limiting issue; the vast majority of medications taken in the community do not make a rapid difference to life expectancy. Change required medications as discussed above in order to maintain adequate symptom control,\n\nAssess all current symptoms, some of which will be reported by nurses or care assistants, such as pain or calling out when moved or turned\n\nKnowledge of four drugs is sufficient to manage the majority of all dying patients comfortably, particularly the elderly, in the home setting.\n\nIt is beneficial to be familiar with the use of clonazepam as an adjunct to the use of midazolam especially in the home setting as liquid formulation, and access to a syringe driver is beneficial.\n\nDetermine whether the patient is comfortably dying without the need for any medical support, or whether there is the need for pain management or control of other symptoms, and whether there is a need to sedate to manage restlessness or delirium.\n\nIf the patient appears comfortable ensure there are PRN orders for:\n\nConsider orders for clonazepam liquid 0.5-1mg every six hours for distress second line to midazolam, especially in the absence of a syringe driver. In the patient who is not opioid naïve, adjust the morphine dose to be 1/6th their prior daily oral morphine equivalent, using the conversion information discussed on page 10. In the patient with known renal impairment, consider the use of hydromorphone in place of morphine, at 1/5th of the morphine doses discussed above.\n\nIf the patient is uncomfortable, in pain, agitated or affected by other specific symptoms refer to the appropriate sections of this book. In general the following combination works well subcutaneously via a syringe-driver over 24 hours backed up by the PRN orders above (i.e. if you’re not sure what to do try this to start!):\n\nAdd haloperidol 2-3mg over 24 hours to the syringe driver if the patient has required regular antiemetics.\n\nIf no syringe-driver is available:\n\nPlease contact your local palliative care service if you are still having difficulties in achieving patient comfort.",
+      "causes": [
+        "Morphine for pain and dyspnoea",
+        "Midazolam for distress and sedation",
+        "Haloperidol for nausea and agitation",
+        "Hyoscine butylbromide for terminal secretions",
+        "Morphine 2.5-5mg SC every two hours, for pain and/or dyspnoea",
+        "Midazolam 5mg SC every two hours, for distress and/or agitation",
+        "Haloperidol 1-2.5mg every six hours, for nausea and/or agitation",
+        "Hyoscine butylbromide 20mg SC every four hours, for secretions",
+        "Morphine 2.5mg SC statim, then 15mg/24 hours in an opioid-naive patient (see morphine conversion on page 10 for appropriate doses in patients already on opioids).",
+        "Midazolam 2.5mg SC statim, then 15mg over 24 hours, beginning with 15mg unless the patient is extremely agitated. In a very agitated patient give midazolam 5mg SC repeated at half-hourly intervals until settled (check that urinary retention or rectal faecal impaction isn’t the cause of the agitation first!) while starting the infusion.",
+        "Hyoscine butylbromide 60mg over 24 hours, as prophylaxis for terminal secretions. There is good evidence this prevents the build-up of so-called death rattles, and in the terminal patient is generally tolerated",
+        "Give morphine 2.5mg SC every 4 hours (in the opioid naïve patient), or the appropriate 1/6th dose of their prior opioid.",
+        "Give clonazepam liquid 1mg PO every eight hours OR SC every 8 hours.",
+        "Give hyoscine butylbromide 20mg SC every 8 hours"
+      ],
+      "sections": [],
+      "notes": null
+    },
+    "drugReferences": [
+      {
+        "drugId": "clonazepam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 1
+      },
+      {
+        "drugId": "haloperidol",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 2
+      },
+      {
+        "drugId": "hydromorphone",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 3
+      },
+      {
+        "drugId": "midazolam",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 4
+      },
+      {
+        "drugId": "morphine",
+        "contextNote": null,
+        "dosingInContext": null,
+        "sortOrder": 5
+      }
+    ]
+  }
+]

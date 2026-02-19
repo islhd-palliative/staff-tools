@@ -1,0 +1,524 @@
+[
+  {
+    "id": "ibuprofen",
+    "name": "Ibuprofen",
+    "drugClass": "NSAID",
+    "aliases": [
+      "Nurofen",
+      "Brufen"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "ibuprofen, and meloxicam, although PBS restrictions may dictate preference.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "nonsteroidal-anti-inflammatories"
+    ]
+  },
+  {
+    "id": "imipramine",
+    "name": "Imipramine",
+    "drugClass": "Tricyclic Antidepressant",
+    "aliases": [
+      "Tofranil"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "imipramine are also considered effective if it is not well tolerated. Imipramine: as for amitriptyline above.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "neuropathic-pain"
+    ]
+  },
+  {
+    "id": "ketamine",
+    "name": "Ketamine",
+    "drugClass": "NMDA Antagonist / Dissociative",
+    "aliases": [
+      "Ketalar"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "ketamine or clonazepam parenterally, which has some evidence in this setting. Ketamine, an anaesthetic induction agent, had an established role in control of intractable pain including reported efficacy with neuropathic pain, incident pain (i. ketamine for severely escalating pain, refractory to other agents, with neuropathic components in the inpatient setting.",
+    "warningLevel": "specialist",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "epidural-and-intrathecal-pain-control",
+      "intractable-pain"
+    ]
+  },
+  {
+    "id": "lactulose",
+    "name": "Lactulose",
+    "drugClass": "Osmotic Laxative",
+    "aliases": [
+      "Actilax",
+      "Duphalac"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Lactulose is less preferred in palliative care patients, outside those with liver cirrhosis who require it to assist in prevention or management of encephalopathy, due to its propensity to cause bloating and abdominal discomfort.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "constipation-faecal-impaction"
+    ]
+  },
+  {
+    "id": "levomepromazine",
+    "name": "Levomepromazine",
+    "drugClass": "Phenothiazine / Antiemetic",
+    "aliases": [
+      "Nozinan"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Levomepromazine ⚠ is a broad-spectrum neuroleptic similar to chlorpromazine. levomepromazine can be given as a 2-4 hourly breakthrough dose for agitation if required. levomepromazine (which work in multiple areas), and the NK-1 inhibitors aprepitant and netupitant.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "malignant-bowel-obstruction",
+      "nausea-and-vomiting",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "lidocaine",
+    "name": "Lidocaine",
+    "drugClass": "Local Anaesthetic / Antiarrhythmic",
+    "aliases": [
+      "Lignocaine",
+      "Xylocaine"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "50mg",
+        "frequency": "twice daily",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "nebulised",
+        "dose": "2%",
+        "frequency": "every 4-12 hours",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Lidocaine by infusion can help with refractory itch, particularly in the malignant setting. lidocaine (lignocaine) via infusion, for complex or refractory pain particularly with neuropathic components. lidocaine.",
+    "warningLevel": "caution",
+    "indicationIds": [
+      "cough",
+      "death-rattle",
+      "intractable-pain",
+      "itch"
+    ]
+  },
+  {
+    "id": "loperamide",
+    "name": "Loperamide",
+    "drugClass": "Antidiarrhoeal",
+    "aliases": [
+      "Imodium"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "2-4mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Loperamide 2-4mg statim and then regularly as required, typically 3-4 times daily.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "diarrhoea"
+    ]
+  },
+  {
+    "id": "loratadine",
+    "name": "Loratadine",
+    "drugClass": "Antihistamine",
+    "aliases": [
+      "Claratyne"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "loratadine 10mg daily, or promethazine 25mg at night if sleep is disrupted. loratadine or cetirizine.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "lorazepam",
+    "name": "Lorazepam",
+    "drugClass": "Benzodiazepine",
+    "aliases": [
+      "Ativan"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "lorazepam 0. Lorazepam is the benzodiazepine most commonly used for dyspnoea, at 0. Lorazepam can be given sublingually or orally, as the tablet will disintegrate.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "anxiolytics",
+      "the-non-terminal-patient"
+    ]
+  },
+  {
+    "id": "macrogol",
+    "name": "Macrogol",
+    "drugClass": "Osmotic Laxative",
+    "aliases": [
+      "Movicol",
+      "OsmoLax"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "macrogol 3350 flushing approach succeeded then it is often easy to maintain on 1-2 sachets Movicol (or 2-3 scoops Osmolax) every morning or night plus or minus docusate with senna.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "constipation-faecal-impaction"
+    ]
+  },
+  {
+    "id": "methadone",
+    "name": "Methadone",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Physeptone",
+      "Biodone"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "15mg",
+        "frequency": "tds",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Methadone can be converted to a subcutaneous infusion but the ratio is variable and it is recommended to gain specialist input. methadone in opioid rotation for resistant pain situations. Methadone is a drug with some complicated characteristics, available as tablets, syrup and injections.",
+    "warningLevel": "specialist",
+    "indicationIds": [
+      "continuing-symptom-control",
+      "cough",
+      "intractable-pain",
+      "intravenous-drug-users",
+      "renal-failure",
+      "strong-opioids"
+    ]
+  },
+  {
+    "id": "methylnaltrexone",
+    "name": "Methylnaltrexone",
+    "drugClass": "Peripheral Opioid Antagonist",
+    "aliases": [
+      "Relistor"
+    ],
+    "dosing": [
+      {
+        "route": "subcut",
+        "dose": "4mg",
+        "frequency": "daily",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "oral",
+        "dose": "8mg",
+        "frequency": "twice daily",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Methylnaltrexone 4mg to 8mg SC second daily can assist some patients, without reversing analgesic benefits of opioids. methylnaltrexone, or ondansetron 8mg twice daily.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "metoclopramide",
+    "name": "Metoclopramide",
+    "drugClass": "Prokinetic / Antiemetic",
+    "aliases": [
+      "Maxolon",
+      "Pramin"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10-20mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Metoclopramide: 10-20mg orally or SC, then every 4–8 hours orally, maximum 60mg/24 hours (typically 30-40mg). Metoclopramide: 10-20mg orally or SC, then every 4–8 hours orally or SC\n\nDomperidone: 10-20mg every 4–8 hours orally\n\nErythromycin: 75mg oral elixir every 8 hours (this may be useful in patients with denervated stomachs, eg following oesophagectomy)\n\nThese drugs may increase colic in patients with constipation or bowel obstruction. Metoclopramide (20mg orally or SC) plus antiflatulent (e.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "hiccups-singultus",
+      "nausea-and-vomiting"
+    ]
+  },
+  {
+    "id": "metronidazole",
+    "name": "Metronidazole",
+    "drugClass": "Antibiotic",
+    "aliases": [
+      "Flagyl"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Metronidazole gel dressings: Apply twice daily or with each dressing. metronidazole preparations. Metronidazole tablets can be crushed and sprinkled, or a suspension of metronidazole for injection can be sprayed on the wound surface using an atomizer prior to dressings without mixing in a gel.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "haemorrhagic-areas",
+      "malignant-and-infected-ulcers",
+      "painful-ulcers"
+    ]
+  },
+  {
+    "id": "midazolam",
+    "name": "Midazolam",
+    "drugClass": "Benzodiazepine",
+    "aliases": [
+      "Hypnovel"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "6-8mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "subcut",
+        "dose": "5mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "iv",
+        "dose": "10mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Midazolam 2. midazolam and for patients with prolonged dying it may be necessary to increase dosing. midazolam, and may be administered either as regular injection or via syringe driver.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "anxiolytics",
+      "continuing-symptom-control",
+      "intractable-pain",
+      "retention-at-the-end-of-life",
+      "seizure",
+      "terminal-care",
+      "terminal-distress",
+      "terminal-exsanguination",
+      "the-terminal-patient"
+    ]
+  },
+  {
+    "id": "mirtazapine",
+    "name": "Mirtazapine",
+    "drugClass": "Tetracyclic Antidepressant",
+    "aliases": [
+      "Avanza",
+      "Remeron"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "See clinical notes",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "Mirtazapine 7.",
+    "warningLevel": "none",
+    "indicationIds": [
+      "itch"
+    ]
+  },
+  {
+    "id": "morphine",
+    "name": "Morphine",
+    "drugClass": "Strong Opioid",
+    "aliases": [
+      "Sevredol",
+      "Ordine",
+      "MS Contin",
+      "Kapanol"
+    ],
+    "dosing": [
+      {
+        "route": "oral",
+        "dose": "10mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "transdermal",
+        "dose": "36mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "csci",
+        "dose": "60mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      },
+      {
+        "route": "iv",
+        "dose": "10mg",
+        "frequency": "as directed",
+        "maxDose": null,
+        "notes": null
+      }
+    ],
+    "renalAdjustment": null,
+    "hepaticAdjustment": null,
+    "cautions": [],
+    "clinicalNotes": "morphine (10mg/10g gel) for local pain relief and/or sucralfate 1gm tablet crushed and mixed in the gel for haemostasis. Morphine gel applications as outlined in the metronidazole section above. morphine and hydromorphone may be given in one-half the total daily oral dose divided into intermittent SC injections (4-hourly), or by a continuous 24-hourly SC infusion via a syringe driver (using an in situ SC butterfly).",
+    "warningLevel": "none",
+    "indicationIds": [
+      "bladder-spasm",
+      "continuing-symptom-control",
+      "cough",
+      "epidural-and-intrathecal-pain-control",
+      "intractable-pain",
+      "malignant-and-infected-ulcers",
+      "opioid-conversions",
+      "opioids",
+      "oxygen",
+      "painful-ulcers",
+      "renal-failure",
+      "strong-opioids",
+      "terminal-care",
+      "terminal-distress",
+      "terminal-exsanguination"
+    ]
+  }
+]
