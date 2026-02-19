@@ -1,0 +1,104 @@
+[
+  {
+    "drugId": "midazolam",
+    "drugName": "Midazolam",
+    "routes": [
+      {
+        "route": "subcutaneous",
+        "toMidazolamFactor": 1.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "halfLife": "1–2 hours",
+    "tMax": "30–60 minutes (SC)",
+    "bioavailability": "~40% oral (SC only in palliative care)",
+    "dosingGuidance": "Dosing not recommended greater than 3-hourly. Subcutaneous route only in palliative care due to low oral bioavailability (~40%)."
+  },
+  {
+    "drugId": "clonazepam",
+    "drugName": "Clonazepam",
+    "routes": [
+      {
+        "route": "oral",
+        "toMidazolamFactor": 4.0,
+        "doseUnit": "mg",
+        "notes": null
+      },
+      {
+        "route": "subcutaneous",
+        "toMidazolamFactor": 4.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "halfLife": "18–50 hours",
+    "tMax": "1–4 hours",
+    "bioavailability": ">80%",
+    "dosingGuidance": "Outside the terminal phase, usually BD–TDS dosing. Can be given QID regular or Q4H PRN."
+  },
+  {
+    "drugId": "lorazepam",
+    "drugName": "Lorazepam",
+    "routes": [
+      {
+        "route": "oral",
+        "toMidazolamFactor": 2.0,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "halfLife": "10–20 hours",
+    "tMax": "1–2 hours",
+    "bioavailability": ">90%",
+    "dosingGuidance": "Oral administration. High oral bioavailability makes PO:SC ratio approximately 1:1."
+  },
+  {
+    "drugId": "diazepam",
+    "drugName": "Diazepam",
+    "routes": [
+      {
+        "route": "oral",
+        "toMidazolamFactor": 0.25,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null,
+    "halfLife": "20–100 hours (active metabolite desmethyldiazepam)",
+    "tMax": "0.5–2 hours",
+    "bioavailability": ">90%",
+    "dosingGuidance": "Oral administration. Very long half-life due to active metabolites — accumulation risk in frail patients."
+  },
+  {
+    "drugId": "phenobarbital",
+    "drugName": "Phenobarbital",
+    "routes": [
+      {
+        "route": "oral",
+        "toMidazolamFactor": 0.125,
+        "doseUnit": "mg",
+        "notes": null
+      },
+      {
+        "route": "subcutaneous",
+        "toMidazolamFactor": 0.125,
+        "doseUnit": "mg",
+        "notes": null
+      }
+    ],
+    "warningLevel": "specialist",
+    "notes": "Specialist drug. At appropriate doses, phenobarbital supersaturates the GABA receptor cluster — escalating other benzodiazepines becomes futile. Reserved for status epilepticus and refractory terminal sedation.",
+    "halfLife": "53–118 hours",
+    "tMax": "1–6 hours",
+    "bioavailability": "~95%",
+    "dosingGuidance": "Specialist use only. Reserved for status epilepticus and refractory terminal sedation. If used at appropriate dosing, supersaturates the GABA cluster and escalating other BZDs is futile."
+  }
+]

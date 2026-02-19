@@ -1,0 +1,120 @@
+[
+  {
+    "drugId": "haloperidol",
+    "drugName": "Haloperidol",
+    "drugClass": "typical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 2.0,
+        "doseUnit": "mg"
+      },
+      {
+        "route": "parenteral",
+        "equivalentDose": 2.0,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  },
+  {
+    "drugId": "droperidol",
+    "drugName": "Droperidol",
+    "drugClass": "typical",
+    "routes": [
+      {
+        "route": "parenteral",
+        "equivalentDose": 1.25,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  },
+  {
+    "drugId": "chlorpromazine",
+    "drugName": "Chlorpromazine",
+    "drugClass": "typical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 75.0,
+        "doseUnit": "mg"
+      },
+      {
+        "route": "parenteral",
+        "equivalentDose": 25.0,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  },
+  {
+    "drugId": "levomepromazine",
+    "drugName": "Levomepromazine",
+    "drugClass": "typical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 75.0,
+        "doseUnit": "mg"
+      },
+      {
+        "route": "parenteral",
+        "equivalentDose": 25.0,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "specialist",
+    "notes": "Levomepromazine has significant sedative and anticholinergic effects beyond its antipsychotic action. Dose equivalence reflects dopaminergic potency only."
+  },
+  {
+    "drugId": "olanzapine",
+    "drugName": "Olanzapine",
+    "drugClass": "atypical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 5.0,
+        "doseUnit": "mg"
+      },
+      {
+        "route": "parenteral",
+        "equivalentDose": 5.0,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  },
+  {
+    "drugId": "quetiapine",
+    "drugName": "Quetiapine",
+    "drugClass": "atypical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 75.0,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  },
+  {
+    "drugId": "risperidone",
+    "drugName": "Risperidone",
+    "drugClass": "atypical",
+    "routes": [
+      {
+        "route": "oral",
+        "equivalentDose": 1.75,
+        "doseUnit": "mg"
+      }
+    ],
+    "warningLevel": "none",
+    "notes": null
+  }
+]
