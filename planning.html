@@ -831,11 +831,11 @@
         <!-- Staff Changes Section -->
         <h3 style="font-size:0.95rem;color:#1e40af;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;">Staff Changes</h3>
         <div class="scenario-toggles" style="margin-bottom:20px;">
-            <label class="scenario-toggle">
-                <input type="checkbox" id="scenarioHelenIncrease">
+            <label class="scenario-toggle" style="opacity:0.5;pointer-events:none;">
+                <input type="checkbox" id="scenarioHelenIncrease" checked disabled>
                 <div class="scenario-toggle-content">
-                    <div class="scenario-toggle-title">Helen increases to 0.7 FTE</div>
-                    <div class="scenario-toggle-desc">Picking up additional 0.1 FTE (North)</div>
+                    <div class="scenario-toggle-title">Helen increased to 0.7 FTE ✓</div>
+                    <div class="scenario-toggle-desc">Effective February 2026 (now baseline)</div>
                 </div>
                 <span class="scenario-toggle-impact positive">+0.1</span>
             </label>
@@ -1153,7 +1153,7 @@
                 { name: 'Angela Lo', code: 'AL', fte: 0.8, role: 'Divisional Director', nonClinical: 0.4 },
                 { name: 'Greg Barclay', code: 'GB', fte: 0.4, role: 'Senior Staff Specialist', retiring: true },
                 { name: 'Ron Wai', code: 'RW', fte: 0.4, role: 'Staff Specialist' },
-                { name: 'Helen Yourlo', code: 'HY', fte: 0.6, role: 'Staff Specialist' },
+                { name: 'Helen Yourlo', code: 'HY', fte: 0.7, role: 'Staff Specialist' },
                 { name: 'Muoi Khou', code: 'MK', fte: 0.6, role: 'Staff Specialist' }
             ],
             south: [
@@ -1256,7 +1256,7 @@
                 'AL': { pcu: 0, community: 0.4, twh: 0, shh: 0, clinic: 0 },    // 2 days Community (rest non-clinical)
                 'GB': { pcu: 0.4, community: 0, twh: 0, shh: 0, clinic: 0 },    // 2 days PCU (Tue, Fri)
                 'RW': { pcu: 0, community: 0, twh: 0.2, shh: 0, clinic: 0.2 },  // 1 day TWH, 1 day Clinic
-                'HY': { pcu: 0, community: 0, twh: 0.2, shh: 0.2, clinic: 0.2 }, // 1 day each: Clinic, SHH, TWH (0.6 total)
+                'HY': { pcu: 0, community: 0.1, twh: 0.2, shh: 0.2, clinic: 0.2 }, // 1 day each: Clinic, SHH, TWH + 0.1 Community (0.7 total)
                 'MK': { pcu: 0, community: 0, twh: 0.4, shh: 0.2, clinic: 0 }   // 2 days TWH, 1 day SHH
             },
             south: {
@@ -1267,7 +1267,7 @@
 
         // Timeline events
         const timelineEvents = [
-            { quarter: 0, label: 'Q1 2026', events: ['Current state', 'Helen +0.1 FTE pending'] },
+            { quarter: 0, label: 'Q1 2026', events: ['Current state', 'Helen 0.7 FTE (Feb 2026)'] },
             { quarter: 4, label: 'Q1 2027', events: ['SDMH PCU may open'] },
             { quarter: 6, label: 'Mid 2027', events: ['Greg Barclay retirement window begins'] },
             { quarter: 8, label: 'Q1 2028', events: ['Loui/Sellers may return', 'SHH rebuild progress'] },
@@ -1436,14 +1436,8 @@
             let staff = [...baselineStaff[region]];
 
             if (region === 'north') {
-                // Helen increase
-                if (state.scenarios.helenIncrease) {
-                    const helen = staff.find(s => s.code === 'HY');
-                    if (helen) helen.fte = 0.7;
-                } else {
-                    const helen = staff.find(s => s.code === 'HY');
-                    if (helen) helen.fte = 0.6;
-                }
+                // Helen increase - now baseline (effective Feb 2026)
+                // HY baseline is already 0.7 in baselineStaff
 
                 // Barclay retires
                 if (state.scenarios.barclayRetires) {
@@ -1858,13 +1852,11 @@
 
             // Current always shows baseline
             if (state.quarter === 0) {
-                events.push({ type: 'infrastructure', text: 'Current baseline: 5.5 FTE filled' });
+                events.push({ type: 'infrastructure', text: 'Current baseline: 5.6 FTE filled' });
             }
 
             // Based on scenarios
-            if (state.scenarios.helenIncrease) {
-                events.push({ type: 'gain', text: 'Helen +0.1 FTE' });
-            }
+            // Helen increase is now baseline - no longer a scenario event
             if (state.scenarios.barclayRetires) {
                 events.push({ type: 'loss', text: 'Greg Barclay retired (-0.4 FTE)' });
             }
@@ -1996,10 +1988,8 @@
         });
 
         // Scenario toggles
-        document.getElementById('scenarioHelenIncrease').addEventListener('change', (e) => {
-            state.scenarios.helenIncrease = e.target.checked;
-            render();
-        });
+        // Helen increase is now baseline - toggle is disabled/cosmetic
+        // document.getElementById('scenarioHelenIncrease').addEventListener removed
 
         document.getElementById('scenarioBarclayRetires').addEventListener('change', (e) => {
             state.scenarios.barclayRetires = e.target.checked;
@@ -2223,7 +2213,7 @@
             document.querySelectorAll('.timeline-labels span').forEach(el => el.classList.remove('active'));
 
             // Staff changes
-            document.getElementById('scenarioHelenIncrease').checked = false;
+            // Helen stays checked (baseline now)
             document.getElementById('scenarioBarclayRetires').checked = false;
             document.getElementById('scenarioPatrickReturns').checked = false;
             document.getElementById('patrickSliderContainer').style.display = 'none';
