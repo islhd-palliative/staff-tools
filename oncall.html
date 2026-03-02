@@ -925,7 +925,21 @@
         }
 
         // Month navigation - relative to current month
-        let monthOffset = 0; // 0 = this month, 1 = next month
+        let monthOffset = 0; // 0 = this month, negative = past months, positive = future
+
+        // Calculate navigation bounds from roster data
+        function getMonthBounds() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const dates = Object.keys(oncallData).sort();
+            if (dates.length === 0) return { min: 0, max: 0 };
+            const earliest = new Date(dates[0] + 'T00:00:00');
+            const latest = new Date(dates[dates.length - 1] + 'T00:00:00');
+            const minOffset = (earliest.getFullYear() - currentYear) * 12 + (earliest.getMonth() - currentMonth);
+            const maxOffset = (latest.getFullYear() - currentYear) * 12 + (latest.getMonth() - currentMonth);
+            return { min: minOffset, max: maxOffset };
+        }
 
         function updateMonthLabel() {
             const label = document.getElementById('monthLabel');
@@ -945,7 +959,8 @@
         }
 
         function prevMonth() {
-            if (monthOffset > 0) {
+            const bounds = getMonthBounds();
+            if (monthOffset > bounds.min) {
                 monthOffset--;
                 updateMonthLabel();
                 renderCalendar();
@@ -955,7 +970,8 @@
         }
 
         function nextMonth() {
-            if (monthOffset < 2) { // Allow this month, next month, and month after
+            const bounds = getMonthBounds();
+            if (monthOffset < bounds.max) {
                 monthOffset++;
                 updateMonthLabel();
                 renderCalendar();
