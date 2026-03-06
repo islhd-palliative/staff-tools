@@ -301,6 +301,12 @@
             font-style: italic;
         }
 
+        .oncall-tag.locum {
+            background: #e5e7eb;
+            color: #374151;
+            font-style: italic;
+        }
+
         .oncall-tag.highlight {
             background: #fbbf24;
             color: #000;
@@ -481,7 +487,8 @@
             // Advanced Trainees
             'PL': { name: 'Patrick Loui', initials: 'PL', isTrainee: true },
             'DS': { name: 'Dominic Sellers', initials: 'DS', isTrainee: true },
-            'MP': { name: 'Michelle Petersen', initials: 'MP', isTrainee: true }
+            'MP': { name: 'Michelle Petersen', initials: 'MP', isTrainee: true },
+            'Locum': { name: 'Locum', initials: 'Loc', isTrainee: false, isLocum: true }
         };
 
         // NSW Public Holidays
@@ -787,6 +794,7 @@
                             const tag = document.createElement('span');
                             let classes = 'oncall-tag first';
                             if (person.isTrainee) classes += ' trainee';
+                            if (person.isLocum) classes += ' locum';
                             if (filter !== 'all' && oncall.first === filter) classes += ' highlight';
                             tag.className = classes;
                             tag.textContent = `1: ${person.initials}`;
@@ -803,6 +811,7 @@
                             const tag = document.createElement('span');
                             let classes = 'oncall-tag second';
                             if (person.isTrainee) classes += ' trainee';
+                            if (person.isLocum) classes += ' locum';
                             if (filter !== 'all' && oncall.second === filter) classes += ' highlight';
                             tag.className = classes;
                             tag.textContent = `2: ${person.initials}`;
@@ -836,6 +845,7 @@
                         const tag = document.createElement('span');
                         let classes = 'oncall-tag first';
                         if (person.isTrainee) classes += ' trainee';
+                        if (person.isLocum) classes += ' locum';
                         if (filter !== 'all' && oncall.first === filter) classes += ' highlight';
                         tag.className = classes;
                         tag.textContent = `1: ${person.initials}`;

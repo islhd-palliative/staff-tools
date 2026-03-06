@@ -587,6 +587,18 @@
             <button class="btn-outline" onclick="loadSavedDraft()">Load Saved Draft</button>
         </div>
 
+        <div style="margin-top: 16px; padding: 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; font-weight: 500;">
+                <input type="checkbox" id="locumToggle" onchange="toggleLocum(this.checked)"
+                       style="width: 18px; height: 18px; cursor: pointer;">
+                Locum available this month
+            </label>
+            <p id="locumTargetInfo" style="font-size: 0.8rem; color: #666; margin: 6px 0 0 28px; display: none;">
+                Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
+                Everyone else's targets adjusted proportionally.
+            </p>
+        </div>
+
         <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Tick who had a weekend last month (they'll be deprioritized for weekends this month)</p>
         <div id="lastMonthWeekends" class="checkbox-grid"></div>
@@ -614,6 +626,18 @@
         </div>
     </div>
 
+    <!-- Historical Weeknight Balance -->
+    <div class="leave-preview" style="border-color: #a5b4fc;">
+        <h2 style="color: #4338ca;">Historical Weeknight Balance
+            <span style="font-size: 0.75rem; font-weight: normal; color: #666;">
+                (from <span id="historyMonthCount">0</span> months of data)
+            </span>
+        </h2>
+        <div id="historicalBalanceContent">
+            <p class="leave-preview-empty">Calculating...</p>
+        </div>
+    </div>
+
     <!-- Warnings -->
     <div id="warningsContainer"></div>
 
@@ -629,6 +653,7 @@
                     <th>Weekends</th>
                     <th>Weeknights</th>
                     <th>Status</th>
+                    <th>Hist. Bal.</th>
                 </tr>
             </thead>
             <tbody id="equityBody"></tbody>
@@ -693,20 +718,31 @@
 
     <script>
         // ==================== STAFF DATA ====================
-        // Monthly targets based on 5.5 total FTE, ~22 weeknights, ~4-5 weekends per month
         const staffData = [
-            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5], monthlyWeekNights: 4 },
-            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5], monthlyWeekNights: 4 },
-            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5], monthlyWeekNights: 3 },
-            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5], monthlyWeekNights: 3 },
-            { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', workDays: [3,4,5], monthlyWeekNights: 2 },
-            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4], monthlyWeekNights: 2 },
-            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2], monthlyWeekNights: 2 },
-            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5], monthlyWeekNights: 2 }
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5] },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] },
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', workDays: [3,4,5] },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
 
-        // Total FTE for reference
-        const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0); // 5.5
+        const locumStaff = { code: 'Locum', name: 'Locum', fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        let locumEnabled = false;
+
+        function getActiveStaff() {
+            return locumEnabled ? [...staffData, locumStaff] : [...staffData];
+        }
+
+        function getMonthlyWeekNightTarget(staffCode) {
+            const active = getActiveStaff();
+            const totalFTE = active.reduce((sum, s) => sum + s.fte, 0);
+            const person = active.find(s => s.code === staffCode);
+            if (!person) return 0;
+            return Math.round((person.fte / totalFTE) * 22);
+        }
 
         // ==================== LEAVE DATA ====================
         // This should match the leave calendar data
@@ -764,41 +800,108 @@
         // ==================== STATE ====================
         let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
-        let historicalData = {}; // { 'YYYY-MM': { roster: {...}, weekendCounts: {...}, weeknightCounts: {...} } }
+        let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
 
-        // Seed with January 2026 actual data from oncall.html
-        const seedJanuary2026 = {
-            '2026-01-01': { staffCode: 'AL' },
-            '2026-01-02': { staffCode: 'GB' },
-            '2026-01-03': { staffCode: 'Fadz' }, // Weekend - trainee was 1st, Fadz was 2nd
-            '2026-01-04': { staffCode: 'Fadz' },
-            '2026-01-05': { staffCode: 'Fadz' },
-            '2026-01-06': { staffCode: 'RW' },   // Trainee 1st, RW 2nd
-            '2026-01-07': { staffCode: 'BT' },
-            '2026-01-08': { staffCode: 'HY' },
-            '2026-01-09': { staffCode: 'AL' },
-            '2026-01-10': { staffCode: 'BT' },   // Weekend - trainee 1st, BT 2nd
-            '2026-01-11': { staffCode: 'BT' },
-            '2026-01-12': { staffCode: 'SR' },   // Trainee 1st, SR 2nd
-            '2026-01-13': { staffCode: 'GB' },
-            '2026-01-14': { staffCode: 'HY' },
-            '2026-01-15': { staffCode: 'MK' },
-            '2026-01-16': { staffCode: 'BT' },
-            '2026-01-17': { staffCode: 'SR' },
-            '2026-01-18': { staffCode: 'SR' },   // Weekend
-            '2026-01-19': { staffCode: 'RW' },
-            '2026-01-20': { staffCode: 'BT' },
-            '2026-01-21': { staffCode: 'MK' },   // Trainee 1st, MK 2nd
-            '2026-01-22': { staffCode: 'Fadz' },
-            '2026-01-23': { staffCode: 'HY' },   // Trainee 1st, HY 2nd
-            '2026-01-24': { staffCode: 'RW' },   // Weekend - trainee 1st, RW 2nd
-            '2026-01-25': { staffCode: 'RW' },
-            '2026-01-26': { staffCode: 'HY' },
-            '2026-01-27': { staffCode: 'AL' },
-            '2026-01-28': { staffCode: 'MK' },
-            '2026-01-29': { staffCode: 'SR' },   // Trainee 1st, SR 2nd
-            '2026-01-30': { staffCode: 'GB' },
-            '2026-01-31': { staffCode: 'AL' }
+        // Historical roster data (Jan-Mar 2026)
+        // For trainee entries (PL/DS/MP as 1st on-call with consultant as 2nd),
+        // the consultant is credited since they provide the real backup.
+        const historicalRosters = {
+            '2026-01': {
+                '2026-01-01': 'AL',
+                '2026-01-02': 'GB',
+                '2026-01-03': 'Fadz',  // Trainee 1st, Fadz 2nd
+                '2026-01-04': 'Fadz',  // Trainee 1st, Fadz 2nd
+                '2026-01-05': 'Fadz',
+                '2026-01-06': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-07': 'BT',
+                '2026-01-08': 'HY',
+                '2026-01-09': 'AL',
+                '2026-01-10': 'BT',    // Trainee 1st, BT 2nd
+                '2026-01-11': 'BT',    // Trainee 1st, BT 2nd
+                '2026-01-12': 'SR',    // Trainee 1st, SR 2nd
+                '2026-01-13': 'GB',
+                '2026-01-14': 'HY',
+                '2026-01-15': 'MK',
+                '2026-01-16': 'BT',
+                '2026-01-17': 'SR',
+                '2026-01-18': 'SR',
+                '2026-01-19': 'RW',
+                '2026-01-20': 'BT',
+                '2026-01-21': 'MK',    // Trainee 1st, MK 2nd
+                '2026-01-22': 'Fadz',
+                '2026-01-23': 'HY',    // Trainee 1st, HY 2nd
+                '2026-01-24': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-25': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-26': 'HY',
+                '2026-01-27': 'AL',
+                '2026-01-28': 'MK',
+                '2026-01-29': 'SR',    // Trainee 1st, SR 2nd
+                '2026-01-30': 'GB',
+                '2026-01-31': 'AL'
+            },
+            '2026-02': {
+                '2026-02-01': 'AL',
+                '2026-02-02': 'SR',
+                '2026-02-03': 'RW',
+                '2026-02-04': 'HY',
+                '2026-02-05': 'MK',
+                '2026-02-06': 'Fadz',
+                '2026-02-07': 'GB',
+                '2026-02-08': 'GB',
+                '2026-02-09': 'SR',
+                '2026-02-10': 'BT',
+                '2026-02-11': 'Fadz',
+                '2026-02-12': 'AL',
+                '2026-02-13': 'GB',
+                '2026-02-14': 'BT',
+                '2026-02-15': 'BT',
+                '2026-02-16': 'RW',
+                '2026-02-17': 'AL',
+                '2026-02-18': 'SR',
+                '2026-02-19': 'MK',
+                '2026-02-20': 'HY',
+                '2026-02-21': 'MK',
+                '2026-02-22': 'MK',
+                '2026-02-23': 'Fadz',
+                '2026-02-24': 'GB',
+                '2026-02-25': 'BT',
+                '2026-02-26': 'SR',
+                '2026-02-27': 'AL',
+                '2026-02-28': 'HY'
+            },
+            '2026-03': {
+                '2026-03-01': 'HY',
+                '2026-03-02': 'BT',
+                '2026-03-03': 'SR',
+                '2026-03-04': 'Fadz',
+                '2026-03-05': 'AL',
+                '2026-03-06': 'HY',
+                '2026-03-07': 'SR',
+                '2026-03-08': 'SR',
+                '2026-03-09': 'RW',
+                '2026-03-10': 'GB',
+                '2026-03-11': 'BT',
+                '2026-03-12': 'SR',
+                '2026-03-13': 'AL',
+                '2026-03-14': 'BT',
+                '2026-03-15': 'BT',
+                '2026-03-16': 'Fadz',
+                '2026-03-17': 'SR',
+                '2026-03-18': 'MK',
+                '2026-03-19': 'HY',
+                '2026-03-20': 'BT',
+                '2026-03-21': 'RW',
+                '2026-03-22': 'RW',
+                '2026-03-23': 'Fadz',
+                '2026-03-24': 'AL',
+                '2026-03-25': 'SR',
+                '2026-03-26': 'MK',
+                '2026-03-27': 'GB',
+                '2026-03-28': 'Fadz',
+                '2026-03-29': 'Fadz',
+                '2026-03-30': 'RW',
+                '2026-03-31': 'BT'
+            }
         };
         let currentMonth = null;
         let currentYear = null;
@@ -956,7 +1059,7 @@
         // Returns true if this weeknight is too close to a weekend for this person
         function tooCloseToWeekend(staffCode, weeknightDate, roster) {
             const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
-            const staff = staffData.find(s => s.code === staffCode);
+            const staff = getActiveStaff().find(s => s.code === staffCode);
 
             // After weekend: Mon/Tue excluded if had previous weekend (no exceptions)
             if (dow === 1 || dow === 2) {
@@ -1023,6 +1126,36 @@
             return false;
         }
 
+        // Calculate historical weeknight balance across all historical months
+        // Uses staffData (not getActiveStaff) - only tracks 8 regular staff, not Locum
+        function getHistoricalWeeknightBalance() {
+            const balance = {};
+            staffData.forEach(s => { balance[s.code] = { actual: 0, fair: 0, surplus: 0 }; });
+
+            let totalWeeknights = 0;
+            const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0);
+
+            for (const [monthKey, roster] of Object.entries(historicalRosters)) {
+                for (const [dateKey, staffCode] of Object.entries(roster)) {
+                    const date = parseDate(dateKey);
+                    const dow = date.getDay();
+                    if (dow >= 1 && dow <= 5) { // Weeknight (Mon-Fri)
+                        totalWeeknights++;
+                        if (balance[staffCode]) {
+                            balance[staffCode].actual++;
+                        }
+                    }
+                }
+            }
+
+            staffData.forEach(s => {
+                balance[s.code].fair = (s.fte / totalFTE) * totalWeeknights;
+                balance[s.code].surplus = balance[s.code].actual - balance[s.code].fair;
+            });
+
+            return balance;
+        }
+
         function generateRoster() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -1030,6 +1163,9 @@
             currentMonth = month;
             currentYear = year;
             currentRoster = {};
+
+            // Calculate historical balance once for use in priority scoring
+            historicalBalance = getHistoricalWeeknightBalance();
 
             const warnings = [];
 
@@ -1040,7 +1176,7 @@
             // Track assignments this month
             const monthWeekends = {};
             const monthWeekNights = {};
-            staffData.forEach(s => {
+            getActiveStaff().forEach(s => {
                 monthWeekends[s.code] = 0;
                 monthWeekNights[s.code] = 0;
             });
@@ -1063,12 +1199,23 @@
 
             // Weeknight priority: prioritize those under their monthly target
             function getWeekNightPriority(staffCode, date) {
-                const staff = staffData.find(s => s.code === staffCode);
+                const staff = getActiveStaff().find(s => s.code === staffCode);
                 const assigned = monthWeekNights[staffCode];
-                const target = staff.monthlyWeekNights;
+                const target = getMonthlyWeekNightTarget(staffCode);
 
                 // Base: how far from target (negative = under target = higher priority)
                 let priority = assigned - target;
+
+                // Historical balance nudge (skip for Locum - no history)
+                if (staffCode !== 'Locum') {
+                    const hist = historicalBalance[staffCode];
+                    if (hist) {
+                        // surplus > 0 = historically overdone → add penalty
+                        // surplus < 0 = historically underdone → boost priority
+                        // Scale: 0.5 per weeknight surplus/deficit (moderate nudge)
+                        priority += hist.surplus * 0.5;
+                    }
+                }
 
                 // Heavy penalty if already has a shift this week
                 const thisWeek = weeknightsThisWeek(staffCode, date, currentRoster);
@@ -1085,7 +1232,7 @@
             // Get available staff for weekends
             function getAvailableForWeekend(satDate) {
                 const dateKey = formatDateKey(satDate);
-                return staffData.filter(s => {
+                return getActiveStaff().filter(s => {
                     // Check leave on Saturday and Sunday
                     if (isOnLeave(s.code, satDate)) return false;
                     const sunDate = new Date(satDate);
@@ -1109,7 +1256,7 @@
                 const dateKey = formatDateKey(date);
                 const dow = date.getDay(); // 1=Mon, 2=Tue, etc.
 
-                return staffData.filter(s => {
+                return getActiveStaff().filter(s => {
                     // Check leave
                     if (isOnLeave(s.code, date)) return false;
 
@@ -1130,7 +1277,7 @@
             function getFallbackForWeeknight(date) {
                 const dateKey = formatDateKey(date);
 
-                return staffData.filter(s => {
+                return getActiveStaff().filter(s => {
                     // Check leave
                     if (isOnLeave(s.code, date)) return false;
 
@@ -1267,10 +1414,10 @@
                 emptyOpt.textContent = '-- Select --';
                 select.appendChild(emptyOpt);
 
-                staffData.forEach(s => {
+                getActiveStaff().forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.code;
-                    opt.textContent = s.name;
+                    opt.textContent = s.isLocum ? 'Locum' : s.name;
 
                     // Check if on leave
                     const leave = isOnLeave(s.code, day);
@@ -1309,8 +1456,9 @@
             tbody.innerHTML = '';
 
             // Count assignments from current roster
+            const activeStaff = getActiveStaff();
             const counts = {};
-            staffData.forEach(s => {
+            activeStaff.forEach(s => {
                 counts[s.code] = { weekends: 0, weeknights: 0 };
             });
 
@@ -1326,13 +1474,18 @@
                 }
             });
 
-            staffData.forEach(s => {
+            // Get historical balance once for all rows
+            const histBal = getHistoricalWeeknightBalance();
+
+            activeStaff.forEach(s => {
                 const c = counts[s.code];
+                if (!c) return;
+                const target = getMonthlyWeekNightTarget(s.code);
                 const tr = document.createElement('tr');
 
                 // Name
                 const tdName = document.createElement('td');
-                tdName.textContent = s.name;
+                tdName.textContent = s.isLocum ? 'Locum' : s.name;
                 tr.appendChild(tdName);
 
                 // FTE
@@ -1342,7 +1495,7 @@
 
                 // Target (weeknights)
                 const tdTarget = document.createElement('td');
-                tdTarget.textContent = s.monthlyWeekNights;
+                tdTarget.textContent = target;
                 tr.appendChild(tdTarget);
 
                 // Weekends this month
@@ -1352,21 +1505,37 @@
 
                 // Weeknights this month
                 const tdNights = document.createElement('td');
-                const nightDiff = c.weeknights - s.monthlyWeekNights;
+                const nightDiff = c.weeknights - target;
                 const nightClass = nightDiff > 0 ? 'color:#dc2626' : nightDiff < 0 ? 'color:#059669' : '';
                 tdNights.innerHTML = `<span style="${nightClass}">${c.weeknights}</span>`;
                 tr.appendChild(tdNights);
 
                 // Status
                 const tdStatus = document.createElement('td');
-                if (c.weeknights > s.monthlyWeekNights) {
+                if (c.weeknights > target) {
                     tdStatus.innerHTML = '<span style="color:#dc2626;">Over</span>';
-                } else if (c.weeknights < s.monthlyWeekNights) {
+                } else if (c.weeknights < target) {
                     tdStatus.innerHTML = '<span style="color:#059669;">Under</span>';
                 } else {
                     tdStatus.innerHTML = '<span style="color:#666;">On target</span>';
                 }
                 tr.appendChild(tdStatus);
+
+                // Historical balance (historical surplus + current month surplus)
+                const tdHist = document.createElement('td');
+                if (histBal[s.code]) {
+                    const currentSurplus = c.weeknights - target;
+                    const totalSurplus = histBal[s.code].surplus + currentSurplus;
+                    const display = totalSurplus > 0 ? `+${totalSurplus.toFixed(1)}` : totalSurplus.toFixed(1);
+                    tdHist.textContent = display;
+                    tdHist.style.color = totalSurplus > 1 ? '#dc2626' : totalSurplus < -1 ? '#059669' : '#666';
+                    tdHist.style.fontWeight = '600';
+                } else {
+                    tdHist.textContent = '-';
+                    tdHist.style.color = '#999';
+                }
+                tdHist.style.textAlign = 'center';
+                tr.appendChild(tdHist);
 
                 tbody.appendChild(tr);
             });
@@ -1402,7 +1571,8 @@
             const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
             const getStaffName = (code) => {
-                const staff = staffData.find(s => s.code === code);
+                if (code === 'Locum') return 'Locum';
+                const staff = getActiveStaff().find(s => s.code === code);
                 return staff ? staff.name.split(' ').pop() : code; // Last name only
             };
 
@@ -1433,6 +1603,10 @@
                     const staffDiv = document.createElement('div');
                     staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
                     staffDiv.textContent = getStaffName(assignment.staffCode);
+                    if (assignment.staffCode === 'Locum') {
+                        staffDiv.style.background = '#e5e7eb';
+                        staffDiv.style.color = '#374151';
+                    }
                     td.appendChild(staffDiv);
                 }
 
@@ -1485,10 +1659,10 @@
         function renderUnavailability() {
             const container = document.getElementById('unavailabilityList');
             container.innerHTML = adHocUnavailability.map((u, i) => {
-                const staff = staffData.find(s => s.code === u.staffCode);
+                const staff = getActiveStaff().find(s => s.code === u.staffCode);
                 return `
                     <div class="unavailability-item">
-                        ${staff ? staff.name : u.staffCode} - ${u.date}
+                        ${staff ? (staff.isLocum ? 'Locum' : staff.name) : u.staffCode} - ${u.date}
                         <button onclick="removeUnavailability(${i})">&times;</button>
                     </div>
                 `;
@@ -1525,13 +1699,16 @@
         }
 
         // ==================== SAVE/LOAD ====================
+        let savedDrafts = {}; // { 'YYYY-MM': { roster: {...}, savedAt: '...' } }
+
         function saveToLocalStorage() {
             const data = {
                 adHocUnavailability,
-                historicalData,
+                savedDrafts,
                 currentRoster,
                 currentMonth,
-                currentYear
+                currentYear,
+                locumEnabled
             };
             localStorage.setItem('oncall_generator_test', JSON.stringify(data));
         }
@@ -1541,10 +1718,17 @@
             if (saved) {
                 const data = JSON.parse(saved);
                 adHocUnavailability = data.adHocUnavailability || [];
-                historicalData = data.historicalData || {};
+                savedDrafts = data.savedDrafts || data.historicalData || {}; // backwards compat
                 currentRoster = data.currentRoster || {};
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
+
+                if (data.locumEnabled !== undefined) {
+                    locumEnabled = data.locumEnabled;
+                    document.getElementById('locumToggle').checked = locumEnabled;
+                    toggleLocum(locumEnabled);
+                }
+
                 renderUnavailability();
                 if (currentMonth !== null) {
                     document.getElementById('monthSelect').value = currentMonth;
@@ -1562,7 +1746,7 @@
             }
 
             const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-            historicalData[monthKey] = {
+            savedDrafts[monthKey] = {
                 roster: { ...currentRoster },
                 savedAt: new Date().toISOString()
             };
@@ -1576,10 +1760,10 @@
             const year = parseInt(document.getElementById('yearSelect').value);
             const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
 
-            if (historicalData[monthKey]) {
+            if (savedDrafts[monthKey]) {
                 currentMonth = month;
                 currentYear = year;
-                currentRoster = { ...historicalData[monthKey].roster };
+                currentRoster = { ...savedDrafts[monthKey].roster };
                 renderRoster();
                 renderEquity(month, year);
 
@@ -1612,8 +1796,8 @@ const oncallData = {
 ${oncallEntries}
 };
 
-// Historical equity tracking
-const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
+// Saved drafts
+const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
 `;
 
             const blob = new Blob([jsContent], { type: 'application/javascript' });
@@ -1631,8 +1815,9 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
                 currentRoster,
                 currentMonth,
                 currentYear,
-                historicalData,
-                adHocUnavailability
+                savedDrafts,
+                adHocUnavailability,
+                locumEnabled
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1660,8 +1845,15 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
                     if (data.currentRoster) currentRoster = data.currentRoster;
                     if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
                     if (data.currentYear !== undefined) currentYear = data.currentYear;
-                    if (data.historicalData) historicalData = data.historicalData;
+                    if (data.savedDrafts) savedDrafts = data.savedDrafts;
+                    else if (data.historicalData) savedDrafts = data.historicalData; // backwards compat
                     if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
+
+                    if (data.locumEnabled !== undefined) {
+                        locumEnabled = data.locumEnabled;
+                        document.getElementById('locumToggle').checked = locumEnabled;
+                        toggleLocum(locumEnabled);
+                    }
 
                     saveToLocalStorage();
                     renderUnavailability();
@@ -1690,7 +1882,7 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             if (confirm('Are you sure you want to wipe all test data? This cannot be undone.')) {
                 localStorage.removeItem('oncall_generator_test');
                 currentRoster = {};
-                historicalData = {};
+                savedDrafts = {};
                 adHocUnavailability = [];
                 currentMonth = null;
                 currentYear = null;
@@ -1701,6 +1893,47 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
                 document.getElementById('warningsContainer').innerHTML = '';
                 alert('All test data wiped');
             }
+        }
+
+        // ==================== HISTORICAL BALANCE ====================
+        function renderHistoricalBalance() {
+            const container = document.getElementById('historicalBalanceContent');
+            const monthCount = Object.keys(historicalRosters).length;
+            document.getElementById('historyMonthCount').textContent = monthCount;
+
+            if (monthCount === 0) {
+                container.innerHTML = '<p class="leave-preview-empty">No historical data available.</p>';
+                return;
+            }
+
+            const balance = getHistoricalWeeknightBalance();
+
+            let html = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:1px solid #e5e7eb;">' +
+                    '<th style="text-align:left; padding:4px 8px;">Name</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Weeknights</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Fair Share</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Balance</th></tr>';
+
+            const sorted = staffData.slice().sort((a, b) =>
+                a.name.split(' ').pop().localeCompare(b.name.split(' ').pop())
+            );
+
+            sorted.forEach(s => {
+                const b = balance[s.code];
+                const surplusDisplay = b.surplus > 0 ? `+${b.surplus.toFixed(1)}` : b.surplus.toFixed(1);
+                const color = b.surplus > 1 ? '#dc2626' : b.surplus < -1 ? '#059669' : '#666';
+                const bg = b.surplus > 1 ? '#fef2f2' : b.surplus < -1 ? '#f0fdf4' : '';
+
+                html += `<tr style="border-bottom:1px solid #f3f4f6; ${bg ? 'background:' + bg : ''}">` +
+                        `<td style="padding:4px 8px;">${s.name.split(' ').pop()}</td>` +
+                        `<td style="text-align:center; padding:4px 8px;">${b.actual}</td>` +
+                        `<td style="text-align:center; padding:4px 8px;">${b.fair.toFixed(1)}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; color:${color}; font-weight:600;">${surplusDisplay}</td></tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
         }
 
         // ==================== LEAVE PREVIEW ====================
@@ -1754,7 +1987,7 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             };
 
             const getStaffName = (code) => {
-                const staff = staffData.find(s => s.code === code);
+                const staff = getActiveStaff().find(s => s.code === code);
                 return staff ? staff.name : code;
             };
 
@@ -1776,6 +2009,54 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             }).join('');
         }
 
+        // ==================== LOCUM TOGGLE ====================
+        function toggleLocum(enabled) {
+            locumEnabled = enabled;
+            const info = document.getElementById('locumTargetInfo');
+            info.style.display = enabled ? 'block' : 'none';
+            if (enabled) {
+                document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
+            }
+            renderLastMonthWeekends();
+            renderUnavailabilityDropdown();
+            if (currentMonth !== null) {
+                renderRoster();
+                renderCalendarView();
+                renderEquity(currentMonth, currentYear);
+            }
+        }
+
+        function renderLastMonthWeekends() {
+            const weekendsDiv = document.getElementById('lastMonthWeekends');
+            const checkedCodes = new Set();
+            weekendsDiv.querySelectorAll('input:checked').forEach(cb => checkedCodes.add(cb.value));
+            weekendsDiv.innerHTML = '';
+            getActiveStaff().forEach(s => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `lastWeekend_${s.code}`;
+                checkbox.value = s.code;
+                if (checkedCodes.has(s.code)) checkbox.checked = true;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(s.isLocum ? 'Locum' : s.name.split(' ').pop()));
+                weekendsDiv.appendChild(label);
+            });
+        }
+
+        function renderUnavailabilityDropdown() {
+            const select = document.getElementById('unavailPerson');
+            const currentVal = select.value;
+            select.innerHTML = '';
+            getActiveStaff().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.code;
+                opt.textContent = s.isLocum ? 'Locum' : s.name;
+                select.appendChild(opt);
+            });
+            if (currentVal) select.value = currentVal;
+        }
+
         // ==================== INITIALIZATION ====================
         function init() {
             // Populate month dropdown
@@ -1792,40 +2073,14 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             // Default to February 2026 (next month to generate)
             monthSelect.value = 1;
 
-            // Populate staff dropdown
-            const personSelect = document.getElementById('unavailPerson');
-            staffData.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.code;
-                opt.textContent = s.name;
-                personSelect.appendChild(opt);
-            });
-
-            // Populate last month's weekends checkboxes
-            const weekendsDiv = document.getElementById('lastMonthWeekends');
-            staffData.forEach(s => {
-                const label = document.createElement('label');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `lastWeekend_${s.code}`;
-                checkbox.value = s.code;
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(s.name.split(' ').pop())); // Surname only
-                weekendsDiv.appendChild(label);
-            });
+            // Populate staff dropdown and last month's weekends
+            renderUnavailabilityDropdown();
+            renderLastMonthWeekends();
 
             // Set default date
             document.getElementById('unavailDate').value = '2026-02-01';
 
-            // Seed January 2026 historical data if not already present
-            if (!historicalData['2026-01']) {
-                historicalData['2026-01'] = {
-                    roster: seedJanuary2026,
-                    savedAt: '2026-01-13T00:00:00.000Z'
-                };
-            }
-
-            // Load any saved data (will override seed if user has saved data)
+            // Load any saved data
             loadFromLocalStorage();
 
             // Add event listeners for month/year changes to update leave preview
@@ -1835,6 +2090,7 @@ const historicalEquity = ${JSON.stringify(historicalData, null, 4)};
             // Initial render
             renderRoster();
             renderLeavePreview();
+            renderHistoricalBalance();
         }
 
         init();
