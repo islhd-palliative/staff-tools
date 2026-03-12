@@ -342,10 +342,56 @@
             margin-bottom: 16px;
         }
 
+        .type-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .type-filter-btn {
+            padding: 6px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .type-filter-btn:hover {
+            border-color: #9ca3af;
+        }
+
+        .type-filter-btn.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .type-filter-btn.annual.active {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-filter-btn.lsl.active {
+            border-color: #a855f7;
+            background: #e9d5ff;
+            color: #7e22ce;
+        }
+
+        .type-filter-btn.tesl.active {
+            border-color: #f59e0b;
+            background: #fef3c7;
+            color: #b45309;
+        }
+
         @media (max-width: 600px) {
             body { padding: 8px; }
             h1 { font-size: 1.2rem; }
             .controls { flex-direction: column; align-items: stretch; }
+            .type-filter { justify-content: center; }
             .calendar-container { grid-template-columns: 1fr; }
             .day-cell { min-height: 50px; }
             .leave-tag { font-size: 0.6rem; }
@@ -411,6 +457,13 @@
         <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="padding: 8px 12px; background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Apply for Leave ↗</a>
     </div>
 
+    <div class="type-filter">
+        <button class="type-filter-btn active" data-type="all" onclick="filterByType('all')">All Types</button>
+        <button class="type-filter-btn annual" data-type="annual" onclick="filterByType('annual')">Annual Leave</button>
+        <button class="type-filter-btn lsl" data-type="lsl" onclick="filterByType('lsl')">Long Service</button>
+        <button class="type-filter-btn tesl" data-type="tesl" onclick="filterByType('tesl')">TESL/Training</button>
+    </div>
+
     <div class="legend">
         <div class="legend-item">
             <div class="legend-color" style="background: #dbeafe;"></div>
@@ -458,6 +511,9 @@
     <div id="calendar" class="calendar-container"></div>
 
     <script>
+        // Current type filter
+        let currentTypeFilter = 'all';
+
         // Staff data
         const staff = {
             'BT': { name: 'Benjamin Thomas', region: 'North', role: 'Head of Service' },
@@ -552,7 +608,9 @@
                 { staffCode: 'RW', staffName: 'Ron Wai', region: 'North', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
                 { staffCode: 'SR', staffName: 'Stephanie Robinson', region: 'South', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
                 { staffCode: 'SR', staffName: 'Stephanie Robinson', region: 'South', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
-                { staffCode: 'Fadz', staffName: 'Fadz wan Bahrum', region: 'South', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' }
+                { staffCode: 'Fadz', staffName: 'Fadz wan Bahrum', region: 'South', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' },
+                { staffCode: 'Fadz', staffName: 'Fadz wan Bahrum', region: 'South', startDate: new Date(2026, 2, 23), endDate: new Date(2026, 2, 27), leaveType: 'Annual Leave' },
+                { staffCode: 'Fadz', staffName: 'Fadz wan Bahrum', region: 'South', startDate: new Date(2026, 4, 27), endDate: new Date(2026, 4, 31), leaveType: 'Annual Leave' }
             ];
             renderCalendar();
         }
@@ -564,11 +622,31 @@
                 const inRange = date >= leave.startDate && date <= leave.endDate;
                 if (!inRange) return false;
 
-                if (filter === 'all') return true;
-                if (filter === 'north') return leave.region === 'North';
-                if (filter === 'south') return leave.region === 'South';
-                return leave.staffCode === filter;
+                // Staff/region filter
+                if (filter === 'all') { /* pass */ }
+                else if (filter === 'north') { if (leave.region !== 'North') return false; }
+                else if (filter === 'south') { if (leave.region !== 'South') return false; }
+                else { if (leave.staffCode !== filter) return false; }
+
+                // Leave type filter
+                if (currentTypeFilter === 'all') return true;
+                if (currentTypeFilter === 'annual') return leave.leaveType === 'Annual Leave';
+                if (currentTypeFilter === 'lsl') return leave.leaveType.includes('Long Service');
+                if (currentTypeFilter === 'tesl') return leave.leaveType === 'TESL' || leave.leaveType === 'Unavailable';
+
+                return true;
             });
+        }
+
+        // Filter by leave type
+        function filterByType(type) {
+            currentTypeFilter = type;
+            // Update button states
+            document.querySelectorAll('.type-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.type === type) btn.classList.add('active');
+            });
+            renderCalendar();
         }
 
         // Calculate availability status for a date
@@ -779,6 +857,12 @@
             document.getElementById('upcomingPanel').style.display = 'none';
             // Reset staff filter to "all"
             document.getElementById('staffFilter').value = 'all';
+            // Reset type filter to "all"
+            currentTypeFilter = 'all';
+            document.querySelectorAll('.type-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.type === 'all') btn.classList.add('active');
+            });
             // Re-render calendar
             renderCalendar();
         }
