@@ -455,6 +455,7 @@
         <button class="btn-outline" onclick="resetView()">Reset</button>
         <a href="summary.html" style="padding: 8px 12px; background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Entitlements Summary</a>
         <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="padding: 8px 12px; background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Apply for Leave ↗</a>
+        <a href="leave.ics" onclick="event.preventDefault(); navigator.clipboard.writeText('https://islhd-palliative.github.io/staff-tools/leave.ics').then(() => { const el = this; el.textContent = '✓ Link Copied!'; setTimeout(() => el.textContent = '📅 Subscribe to Calendar', 2000); });" style="padding: 8px 12px; background: #059669; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; cursor: pointer;" title="Copy .ics subscription URL — paste into Outlook (File → Account Settings → Internet Calendars → New)">📅 Subscribe to Calendar</a>
     </div>
 
     <div class="type-filter">
