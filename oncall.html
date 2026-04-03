@@ -304,7 +304,6 @@
         .oncall-tag.locum {
             background: #e5e7eb;
             color: #374151;
-            font-style: italic;
         }
 
         .oncall-tag.highlight {
@@ -404,9 +403,12 @@
                     <option value="HY">Helen Yourlo</option>
                 </optgroup>
                 <optgroup label="Advanced Trainees">
+                    <option value="MP">Michelle Petersen</option>
                     <option value="PL">Patrick Loui</option>
                     <option value="DS">Dominic Sellers</option>
-                    <option value="MP">Michelle Petersen</option>
+                </optgroup>
+                <optgroup label="Locum">
+                    <option value="Locum">Ratnayake (L)</option>
                 </optgroup>
             </select>
         </div>
@@ -453,6 +455,10 @@
         <div class="legend-item">
             <span style="font-style: italic; font-size: 0.8rem;">Italic = Trainee</span>
         </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e5e7eb;"></div>
+            <span>(L) = Locum</span>
+        </div>
     </div>
 
     <div id="calendar" class="calendar-container"></div>
@@ -488,7 +494,7 @@
             'PL': { name: 'Patrick Loui', initials: 'PL', isTrainee: true },
             'DS': { name: 'Dominic Sellers', initials: 'DS', isTrainee: true },
             'MP': { name: 'Michelle Petersen', initials: 'MP', isTrainee: true },
-            'Locum': { name: 'Locum', initials: 'Loc', isTrainee: false, isLocum: true }
+            'Locum': { name: 'Ratnayake (L)', initials: 'Rat', isTrainee: false, isLocum: true }
         };
 
         // NSW Public Holidays
