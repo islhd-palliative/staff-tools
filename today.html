@@ -171,19 +171,24 @@
                 grid-row: 1;
             }
 
-            .leave-card {
-                grid-column: 2;
-                grid-row: 1;
-            }
-
-            .sites-section {
+            .num-oncall-card {
                 grid-column: 1;
                 grid-row: 2;
             }
 
+            .leave-card {
+                grid-column: 2;
+                grid-row: 1 / 3;
+            }
+
+            .sites-section {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
             .trainee-section {
                 grid-column: 2;
-                grid-row: 2;
+                grid-row: 3;
             }
         }
 
@@ -231,6 +236,46 @@
 
         .oncall-tomorrow strong {
             opacity: 0.8;
+        }
+
+        /* ==================== NUM ON-CALL ==================== */
+        .num-oncall-card {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            border-radius: 16px;
+            padding: 20px 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .num-oncall-card .num-icon {
+            font-size: 1.6rem;
+            opacity: 0.85;
+        }
+
+        .num-oncall-card .num-details {
+            flex: 1;
+        }
+
+        .num-oncall-card .num-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .num-oncall-card .num-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .num-oncall-card .num-tomorrow {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            margin-top: 4px;
         }
 
         /* ==================== CARDS ==================== */
@@ -545,6 +590,16 @@
                 </div>
             </div>
 
+            <!-- NUM On-Call Card -->
+            <div class="num-oncall-card">
+                <div class="num-icon">🏥</div>
+                <div class="num-details">
+                    <div class="num-label">NUM/NM On Call</div>
+                    <div class="num-name" id="numOncallName">—</div>
+                    <div class="num-tomorrow" id="numOncallTomorrow"></div>
+                </div>
+            </div>
+
             <!-- Leave Card -->
             <div class="leave-card card">
                 <div class="card-header leave">On Leave Today</div>
@@ -845,6 +900,41 @@
             '2026-12-28': 'Boxing Day (observed)',
         };
 
+        // ==================== NUM/NM ON-CALL DATA ====================
+        const numOncallData = {
+            // April 2026
+            '2026-04-01': 'Nicole Wheatley',
+            '2026-04-02': 'Nicole Wheatley',
+            '2026-04-03': 'Nicole Wheatley',
+            '2026-04-04': 'Nicole Wheatley',
+            '2026-04-05': 'Rose',
+            '2026-04-06': 'Fiona Hammond',
+            '2026-04-07': 'Nicole Davis',
+            '2026-04-08': 'Charmaine Tatton',
+            '2026-04-09': 'Charmaine Tatton',
+            '2026-04-10': 'Charmaine Tatton',
+            '2026-04-11': 'Charmaine Tatton',
+            '2026-04-12': 'Charmaine Tatton',
+            '2026-04-13': 'Nicole Davis',
+            '2026-04-14': 'Nicole Davis',
+            '2026-04-15': 'Nicole Davis',
+            '2026-04-16': 'Nicole Davis',
+            '2026-04-17': 'Dina Baytieh',
+            '2026-04-18': 'Charmaine Tatton',
+            '2026-04-19': 'Charmaine Tatton',
+            '2026-04-20': 'Fiona Hammond',
+            '2026-04-21': 'Fiona Hammond',
+            '2026-04-22': 'Fiona Hammond',
+            '2026-04-23': 'Fiona Hammond',
+            '2026-04-24': 'Fiona Hammond',
+            '2026-04-25': 'Nicole Wheatley',
+            '2026-04-26': 'Nicole Wheatley',
+            '2026-04-27': 'Nicole Wheatley',
+            '2026-04-28': 'Ashlie Taylor',
+            '2026-04-29': 'Ashlie Taylor',
+            '2026-04-30': 'Ashlie Taylor'
+        };
+
         // ==================== STATE ====================
         let currentDate = new Date();
 
@@ -930,6 +1020,7 @@
 
             // Update on-call
             renderOncall(dateKey);
+            renderNumOncall(dateKey);
 
             // Update leave
             renderLeave(currentDate);
@@ -1081,6 +1172,34 @@
                 }
             } else {
                 tomorrowEl.textContent = 'Not rostered';
+            }
+        }
+
+        function renderNumOncall(dateKey) {
+            const numNameEl = document.getElementById('numOncallName');
+            const numTomorrowEl = document.getElementById('numOncallTomorrow');
+            const numCard = document.querySelector('.num-oncall-card');
+
+            const numName = numOncallData[dateKey];
+            if (numName) {
+                numNameEl.textContent = numName;
+                numCard.style.display = 'flex';
+            } else {
+                numNameEl.textContent = '—';
+                numCard.style.display = 'none';
+            }
+
+            // Tomorrow preview
+            const tomorrow = new Date(currentDate);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowKey = formatDateKey(tomorrow);
+            const tomorrowNum = numOncallData[tomorrowKey];
+            if (tomorrowNum && tomorrowNum !== numName) {
+                numTomorrowEl.textContent = `Tomorrow: ${tomorrowNum}`;
+            } else if (tomorrowNum) {
+                numTomorrowEl.textContent = '';
+            } else {
+                numTomorrowEl.textContent = '';
             }
         }
 
