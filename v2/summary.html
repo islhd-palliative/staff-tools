@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Entitlements Summary 2026-2027 - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .page-header-left {
+            flex: 1;
+        }
+
+        .page-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .year-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .year-selector label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .year-selector select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #1e40af;
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header .region {
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .entitlement-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 1fr 1fr 80px;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+
+        .percent-remaining {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .percent-remaining.negative {
+            color: #b45309;
+        }
+
+        .percent-remaining.low {
+            color: #d97706;
+        }
+
+        .percent-remaining.good {
+            color: #16a34a;
+        }
+
+        .entitlement-row:last-child {
+            border-bottom: none;
+        }
+
+        .entitlement-row.header {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.good { background: #22c55e; }
+        .progress-fill.warning { background: #f59e0b; }
+        .progress-fill.over { background: #d97706; }
+
+        .days-text {
+            font-size: 0.9rem;
+        }
+
+        .days-used {
+            font-weight: 600;
+        }
+
+        .days-remaining {
+            color: #666;
+        }
+
+        .days-remaining.negative {
+            color: #b45309;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #0369a1;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box h3::before {
+            content: "ℹ️";
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .info-item {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .info-item h4 {
+            color: #1e40af;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .info-item p {
+            color: #374151;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .info-item ul {
+            color: #374151;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 4px 0 0 0;
+            padding-left: 18px;
+        }
+
+        .info-item li {
+            margin-bottom: 2px;
+        }
+
+        .info-note {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #bae6fd;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .fte-badge {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.25);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .notes-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .notes-section h4 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .note-item {
+            font-size: 0.85rem;
+            color: #374151;
+            padding: 4px 0;
+        }
+
+        .totals-card {
+            background: #1e40af;
+            color: white;
+        }
+
+        .totals-card .card-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .total-item {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .total-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .total-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .utilisation-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+            max-width: 120px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .utilisation-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        .warning-banner {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-banner::before {
+            content: "⚠️";
+            font-size: 1.2rem;
+        }
+
+        .warning-banner-text {
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .warning-banner-text strong {
+            color: #78350f;
+        }
+
+        .excess-balance-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        .excess-balance-row {
+            background: #fffbeb;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .excess-balance-row::before {
+            content: "📊";
+        }
+
+        @media (max-width: 700px) {
+            .entitlement-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            .entitlement-row.header {
+                display: none;
+            }
+            .percent-remaining {
+                text-align: left;
+            }
+            .totals-card .card-body {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Trend view styles */
+        .trend-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .trend-header {
+            background: #1e40af;
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trend-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .trend-summary-item {
+            text-align: center;
+        }
+
+        .trend-summary-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .trend-summary-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .trend-summary-value.over {
+            color: #b45309;
+        }
+
+        .trend-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .trend-table th,
+        .trend-table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .trend-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+
+        .trend-table th:first-child,
+        .trend-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .trend-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .trend-table .year-col {
+            min-width: 80px;
+        }
+
+        .trend-cell {
+            font-size: 0.9rem;
+        }
+
+        .trend-cell.good {
+            color: #16a34a;
+        }
+
+        .trend-cell.warning {
+            color: #d97706;
+        }
+
+        .trend-cell.over {
+            color: #b45309;
+        }
+
+        .trend-percent {
+            font-size: 0.75rem;
+            color: #6b7280;
+            display: block;
+        }
+
+        .service-trend-card {
+            background: #1e40af;
+            color: white;
+        }
+
+        .service-trend-card .trend-summary {
+            background: rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .service-trend-card .trend-summary-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .service-trend-card .trend-summary-value {
+            color: white;
+        }
+
+        .service-trend-card .trend-table th {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .service-trend-card .trend-table td {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+
+        .service-trend-card .trend-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 700px) {
+            .trend-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+            .trend-table {
+                font-size: 0.8rem;
+            }
+            .trend-table th,
+            .trend-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1>Leave Entitlements Summary</h1>
+            <p class="subtitle">ISLHD Palliative and End of Life Care - Staff Specialists</p>
+        </div>
+        <div class="year-selector">
+            <label for="yearSelect">View:</label>
+            <select id="yearSelect">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026-2027" selected>2026-2027</option>
+                <option value="trend">3-Year Trend (2024-2027)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="warning-banner">
+        <div class="warning-banner-text">
+            <strong>Data last updated: 19 January 2026</strong> — Leave data has been extracted from StaffLink. Excessive balance data from payroll report dated 13 January 2026.
+        </div>
+    </div>
+
+    <div class="info-box">
+        <h3>Leave Entitlements (Staff Specialist Award)</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <h4>Annual Leave</h4>
+                <p>5 calendar weeks per year for all staff. Part-time staff receive the same 5 weeks, paid pro-rata based on days worked per week.</p>
+                <ul>
+                    <li>Plus 1 day for each public holiday during leave</li>
+                    <li>Calculated as work days (excludes weekends and public holidays)</li>
+                </ul>
+            </div>
+            <div class="info-item">
+                <h4>TESL (Training, Education & Study Leave)</h4>
+                <p>25 calendar days per year, pro-rata for FTE.</p>
+                <ul>
+                    <li>Counted as calendar days (includes weekends and public holidays)</li>
+                    <li>For conferences, courses, approved training, and home-based study</li>
+                </ul>
+            </div>
+        </div>
+        <p class="info-note">
+            Leave balances beyond entitlements may be approved subject to service needs. Strategies for managing leave balances are discussed at performance reviews and take individual circumstances into account.
+        </p>
+    </div>
+
+    <div id="summaryContainer"></div>
+
+    <div class="last-updated" id="lastUpdated"></div>
+
+    <script>
+        // Staff data with FTE and work patterns
+        // workDays: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+        // excessBalanceWeeks: from SARA Excessive Annual Leave Report dated 13 Jan 2026
+        const staffData = [
+            // North - sorted by surname
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', role: 'Senior Staff Specialist', workDays: [2,4], daysPerWeek: 2, excessBalanceWeeks: 25 }, // Tues, Thurs
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', role: 'Staff Specialist', workDays: [2,3,4], daysPerWeek: 3, excessBalanceWeeks: 0 }, // Tues, Wed, Thurs
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', role: 'Divisional Director', workDays: [1,2,3,4,5], daysPerWeek: 4, excessBalanceWeeks: 17 }, // 4 days, float day varies
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', role: 'Head of Service', workDays: [1,2,3,4,5], daysPerWeek: 5, excessBalanceWeeks: 0 },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', role: 'Staff Specialist', workDays: [1,2], daysPerWeek: 2, excessBalanceWeeks: 0 }, // Mon, Tues
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', role: 'Staff Specialist', workDays: [3,4,5], daysPerWeek: 3, excessBalanceWeeks: 0 }, // Wed, Thu, Fri (0.7 FTE from Feb 2026)
+            // South - sorted by surname
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', role: 'Staff Specialist', workDays: [1,2,3,4,5], daysPerWeek: 4.5, excessBalanceWeeks: 8.4 }, // Every 2nd Fri off
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', role: 'Staff Specialist', workDays: [1,3,4,5], daysPerWeek: 4, excessBalanceWeeks: 0 } // Every Tuesday off
+        ];
+
+        // Leave data by year
+        const leaveDataByYear = {
+            '2024': [
+                // Angela (SARA payroll-verified)
+                { staffCode: 'AL', startDate: new Date(2024, 0, 2), endDate: new Date(2024, 0, 5), leaveType: 'Annual Leave' }, // SARA: Jan 2-5
+                { staffCode: 'AL', startDate: new Date(2024, 0, 8), endDate: new Date(2024, 0, 19), leaveType: 'Annual Leave' }, // SARA: Jan 8-19
+                { staffCode: 'AL', startDate: new Date(2024, 0, 22), endDate: new Date(2024, 0, 25), leaveType: 'Annual Leave' }, // SARA: Jan 22-25
+                { staffCode: 'AL', startDate: new Date(2024, 3, 15), endDate: new Date(2024, 3, 15), leaveType: 'Annual Leave' }, // SARA: Apr 15
+                { staffCode: 'AL', startDate: new Date(2024, 3, 16), endDate: new Date(2024, 3, 18), leaveType: 'Annual Leave' }, // SARA: Apr 16-18
+                { staffCode: 'AL', startDate: new Date(2024, 3, 19), endDate: new Date(2024, 3, 19), leaveType: 'Annual Leave' }, // SARA: Apr 19
+                { staffCode: 'AL', startDate: new Date(2024, 8, 30), endDate: new Date(2024, 9, 4), leaveType: 'Annual Leave' }, // SARA: Sep 30 - Oct 4
+                { staffCode: 'AL', startDate: new Date(2024, 11, 17), endDate: new Date(2024, 11, 17), leaveType: 'Annual Leave' }, // SARA: Dec 17
+                // Ben (SARA payroll-verified)
+                { staffCode: 'BT', startDate: new Date(2024, 0, 19), endDate: new Date(2024, 0, 19), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 1, 2), endDate: new Date(2024, 1, 2), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 1, 9), endDate: new Date(2024, 1, 9), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 1, 16), endDate: new Date(2024, 1, 16), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 1, 23), endDate: new Date(2024, 1, 23), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 2, 1), endDate: new Date(2024, 2, 1), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 2, 8), endDate: new Date(2024, 2, 8), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 2, 15), endDate: new Date(2024, 2, 15), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 2, 22), endDate: new Date(2024, 2, 28), leaveType: 'Annual Leave' }, // SARA: Mar 22-28
+                { staffCode: 'BT', startDate: new Date(2024, 3, 2), endDate: new Date(2024, 3, 5), leaveType: 'Annual Leave' }, // SARA: Apr 2-5
+                { staffCode: 'BT', startDate: new Date(2024, 3, 12), endDate: new Date(2024, 3, 12), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 3, 19), endDate: new Date(2024, 3, 19), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 3, 26), endDate: new Date(2024, 3, 26), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 4, 3), endDate: new Date(2024, 4, 3), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 4, 10), endDate: new Date(2024, 4, 10), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 4, 14), endDate: new Date(2024, 4, 20), leaveType: 'TESL' }, // SARA: EAPC May 14-20
+                { staffCode: 'BT', startDate: new Date(2024, 4, 24), endDate: new Date(2024, 4, 24), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 4, 31), endDate: new Date(2024, 4, 31), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 5, 14), endDate: new Date(2024, 5, 14), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 5, 21), endDate: new Date(2024, 5, 21), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 7, 20), endDate: new Date(2024, 7, 20), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 7, 27), endDate: new Date(2024, 7, 27), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 8, 5), endDate: new Date(2024, 8, 6), leaveType: 'TESL' }, // SARA: Sep 5-6
+                { staffCode: 'BT', startDate: new Date(2024, 8, 10), endDate: new Date(2024, 8, 10), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 8, 24), endDate: new Date(2024, 8, 24), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 9, 8), endDate: new Date(2024, 9, 8), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 9, 15), endDate: new Date(2024, 9, 15), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 9, 29), endDate: new Date(2024, 9, 29), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 10, 19), endDate: new Date(2024, 10, 19), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2024, 11, 9), endDate: new Date(2024, 11, 20), leaveType: 'Annual Leave' }, // SARA: Dec 9-20
+                // Greg (SARA-verified)
+                { staffCode: 'GB', startDate: new Date(2024, 4, 4), endDate: new Date(2024, 4, 5), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2024, 4, 15), endDate: new Date(2024, 4, 24), leaveType: 'TESL' }, // Conference block (SARA: 15-24 May)
+                { staffCode: 'GB', startDate: new Date(2024, 4, 21), endDate: new Date(2024, 4, 21), leaveType: 'Annual Leave' }, // Single day during TESL
+                { staffCode: 'GB', startDate: new Date(2024, 7, 2), endDate: new Date(2024, 7, 2), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2024, 9, 22), endDate: new Date(2024, 9, 25), leaveType: 'Annual Leave' }, // SARA: Oct 22-25
+                { staffCode: 'GB', startDate: new Date(2024, 9, 29), endDate: new Date(2024, 9, 29), leaveType: 'Annual Leave' }, // SARA: Oct 29
+                { staffCode: 'GB', startDate: new Date(2024, 10, 1), endDate: new Date(2024, 10, 1), leaveType: 'Annual Leave' }, // SARA: Nov 1
+                // Helen (SARA-verified)
+                { staffCode: 'HY', startDate: new Date(2024, 8, 4), endDate: new Date(2024, 8, 13), leaveType: 'Annual Leave' }, // SARA: Sep 4-13
+                { staffCode: 'HY', startDate: new Date(2024, 8, 18), endDate: new Date(2024, 8, 27), leaveType: 'Annual Leave' }, // SARA: Sep 18-27
+                // Muoi (SARA-verified)
+                { staffCode: 'MK', startDate: new Date(2024, 6, 9), endDate: new Date(2024, 6, 11), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2024, 9, 1), endDate: new Date(2024, 9, 10), leaveType: 'Annual Leave' }, // SARA: Oct 1-10
+                { staffCode: 'MK', startDate: new Date(2024, 9, 15), endDate: new Date(2024, 9, 22), leaveType: 'Annual Leave' }, // SARA: Oct 15-22
+                { staffCode: 'MK', startDate: new Date(2024, 10, 7), endDate: new Date(2024, 10, 7), leaveType: 'TESL' }, // SARA
+                { staffCode: 'MK', startDate: new Date(2024, 10, 12), endDate: new Date(2024, 10, 12), leaveType: 'TESL' }, // SARA
+                { staffCode: 'MK', startDate: new Date(2024, 10, 28), endDate: new Date(2024, 10, 28), leaveType: 'TESL' }, // SARA
+                { staffCode: 'MK', startDate: new Date(2024, 11, 12), endDate: new Date(2024, 11, 12), leaveType: 'TESL' }, // SARA
+                { staffCode: 'MK', startDate: new Date(2024, 11, 17), endDate: new Date(2024, 11, 17), leaveType: 'TESL' }, // SARA
+                { staffCode: 'MK', startDate: new Date(2024, 11, 24), endDate: new Date(2024, 11, 31), leaveType: 'Annual Leave' }, // SARA: Dec 24-31
+                // Steph (SARA-verified)
+                { staffCode: 'SR', startDate: new Date(2024, 0, 29), endDate: new Date(2024, 1, 8), leaveType: 'Annual Leave' }, // SARA: Jan 29 - Feb 8
+                { staffCode: 'SR', startDate: new Date(2024, 9, 8), endDate: new Date(2024, 9, 10), leaveType: 'Annual Leave' }, // SARA: Oct 8-10
+                { staffCode: 'SR', startDate: new Date(2024, 9, 13), endDate: new Date(2024, 9, 18), leaveType: 'TESL' }, // SARA: Oct 13-18 conference
+                { staffCode: 'SR', startDate: new Date(2024, 9, 14), endDate: new Date(2024, 9, 14), leaveType: 'Annual Leave' }, // SARA: Oct 14
+                { staffCode: 'SR', startDate: new Date(2024, 9, 21), endDate: new Date(2024, 9, 24), leaveType: 'Annual Leave' }, // SARA: Oct 21-24
+                { staffCode: 'SR', startDate: new Date(2024, 9, 28), endDate: new Date(2024, 9, 31), leaveType: 'Annual Leave' }, // SARA: Oct 28-31
+                // Fadz (SARA-verified)
+                { staffCode: 'Fadz', startDate: new Date(2024, 6, 8), endDate: new Date(2024, 6, 12), leaveType: 'Annual Leave' }, // SARA: Jul 8-12
+                { staffCode: 'Fadz', startDate: new Date(2024, 7, 13), endDate: new Date(2024, 7, 16), leaveType: 'TESL' }, // SARA: Aug 13-16
+                { staffCode: 'Fadz', startDate: new Date(2024, 8, 4), endDate: new Date(2024, 8, 6), leaveType: 'TESL' }, // SARA: Sep 4-6
+                // Ron (SARA-verified) - no 2024 annual leave or TESL in SARA
+            ],
+            '2025': [
+                // Angela (SARA payroll-verified)
+                { staffCode: 'AL', startDate: new Date(2025, 0, 13), endDate: new Date(2025, 0, 17), leaveType: 'Annual Leave' }, // SARA: Jan 13-17
+                { staffCode: 'AL', startDate: new Date(2025, 0, 20), endDate: new Date(2025, 0, 30), leaveType: 'Annual Leave' }, // SARA: Jan 20-30
+                { staffCode: 'AL', startDate: new Date(2025, 3, 7), endDate: new Date(2025, 3, 11), leaveType: 'Annual Leave' }, // SARA: Apr 7-11
+                { staffCode: 'AL', startDate: new Date(2025, 3, 14), endDate: new Date(2025, 3, 24), leaveType: 'Annual Leave' }, // SARA: Apr 14-24
+                { staffCode: 'AL', startDate: new Date(2025, 3, 28), endDate: new Date(2025, 4, 2), leaveType: 'Annual Leave' }, // SARA: Apr 28 - May 2
+                { staffCode: 'AL', startDate: new Date(2025, 9, 7), endDate: new Date(2025, 9, 10), leaveType: 'Annual Leave' }, // SARA: Oct 7-10
+                { staffCode: 'AL', startDate: new Date(2025, 9, 13), endDate: new Date(2025, 9, 13), leaveType: 'Annual Leave' }, // SARA: Oct 13
+                { staffCode: 'AL', startDate: new Date(2025, 9, 22), endDate: new Date(2025, 9, 22), leaveType: 'TESL' }, // SARA: Oct 22
+                // Ben (SARA payroll-verified)
+                { staffCode: 'BT', startDate: new Date(2025, 1, 21), endDate: new Date(2025, 1, 21), leaveType: 'Annual Leave' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 6, 7), endDate: new Date(2025, 6, 18), leaveType: 'Annual Leave' }, // SARA: Jul 7-18
+                { staffCode: 'BT', startDate: new Date(2025, 7, 15), endDate: new Date(2025, 7, 15), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 8, 5), endDate: new Date(2025, 8, 5), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 8, 15), endDate: new Date(2025, 8, 19), leaveType: 'Annual Leave' }, // SARA: Sep 15-19
+                { staffCode: 'BT', startDate: new Date(2025, 9, 17), endDate: new Date(2025, 9, 17), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 10, 7), endDate: new Date(2025, 10, 7), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 10, 13), endDate: new Date(2025, 10, 13), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 10, 28), endDate: new Date(2025, 10, 28), leaveType: 'TESL' }, // SARA
+                { staffCode: 'BT', startDate: new Date(2025, 11, 12), endDate: new Date(2025, 11, 12), leaveType: 'TESL' }, // SARA
+                // Greg (SARA-verified)
+                { staffCode: 'GB', startDate: new Date(2025, 0, 4), endDate: new Date(2025, 0, 5), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2025, 2, 3), endDate: new Date(2025, 2, 7), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2025, 4, 21), endDate: new Date(2025, 5, 2), leaveType: 'TESL' }, // SARA: May 21 - Jun 2, 2025
+                { staffCode: 'GB', startDate: new Date(2025, 4, 23), endDate: new Date(2025, 4, 27), leaveType: 'Annual Leave' }, // SARA: May 23-27
+                { staffCode: 'GB', startDate: new Date(2025, 6, 25), endDate: new Date(2025, 6, 25), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2025, 8, 26), endDate: new Date(2025, 8, 26), leaveType: 'Annual Leave' }, // SARA: Sep 26 single day
+                { staffCode: 'GB', startDate: new Date(2025, 9, 22), endDate: new Date(2025, 9, 25), leaveType: 'Annual Leave' }, // SARA: Oct 22-25
+                { staffCode: 'GB', startDate: new Date(2025, 9, 28), endDate: new Date(2025, 9, 28), leaveType: 'Annual Leave' }, // SARA: Oct 28
+                { staffCode: 'GB', startDate: new Date(2025, 9, 31), endDate: new Date(2025, 9, 31), leaveType: 'Annual Leave' }, // SARA: Oct 31
+                { staffCode: 'GB', startDate: new Date(2025, 10, 4), endDate: new Date(2025, 10, 4), leaveType: 'Annual Leave' }, // SARA: Nov 4
+                { staffCode: 'GB', startDate: new Date(2025, 10, 7), endDate: new Date(2025, 10, 7), leaveType: 'Annual Leave' }, // SARA: Nov 7
+                // Helen (SARA-verified)
+                { staffCode: 'HY', startDate: new Date(2025, 5, 4), endDate: new Date(2025, 5, 6), leaveType: 'Annual Leave' }, // SARA: Jun 4-6
+                { staffCode: 'HY', startDate: new Date(2025, 10, 19), endDate: new Date(2025, 10, 21), leaveType: 'Annual Leave' }, // SARA: Nov 19-21
+                // Muoi (SARA-verified)
+                { staffCode: 'MK', startDate: new Date(2025, 0, 7), endDate: new Date(2025, 0, 7), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2025, 5, 24), endDate: new Date(2025, 6, 17), leaveType: 'Annual Leave' }, // SARA: Jun 24 - Jul 17
+                { staffCode: 'MK', startDate: new Date(2025, 7, 23), endDate: new Date(2025, 7, 29), leaveType: 'TESL' }, // SARA: Aug 23-29
+                { staffCode: 'MK', startDate: new Date(2025, 8, 9), endDate: new Date(2025, 8, 14), leaveType: 'TESL' }, // SARA: Sep 9-14
+                { staffCode: 'MK', startDate: new Date(2025, 11, 26), endDate: new Date(2025, 11, 27), leaveType: 'TESL' }, // SARA: Dec 26-27
+                { staffCode: 'MK', startDate: new Date(2025, 11, 30), endDate: new Date(2025, 11, 30), leaveType: 'Annual Leave' }, // SARA: Dec 30
+                // Steph (SARA-verified)
+                { staffCode: 'SR', startDate: new Date(2025, 1, 26), endDate: new Date(2025, 1, 28), leaveType: 'TESL' }, // SARA: Feb 26-28
+                { staffCode: 'SR', startDate: new Date(2025, 3, 22), endDate: new Date(2025, 3, 24), leaveType: 'Annual Leave' }, // SARA: Apr 22-24
+                { staffCode: 'SR', startDate: new Date(2025, 3, 28), endDate: new Date(2025, 4, 1), leaveType: 'Annual Leave' }, // SARA: Apr 28 - May 1
+                { staffCode: 'SR', startDate: new Date(2025, 5, 11), endDate: new Date(2025, 5, 13), leaveType: 'TESL' }, // SARA: Jun 11-13
+                { staffCode: 'SR', startDate: new Date(2025, 5, 16), endDate: new Date(2025, 5, 20), leaveType: 'Annual Leave' }, // SARA: Jun 16-20
+                { staffCode: 'SR', startDate: new Date(2025, 5, 23), endDate: new Date(2025, 6, 4), leaveType: 'Annual Leave' }, // SARA: Jun 23 - Jul 4
+                { staffCode: 'SR', startDate: new Date(2025, 8, 9), endDate: new Date(2025, 8, 13), leaveType: 'TESL' }, // SARA: Sep 9-13
+                // Fadz (SARA-verified)
+                { staffCode: 'Fadz', startDate: new Date(2025, 0, 6), endDate: new Date(2025, 0, 24), leaveType: 'Annual Leave' }, // SARA: Jan 6-24
+                { staffCode: 'Fadz', startDate: new Date(2025, 3, 12), endDate: new Date(2025, 3, 17), leaveType: 'TESL' }, // SARA: Apr 12-17
+                { staffCode: 'Fadz', startDate: new Date(2025, 8, 11), endDate: new Date(2025, 8, 12), leaveType: 'Annual Leave' }, // SARA: Sep 11-12
+                { staffCode: 'Fadz', startDate: new Date(2025, 8, 29), endDate: new Date(2025, 9, 10), leaveType: 'Annual Leave' }, // SARA: Sep 29 - Oct 10
+                // Ron (SARA-verified)
+                { staffCode: 'RW', startDate: new Date(2025, 0, 13), endDate: new Date(2025, 0, 14), leaveType: 'Annual Leave' }, // SARA: Jan 13-14
+                { staffCode: 'RW', startDate: new Date(2025, 0, 20), endDate: new Date(2025, 0, 21), leaveType: 'Annual Leave' }, // SARA: Jan 20-21
+                { staffCode: 'RW', startDate: new Date(2025, 1, 3), endDate: new Date(2025, 1, 11), leaveType: 'Annual Leave' }, // SARA: Feb 3-11
+                { staffCode: 'RW', startDate: new Date(2025, 6, 28), endDate: new Date(2025, 6, 29), leaveType: 'Annual Leave' }, // SARA: Jul 28-29
+                { staffCode: 'RW', startDate: new Date(2025, 10, 24), endDate: new Date(2025, 11, 2), leaveType: 'Annual Leave' } // SARA: Nov 24 - Dec 2
+            ],
+            '2026-2027': [
+                { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+                { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+                { staffCode: 'BT', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
+                { staffCode: 'BT', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
+                { staffCode: 'AL', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+                { staffCode: 'AL', startDate: new Date(2026, 4, 27), endDate: new Date(2026, 4, 28), leaveType: 'TESL' },
+                { staffCode: 'AL', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 25), leaveType: 'Annual Leave' },
+                { staffCode: 'GB', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
+                { staffCode: 'HY', startDate: new Date(2026, 1, 9), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+                { staffCode: 'HY', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
+                { staffCode: 'HY', startDate: new Date(2026, 10, 16), endDate: new Date(2026, 10, 22), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 25), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
+                { staffCode: 'MK', startDate: new Date(2027, 0, 5), endDate: new Date(2027, 0, 18), leaveType: 'Annual Leave' },
+                { staffCode: 'RW', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave', paidDays: 2, notes: '2 paid days only' },
+                { staffCode: 'RW', startDate: new Date(2026, 4, 11), endDate: new Date(2026, 4, 11), leaveType: 'Annual Leave' },
+                { staffCode: 'RW', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL', notes: 'EAPC Conference' },
+                { staffCode: 'RW', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
+                { staffCode: 'SR', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
+                { staffCode: 'SR', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
+                { staffCode: 'Fadz', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' },
+                { staffCode: 'Fadz', startDate: new Date(2026, 2, 23), endDate: new Date(2026, 2, 27), leaveType: 'Annual Leave' },
+                { staffCode: 'Fadz', startDate: new Date(2026, 4, 27), endDate: new Date(2026, 4, 31), leaveType: 'Annual Leave' }
+            ]
+        };
+
+        // NSW Public Holidays by year
+        const publicHolidaysByYear = {
+            '2024': [
+                new Date(2024, 0, 1),   // New Year
+                new Date(2024, 0, 26),  // Australia Day
+                new Date(2024, 2, 29),  // Good Friday
+                new Date(2024, 2, 30),  // Easter Saturday
+                new Date(2024, 3, 1),   // Easter Monday
+                new Date(2024, 3, 25),  // Anzac Day
+                new Date(2024, 5, 10),  // Queen's Birthday
+                new Date(2024, 9, 7),   // Labour Day
+                new Date(2024, 11, 25), // Christmas
+                new Date(2024, 11, 26)  // Boxing Day
+            ],
+            '2025': [
+                new Date(2025, 0, 1),   // New Year
+                new Date(2025, 0, 27),  // Australia Day (observed)
+                new Date(2025, 3, 18),  // Good Friday
+                new Date(2025, 3, 19),  // Easter Saturday
+                new Date(2025, 3, 21),  // Easter Monday
+                new Date(2025, 3, 25),  // Anzac Day
+                new Date(2025, 5, 9),   // Queen's Birthday
+                new Date(2025, 9, 6),   // Labour Day
+                new Date(2025, 11, 25), // Christmas
+                new Date(2025, 11, 26)  // Boxing Day
+            ],
+            '2026-2027': [
+                new Date(2026, 0, 1),   // New Year
+                new Date(2026, 0, 26),  // Australia Day
+                new Date(2026, 3, 3),   // Good Friday
+                new Date(2026, 3, 4),   // Easter Saturday
+                new Date(2026, 3, 6),   // Easter Monday
+                new Date(2026, 3, 25),  // Anzac Day (observed 27th)
+                new Date(2026, 5, 8),   // Queen's Birthday
+                new Date(2026, 9, 5),   // Labour Day
+                new Date(2026, 11, 25), // Christmas
+                new Date(2026, 11, 26), // Boxing Day
+                new Date(2026, 11, 28), // Boxing Day observed
+                new Date(2027, 0, 1),   // New Year 2027
+                new Date(2027, 0, 26)   // Australia Day 2027
+            ]
+        };
+
+        let selectedYear = '2026-2027';
+        let leaveData = leaveDataByYear[selectedYear];
+        let publicHolidays = publicHolidaysByYear[selectedYear];
+
+        function isPublicHoliday(date) {
+            return publicHolidays.some(h =>
+                h.getDate() === date.getDate() &&
+                h.getMonth() === date.getMonth() &&
+                h.getFullYear() === date.getFullYear()
+            );
+        }
+
+        function isWeekend(date) {
+            return date.getDay() === 0 || date.getDay() === 6;
+        }
+
+        // Count work days for a specific staff member (based on their work pattern)
+        function countWorkDays(startDate, endDate, staffCode) {
+            const staff = staffData.find(s => s.code === staffCode);
+            if (!staff) return 0;
+
+            let count = 0;
+            let current = new Date(startDate);
+            while (current <= endDate) {
+                const dayOfWeek = current.getDay();
+                // Check if it's a work day for this person and not a public holiday
+                if (staff.workDays.includes(dayOfWeek) && !isPublicHoliday(current)) {
+                    count++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+            return count;
+        }
+
+        // Count calendar days between two dates (for TESL)
+        function countCalendarDays(startDate, endDate) {
+            const diffTime = Math.abs(endDate - startDate);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        }
+
+        function calculateLeaveUsed(staffCode) {
+            const staffLeave = leaveData.filter(l => l.staffCode === staffCode);
+            const staff = staffData.find(s => s.code === staffCode);
+
+            let annualDays = 0;
+            let teslDays = 0;
+            let lslDays = 0;
+            const otherNotes = [];
+
+            staffLeave.forEach(leave => {
+                if (leave.leaveType === 'Annual Leave') {
+                    // Use paidDays if explicitly specified, otherwise count work days
+                    if (leave.paidDays !== undefined) {
+                        annualDays += leave.paidDays;
+                    } else {
+                        annualDays += countWorkDays(leave.startDate, leave.endDate, staffCode);
+                    }
+                } else if (leave.leaveType === 'TESL') {
+                    teslDays += countCalendarDays(leave.startDate, leave.endDate);
+                    if (leave.notes) otherNotes.push(`TESL: ${leave.notes}`);
+                } else if (leave.leaveType === 'Long Service Leave') {
+                    lslDays += countWorkDays(leave.startDate, leave.endDate, staffCode);
+                    otherNotes.push(`LSL: ${lslDays} days`);
+                }
+            });
+
+            return { annualDays, teslDays, lslDays, otherNotes };
+        }
+
+        function renderSummary() {
+            const container = document.getElementById('summaryContainer');
+            let html = '';
+
+            let totalAnnualUsed = 0;
+            let totalAnnualEntitled = 0;
+            let totalTeslUsed = 0;
+            let totalTeslEntitled = 0;
+
+            staffData.forEach(staff => {
+                const used = calculateLeaveUsed(staff.code);
+
+                // Annual leave: 5 weeks × days per week for this person
+                const annualEntitlement = Math.round(5 * staff.daysPerWeek);
+                const annualRemaining = annualEntitlement - used.annualDays;
+                const annualPercent = Math.min((used.annualDays / annualEntitlement) * 100, 100);
+                const annualWeeksUsed = (used.annualDays / staff.daysPerWeek).toFixed(1);
+                const annualWeeksRemaining = (annualRemaining / staff.daysPerWeek).toFixed(1);
+
+                // TESL: 25 calendar days * FTE
+                const teslEntitlement = Math.round(25 * staff.fte);
+                const teslRemaining = teslEntitlement - used.teslDays;
+                const teslPercent = Math.min((used.teslDays / teslEntitlement) * 100, 100);
+
+                // For service totals, cap at entitlement (don't count excess leave)
+                totalAnnualUsed += Math.min(used.annualDays, annualEntitlement);
+                totalAnnualEntitled += annualEntitlement;
+                totalTeslUsed += Math.min(used.teslDays, teslEntitlement);
+                totalTeslEntitled += teslEntitlement;
+
+                // Excessive balance indicator
+                const excessBalanceHtml = staff.excessBalanceWeeks > 0
+                    ? `<span class="excess-balance-badge">${staff.excessBalanceWeeks} wks excess</span>`
+                    : '';
+
+                const excessBalanceRowHtml = staff.excessBalanceWeeks > 0
+                    ? `<div class="excess-balance-row">Excessive leave balance: ${staff.excessBalanceWeeks} weeks to work down</div>`
+                    : '';
+
+                html += `
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <span>${staff.name} <span class="fte-badge">${staff.fte} FTE (${staff.daysPerWeek} days/wk)</span>${excessBalanceHtml}</span>
+                            <span class="region">${staff.region}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="entitlement-row header">
+                                <span>Leave Type</span>
+                                <span>Used</span>
+                                <span>Progress</span>
+                                <span>Remaining</span>
+                                <span style="text-align: right;">% Left</span>
+                            </div>
+                            <div class="entitlement-row">
+                                <span><strong>Annual Leave</strong></span>
+                                <span class="days-text days-used">${used.annualDays} days (${annualWeeksUsed} wks)</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${annualPercent > 100 ? 'over' : annualPercent > 80 ? 'warning' : 'good'}" style="width: ${annualPercent}%"></div>
+                                </div>
+                                <span class="days-text days-remaining ${annualRemaining < 0 ? 'negative' : ''}">${annualRemaining} days (${annualWeeksRemaining} wks)</span>
+                                <span class="percent-remaining ${annualRemaining < 0 ? 'negative' : annualRemaining / annualEntitlement < 0.2 ? 'low' : 'good'}">${Math.round((annualRemaining / annualEntitlement) * 100)}%</span>
+                            </div>
+                            <div class="entitlement-row">
+                                <span><strong>TESL</strong></span>
+                                <span class="days-text days-used">${used.teslDays} / ${teslEntitlement} days</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${teslPercent > 100 ? 'over' : teslPercent > 80 ? 'warning' : 'good'}" style="width: ${teslPercent}%"></div>
+                                </div>
+                                <span class="days-text days-remaining ${teslRemaining < 0 ? 'negative' : ''}">${teslRemaining} days</span>
+                                <span class="percent-remaining ${teslRemaining < 0 ? 'negative' : teslRemaining / teslEntitlement < 0.2 ? 'low' : 'good'}">${Math.round((teslRemaining / teslEntitlement) * 100)}%</span>
+                            </div>
+                            ${excessBalanceRowHtml}
+                            ${used.otherNotes.length > 0 ? `
+                                <div class="notes-section">
+                                    <h4>Other Leave / Notes</h4>
+                                    ${used.otherNotes.map(n => `<div class="note-item">${n}</div>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Calculate utilisation percentages
+            const annualUtilisation = Math.round((totalAnnualUsed / totalAnnualEntitled) * 100);
+            const teslUtilisation = Math.round((totalTeslUsed / totalTeslEntitled) * 100);
+
+            // Service Total card
+            html = `
+                <div class="summary-card totals-card">
+                    <div class="card-header" style="background: rgba(255,255,255,0.1); padding: 8px 16px;">
+                        <span style="font-size: 0.85rem; opacity: 0.9;">Service Total</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="total-item">
+                            <div class="total-value">${annualUtilisation}%</div>
+                            <div class="total-label">Annual Leave Utilisation</div>
+                            <div class="utilisation-bar">
+                                <div class="utilisation-fill" style="width: ${annualUtilisation}%"></div>
+                            </div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${totalAnnualUsed} / ${totalAnnualEntitled}</div>
+                            <div class="total-label">Annual Leave Days (Used / Total)</div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${teslUtilisation}%</div>
+                            <div class="total-label">TESL Utilisation</div>
+                            <div class="utilisation-bar">
+                                <div class="utilisation-fill" style="width: ${teslUtilisation}%"></div>
+                            </div>
+                        </div>
+                        <div class="total-item">
+                            <div class="total-value">${totalTeslUsed} / ${totalTeslEntitled}</div>
+                            <div class="total-label">TESL Days (Used / Total)</div>
+                        </div>
+                    </div>
+                </div>
+            ` + html;
+
+            container.innerHTML = html;
+
+            // Update timestamp
+            document.getElementById('lastUpdated').textContent =
+                `Last updated: ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        }
+
+        // Calculate leave for a specific year and staff member
+        function calculateLeaveForYear(staffCode, yearKey, staff) {
+            const yearLeaveData = leaveDataByYear[yearKey];
+            const yearHolidays = publicHolidaysByYear[yearKey];
+
+            // Temporarily set public holidays for this year's calculation
+            const tempHolidays = publicHolidays;
+            publicHolidays = yearHolidays;
+
+            let annualDays = 0;
+            let teslDays = 0;
+
+            yearLeaveData.filter(l => l.staffCode === staffCode).forEach(leave => {
+                if (leave.leaveType === 'Annual Leave') {
+                    if (leave.paidDays !== undefined) {
+                        annualDays += leave.paidDays;
+                    } else {
+                        let current = new Date(leave.startDate);
+                        while (current <= leave.endDate) {
+                            const dayOfWeek = current.getDay();
+                            if (staff.workDays.includes(dayOfWeek) && !isPublicHoliday(current)) {
+                                annualDays++;
+                            }
+                            current.setDate(current.getDate() + 1);
+                        }
+                    }
+                } else if (leave.leaveType === 'TESL') {
+                    const start = new Date(leave.startDate);
+                    const end = new Date(leave.endDate);
+                    teslDays += Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                }
+            });
+
+            // Restore original holidays
+            publicHolidays = tempHolidays;
+
+            return { annualDays, teslDays };
+        }
+
+        function renderTrendView() {
+            const container = document.getElementById('summaryContainer');
+            const years = ['2024', '2025', '2026-2027'];
+            const numYears = 3;
+
+            let html = '';
+
+            // Service totals by year
+            const serviceTotals = {
+                annual: { used: {}, entitled: {} },
+                tesl: { used: {}, entitled: {} }
+            };
+
+            years.forEach(year => {
+                serviceTotals.annual.used[year] = 0;
+                serviceTotals.annual.entitled[year] = 0;
+                serviceTotals.tesl.used[year] = 0;
+                serviceTotals.tesl.entitled[year] = 0;
+            });
+
+            // Calculate data for each staff member
+            const staffTrendData = staffData.map(staff => {
+                const annualEntitlement = staff.daysPerWeek * 5;
+                const teslEntitlement = Math.round(25 * staff.fte);
+
+                const yearData = {};
+                let totalAnnual = 0;
+                let totalTesl = 0;
+
+                years.forEach(year => {
+                    const used = calculateLeaveForYear(staff.code, year, staff);
+                    yearData[year] = {
+                        annual: used.annualDays,
+                        tesl: used.teslDays,
+                        annualPercent: Math.round((used.annualDays / annualEntitlement) * 100),
+                        teslPercent: Math.round((used.teslDays / teslEntitlement) * 100)
+                    };
+                    totalAnnual += used.annualDays;
+                    totalTesl += used.teslDays;
+
+                    // Add to service totals (capped at entitlement)
+                    serviceTotals.annual.used[year] += Math.min(used.annualDays, annualEntitlement);
+                    serviceTotals.annual.entitled[year] += annualEntitlement;
+                    serviceTotals.tesl.used[year] += Math.min(used.teslDays, teslEntitlement);
+                    serviceTotals.tesl.entitled[year] += teslEntitlement;
+                });
+
+                return {
+                    staff,
+                    yearData,
+                    totalAnnual,
+                    totalTesl,
+                    avgAnnual: (totalAnnual / numYears).toFixed(1),
+                    avgTesl: (totalTesl / numYears).toFixed(1),
+                    annualEntitlement,
+                    teslEntitlement,
+                    totalAnnualEntitlement: annualEntitlement * numYears,
+                    totalTeslEntitlement: teslEntitlement * numYears
+                };
+            });
+
+            // Calculate service-wide totals
+            let grandTotalAnnualUsed = 0, grandTotalAnnualEntitled = 0;
+            let grandTotalTeslUsed = 0, grandTotalTeslEntitled = 0;
+
+            years.forEach(year => {
+                grandTotalAnnualUsed += serviceTotals.annual.used[year];
+                grandTotalAnnualEntitled += serviceTotals.annual.entitled[year];
+                grandTotalTeslUsed += serviceTotals.tesl.used[year];
+                grandTotalTeslEntitled += serviceTotals.tesl.entitled[year];
+            });
+
+            // Service Total Trend Card
+            html += `
+                <div class="trend-card service-trend-card">
+                    <div class="trend-header">
+                        <span>Service Total - 3-Year Trend</span>
+                    </div>
+                    <div class="trend-summary">
+                        <div class="trend-summary-item">
+                            <div class="trend-summary-label">Total AL Utilisation</div>
+                            <div class="trend-summary-value">${Math.round((grandTotalAnnualUsed / grandTotalAnnualEntitled) * 100)}%</div>
+                        </div>
+                        <div class="trend-summary-item">
+                            <div class="trend-summary-label">Total TESL Utilisation</div>
+                            <div class="trend-summary-value">${Math.round((grandTotalTeslUsed / grandTotalTeslEntitled) * 100)}%</div>
+                        </div>
+                    </div>
+                    <table class="trend-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th class="year-col">2024</th>
+                                <th class="year-col">2025</th>
+                                <th class="year-col">2026-27</th>
+                                <th class="year-col">Avg/Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Annual Leave %</td>
+                                ${years.map(y => `<td>${Math.round((serviceTotals.annual.used[y] / serviceTotals.annual.entitled[y]) * 100)}%</td>`).join('')}
+                                <td>${Math.round((grandTotalAnnualUsed / grandTotalAnnualEntitled) * 100)}%</td>
+                            </tr>
+                            <tr>
+                                <td>TESL %</td>
+                                ${years.map(y => `<td>${Math.round((serviceTotals.tesl.used[y] / serviceTotals.tesl.entitled[y]) * 100)}%</td>`).join('')}
+                                <td>${Math.round((grandTotalTeslUsed / grandTotalTeslEntitled) * 100)}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // Individual staff trend cards
+            staffTrendData.forEach(data => {
+                const staff = data.staff;
+                const totalAnnualPercent = Math.round((data.totalAnnual / data.totalAnnualEntitlement) * 100);
+                const totalTeslPercent = Math.round((data.totalTesl / data.totalTeslEntitlement) * 100);
+
+                // Excessive balance indicator for trend view
+                const excessBalanceHtml = staff.excessBalanceWeeks > 0
+                    ? `<span class="excess-balance-badge">${staff.excessBalanceWeeks} wks excess</span>`
+                    : '';
+
+                html += `
+                    <div class="trend-card">
+                        <div class="trend-header">
+                            <span>${staff.name}${excessBalanceHtml}</span>
+                            <span style="font-size: 0.8rem; opacity: 0.9;">${staff.fte} FTE | ${staff.region}</span>
+                        </div>
+                        <div class="trend-summary">
+                            <div class="trend-summary-item">
+                                <div class="trend-summary-label">3-Year AL Total</div>
+                                <div class="trend-summary-value ${totalAnnualPercent > 100 ? 'over' : ''}">${data.totalAnnual} / ${data.totalAnnualEntitlement} days</div>
+                            </div>
+                            <div class="trend-summary-item">
+                                <div class="trend-summary-label">3-Year TESL Total</div>
+                                <div class="trend-summary-value ${totalTeslPercent > 100 ? 'over' : ''}">${data.totalTesl} / ${data.totalTeslEntitlement} days</div>
+                            </div>
+                        </div>
+                        <table class="trend-table">
+                            <thead>
+                                <tr>
+                                    <th>Leave Type</th>
+                                    <th class="year-col">2024</th>
+                                    <th class="year-col">2025</th>
+                                    <th class="year-col">2026-27</th>
+                                    <th class="year-col">Avg/Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Annual Leave</td>
+                                    ${years.map(y => {
+                                        const d = data.yearData[y];
+                                        const cls = d.annualPercent > 100 ? 'over' : d.annualPercent > 80 ? 'warning' : 'good';
+                                        return `<td class="trend-cell ${cls}">${d.annual}<span class="trend-percent">${d.annualPercent}%</span></td>`;
+                                    }).join('')}
+                                    <td class="trend-cell">${data.avgAnnual}<span class="trend-percent">of ${data.annualEntitlement}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>TESL</td>
+                                    ${years.map(y => {
+                                        const d = data.yearData[y];
+                                        const cls = d.teslPercent > 100 ? 'over' : d.teslPercent > 80 ? 'warning' : 'good';
+                                        return `<td class="trend-cell ${cls}">${d.tesl}<span class="trend-percent">${d.teslPercent}%</span></td>`;
+                                    }).join('')}
+                                    <td class="trend-cell">${data.avgTesl}<span class="trend-percent">of ${data.teslEntitlement}</span></td>
+                                </tr>
+                                ${staff.excessBalanceWeeks > 0 ? `
+                                <tr>
+                                    <td colspan="5" style="text-align: left; background: #fffbeb; color: #92400e; font-size: 0.85rem;">
+                                        📊 Excessive leave balance: ${staff.excessBalanceWeeks} weeks to work down
+                                    </td>
+                                </tr>
+                                ` : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            document.getElementById('lastUpdated').textContent =
+                `Last updated: ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        }
+
+        renderSummary();
+
+        // Year selector event listener
+        document.getElementById('yearSelect').addEventListener('change', function() {
+            selectedYear = this.value;
+            if (selectedYear === 'trend') {
+                renderTrendView();
+            } else {
+                leaveData = leaveDataByYear[selectedYear];
+                publicHolidays = publicHolidaysByYear[selectedYear];
+                renderSummary();
+            }
+        });
+    </script>
+</body>
+</html>

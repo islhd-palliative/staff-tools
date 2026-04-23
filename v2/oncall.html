@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Call Roster - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button.btn-outline {
+            background: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        button.btn-outline:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-links {
+            margin-bottom: 16px;
+        }
+
+        .nav-links a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Warning Banner */
+        .roster-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        .roster-warning strong {
+            color: #78350f;
+        }
+
+        /* Personal Dashboard */
+        .dashboard {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dashboard.hidden {
+            display: none;
+        }
+
+        .dashboard h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .next-oncall {
+            font-size: 1.2rem;
+            color: #059669;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .next-oncall.today {
+            color: #dc2626;
+        }
+
+        .upcoming-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .upcoming-item {
+            background: #eff6ff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 3px solid #2563eb;
+        }
+
+        .upcoming-item.second {
+            background: #ccfbf1;
+            border-left-color: #0d9488;
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        /* Calendar */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .month-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .month-header {
+            background: #7c3aed;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            padding: 1px;
+        }
+
+        .day-header {
+            background: #f3f4f6;
+            padding: 6px 2px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .day-cell {
+            background: white;
+            min-height: 70px;
+            padding: 4px;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .day-cell.empty {
+            background: #fafafa;
+        }
+
+        .day-cell.weekend {
+            background: #fef3c7;
+        }
+
+        .day-cell.public-holiday {
+            background: #fce7f3;
+        }
+
+        .day-number {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .day-cell.weekend .day-number {
+            color: #92400e;
+        }
+
+        .day-cell.public-holiday .day-number {
+            color: #be185d;
+        }
+
+        .oncall-tag {
+            display: block;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .oncall-tag.first {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .oncall-tag.second {
+            background: #ccfbf1;
+            color: #0f766e;
+        }
+
+        .oncall-tag.trainee {
+            font-style: italic;
+        }
+
+        .oncall-tag.locum {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .oncall-tag.highlight {
+            background: #fbbf24;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* Summary table */
+        .summary-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .summary-section h3 {
+            font-size: 1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .summary-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .trainee-badge {
+            font-size: 0.7rem;
+            background: #e9d5ff;
+            color: #6b21a8;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            h1 { font-size: 1.2rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .calendar-container { grid-template-columns: 1fr; }
+            .day-cell { min-height: 60px; }
+            .oncall-tag { font-size: 0.6rem; }
+            .stats { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="index.html">&larr; Back to Home</a>
+    </div>
+
+    <h1>After Hours On-Call Roster</h1>
+    <p class="subtitle">ISLHD Palliative and End of Life Care</p>
+
+    <div class="roster-warning">
+        <strong>Last updated: 23 April 2026.</strong> For the most up-to-date roster, please refer to the latest version circulated via email.
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <button class="btn-outline" onclick="prevMonth()">&larr;</button>
+            <span id="monthLabel" style="min-width: 140px; text-align: center; font-weight: 500;">This Month</span>
+            <button class="btn-outline" onclick="nextMonth()">&rarr;</button>
+        </div>
+        <div class="control-group">
+            <label for="staffFilter">Show:</label>
+            <select id="staffFilter">
+                <option value="all">All Staff</option>
+                <optgroup label="Staff Specialists">
+                    <option value="GB">Greg Barclay</option>
+                    <option value="MK">Muoi Khou</option>
+                    <option value="AL">Angela Lo</option>
+                    <option value="BT">Benjamin Thomas</option>
+                    <option value="SR">Stephanie Robinson</option>
+                    <option value="Fadz">Fadz wan Bahrum</option>
+                    <option value="RW">Ron Wai</option>
+                    <option value="HY">Helen Yourlo</option>
+                </optgroup>
+                <optgroup label="Advanced Trainees">
+                    <option value="MP">Michelle Petersen</option>
+                    <option value="PL">Patrick Loui</option>
+                    <option value="DS">Dominic Sellers</option>
+                </optgroup>
+                <optgroup label="Locum">
+                    <option value="Locum">Ratnayake (L)</option>
+                </optgroup>
+            </select>
+        </div>
+        <button class="btn-outline" onclick="clearFilter()">Clear Filter</button>
+    </div>
+
+    <div id="dashboard" class="dashboard hidden">
+        <h2 id="dashboardName">Your On-Call Schedule</h2>
+        <div id="nextOncall" class="next-oncall"></div>
+        <div id="upcomingList" class="upcoming-list"></div>
+        <div class="stats">
+            <div class="stat-item">
+                <span id="statsMonthLabel">Total on-calls this month:</span>
+                <span id="totalOncalls" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span>As 1st:</span>
+                <span id="firstOncalls" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span>As 2nd:</span>
+                <span id="secondOncalls" class="stat-value">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #dbeafe;"></div>
+            <span>1st On-Call</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ccfbf1;"></div>
+            <span>2nd On-Call</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #fef3c7;"></div>
+            <span>Weekend</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #fce7f3;"></div>
+            <span>Public Holiday</span>
+        </div>
+        <div class="legend-item">
+            <span style="font-style: italic; font-size: 0.8rem;">Italic = Trainee</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e5e7eb;"></div>
+            <span>(L) = Locum</span>
+        </div>
+    </div>
+
+    <div id="calendar" class="calendar-container"></div>
+
+    <div class="summary-section">
+        <h3 id="summaryTitle">On-Call Load Summary - January 2026</h3>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>1st On-Call</th>
+                    <th>2nd On-Call</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="summaryBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Staff data
+        const staff = {
+            // Staff Specialists
+            'AL': { name: 'Angela Lo', initials: 'AL', isTrainee: false },
+            'BT': { name: 'Benjamin Thomas', initials: 'BT', isTrainee: false },
+            'GB': { name: 'Greg Barclay', initials: 'GB', isTrainee: false },
+            'HY': { name: 'Helen Yourlo', initials: 'HY', isTrainee: false },
+            'MK': { name: 'Muoi Khou', initials: 'MK', isTrainee: false },
+            'RW': { name: 'Ron Wai', initials: 'RW', isTrainee: false },
+            'SR': { name: 'Stephanie Robinson', initials: 'SR', isTrainee: false },
+            'Fadz': { name: 'Fadz wan Bahrum', initials: 'FwB', isTrainee: false },
+            // Advanced Trainees
+            'PL': { name: 'Patrick Loui', initials: 'PL', isTrainee: true },
+            'DS': { name: 'Dominic Sellers', initials: 'DS', isTrainee: true },
+            'MP': { name: 'Michelle Petersen', initials: 'MP', isTrainee: true },
+            'Locum': { name: 'Ratnayake (L)', initials: 'Rat', isTrainee: false, isLocum: true }
+        };
+
+        // NSW Public Holidays
+        const publicHolidays = {
+            '2026-01-01': 'New Year\'s Day',
+            '2026-01-26': 'Australia Day',
+            '2026-04-03': 'Good Friday',
+            '2026-04-04': 'Easter Saturday',
+            '2026-04-06': 'Easter Monday',
+            '2026-04-25': 'ANZAC Day',
+            '2026-04-27': 'ANZAC Day (observed)',
+            '2026-06-08': "Queen's Birthday",
+            '2026-08-03': 'Bank Holiday',
+            '2026-10-05': 'Labour Day',
+            '2026-12-25': 'Christmas Day',
+            '2026-12-26': 'Boxing Day',
+            '2026-12-28': 'Boxing Day (observed)'
+        };
+
+        // On-call roster data: { date: { first: 'CODE', second: 'CODE' or null } }
+        const oncallData = {
+            // January 2026
+            '2026-01-01': { first: 'AL', second: null },
+            '2026-01-02': { first: 'GB', second: null },
+            '2026-01-03': { first: 'MP', second: 'Fadz' },
+            '2026-01-04': { first: 'MP', second: 'Fadz' },
+            '2026-01-05': { first: 'Fadz', second: null },
+            '2026-01-06': { first: 'DS', second: 'RW' },
+            '2026-01-07': { first: 'BT', second: null },
+            '2026-01-08': { first: 'HY', second: null },
+            '2026-01-09': { first: 'AL', second: null },
+            '2026-01-10': { first: 'DS', second: 'BT' },
+            '2026-01-11': { first: 'DS', second: 'BT' },
+            '2026-01-12': { first: 'MP', second: 'SR' },
+            '2026-01-13': { first: 'GB', second: null },
+            '2026-01-14': { first: 'HY', second: null },
+            '2026-01-15': { first: 'MK', second: null },
+            '2026-01-16': { first: 'BT', second: null },
+            '2026-01-17': { first: 'SR', second: null },
+            '2026-01-18': { first: 'SR', second: null },
+            '2026-01-19': { first: 'RW', second: null },
+            '2026-01-20': { first: 'BT', second: null },
+            '2026-01-21': { first: 'PL', second: 'MK' },
+            '2026-01-22': { first: 'Fadz', second: null },
+            '2026-01-23': { first: 'DS', second: 'HY' },
+            '2026-01-24': { first: 'PL', second: 'RW' },
+            '2026-01-25': { first: 'PL', second: 'RW' },
+            '2026-01-26': { first: 'HY', second: null },
+            '2026-01-27': { first: 'AL', second: null },
+            '2026-01-28': { first: 'MK', second: null },
+            '2026-01-29': { first: 'MP', second: 'SR' },
+            '2026-01-30': { first: 'GB', second: null },
+            '2026-01-31': { first: 'AL', second: null },
+            // February 2026
+            '2026-02-01': { first: 'AL', second: null },
+            '2026-02-02': { first: 'SR', second: null },
+            '2026-02-03': { first: 'RW', second: null },
+            '2026-02-04': { first: 'HY', second: null },
+            '2026-02-05': { first: 'MK', second: null },
+            '2026-02-06': { first: 'Fadz', second: null },
+            '2026-02-07': { first: 'GB', second: null },
+            '2026-02-08': { first: 'GB', second: null },
+            '2026-02-09': { first: 'SR', second: null },
+            '2026-02-10': { first: 'BT', second: null },
+            '2026-02-11': { first: 'Fadz', second: null },
+            '2026-02-12': { first: 'AL', second: null },
+            '2026-02-13': { first: 'GB', second: null },
+            '2026-02-14': { first: 'BT', second: null },
+            '2026-02-15': { first: 'BT', second: null },
+            '2026-02-16': { first: 'RW', second: null },
+            '2026-02-17': { first: 'AL', second: null },
+            '2026-02-18': { first: 'SR', second: null },
+            '2026-02-19': { first: 'MK', second: null },
+            '2026-02-20': { first: 'HY', second: null },
+            '2026-02-21': { first: 'MK', second: null },
+            '2026-02-22': { first: 'MK', second: null },
+            '2026-02-23': { first: 'Fadz', second: null },
+            '2026-02-24': { first: 'GB', second: null },
+            '2026-02-25': { first: 'BT', second: null },
+            '2026-02-26': { first: 'SR', second: null },
+            '2026-02-27': { first: 'AL', second: null },
+            '2026-02-28': { first: 'HY', second: null },
+            // March 2026
+            '2026-03-01': { first: 'HY', second: null },
+            '2026-03-02': { first: 'BT', second: null },
+            '2026-03-03': { first: 'SR', second: null },
+            '2026-03-04': { first: 'Fadz', second: null },
+            '2026-03-05': { first: 'AL', second: null },
+            '2026-03-06': { first: 'HY', second: null },
+            '2026-03-07': { first: 'SR', second: null },
+            '2026-03-08': { first: 'SR', second: null },
+            '2026-03-09': { first: 'RW', second: null },
+            '2026-03-10': { first: 'GB', second: null },
+            '2026-03-11': { first: 'BT', second: null },
+            '2026-03-12': { first: 'SR', second: null },
+            '2026-03-13': { first: 'AL', second: null },
+            '2026-03-14': { first: 'BT', second: null },
+            '2026-03-15': { first: 'BT', second: null },
+            '2026-03-16': { first: 'Fadz', second: null },
+            '2026-03-17': { first: 'SR', second: null },
+            '2026-03-18': { first: 'MK', second: null },
+            '2026-03-19': { first: 'HY', second: null },
+            '2026-03-20': { first: 'BT', second: null },
+            '2026-03-21': { first: 'RW', second: null },
+            '2026-03-22': { first: 'RW', second: null },
+            '2026-03-23': { first: 'Fadz', second: null },
+            '2026-03-24': { first: 'AL', second: null },
+            '2026-03-25': { first: 'SR', second: null },
+            '2026-03-26': { first: 'MK', second: null },
+            '2026-03-27': { first: 'GB', second: null },
+            '2026-03-28': { first: 'Fadz', second: null },
+            '2026-03-29': { first: 'Fadz', second: null },
+            '2026-03-30': { first: 'RW', second: null },
+            '2026-03-31': { first: 'BT', second: null },
+            // April 2026
+            '2026-04-01': { first: 'BT', second: null },
+            '2026-04-02': { first: 'SR', second: null },
+            '2026-04-03': { first: 'GB', second: null },
+            '2026-04-04': { first: 'SR', second: null },
+            '2026-04-05': { first: 'SR', second: null },
+            '2026-04-06': { first: 'Fadz', second: null },
+            '2026-04-07': { first: 'MP', second: 'RW' },
+            '2026-04-08': { first: 'BT', second: null },
+            '2026-04-09': { first: 'HY', second: null },
+            '2026-04-10': { first: 'AL', second: null },
+            '2026-04-11': { first: 'GB', second: null },
+            '2026-04-12': { first: 'GB', second: null },
+            '2026-04-13': { first: 'Fadz', second: null },
+            '2026-04-14': { first: 'SR', second: null },
+            '2026-04-15': { first: 'Locum', second: null },
+            '2026-04-16': { first: 'AL', second: null },
+            '2026-04-17': { first: 'BT', second: null },
+            '2026-04-18': { first: 'Locum', second: null },
+            '2026-04-19': { first: 'Locum', second: null },
+            '2026-04-20': { first: 'RW', second: null },
+            '2026-04-21': { first: 'MK', second: null },
+            '2026-04-22': { first: 'Locum', second: null },
+            '2026-04-23': { first: 'HY', second: null },
+            '2026-04-24': { first: 'GB', second: null },
+            '2026-04-25': { first: 'MP', second: 'MK' },
+            '2026-04-26': { first: 'MP', second: 'MK' },
+            '2026-04-27': { first: 'AL', second: null },
+            '2026-04-28': { first: 'SR', second: null },
+            '2026-04-29': { first: 'BT', second: null },
+            '2026-04-30': { first: 'Fadz', second: null },
+            // May 2026
+            '2026-05-01': { first: 'BT', second: null },
+            '2026-05-02': { first: 'RW', second: null },
+            '2026-05-03': { first: 'RW', second: null },
+            '2026-05-04': { first: 'AL', second: null },
+            '2026-05-05': { first: 'MK', second: null },
+            '2026-05-06': { first: 'SR', second: null },
+            '2026-05-07': { first: 'Locum', second: null },
+            '2026-05-08': { first: 'GB', second: null },
+            '2026-05-09': { first: 'Fadz', second: null },
+            '2026-05-10': { first: 'Fadz', second: null },
+            '2026-05-11': { first: 'BT', second: null },
+            '2026-05-12': { first: 'AL', second: null },
+            '2026-05-13': { first: 'SR', second: null },
+            '2026-05-14': { first: 'HY', second: null },
+            '2026-05-15': { first: 'Fadz', second: null },
+            '2026-05-16': { first: 'AL', second: null },
+            '2026-05-17': { first: 'AL', second: null },
+            '2026-05-18': { first: 'Locum', second: null },
+            '2026-05-19': { first: 'SR', second: null },
+            '2026-05-20': { first: 'Fadz', second: null },
+            '2026-05-21': { first: 'AL', second: null },
+            '2026-05-22': { first: 'HY', second: null },
+            '2026-05-23': { first: 'BT', second: null },
+            '2026-05-24': { first: 'BT', second: null },
+            '2026-05-25': { first: 'Fadz', second: null },
+            '2026-05-26': { first: 'RW', second: null },
+            '2026-05-27': { first: 'Locum', second: null },
+            '2026-05-28': { first: 'MK', second: null },
+            '2026-05-29': { first: 'BT', second: null },
+            '2026-05-30': { first: 'HY', second: null },
+            '2026-05-31': { first: 'HY', second: null }
+        };
+
+        // Format date as YYYY-MM-DD (local timezone)
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Parse YYYY-MM-DD as local timezone (not UTC)
+        function parseDate(dateKey) {
+            const [year, month, day] = dateKey.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }
+
+        // Format date for display
+        function formatDateDisplay(date) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return `${days[date.getDay()]} ${date.getDate()}/${date.getMonth() + 1}`;
+        }
+
+        // Get on-call for a specific date
+        function getOncallForDate(dateKey) {
+            return oncallData[dateKey] || null;
+        }
+
+        // Update dashboard for selected person
+        function updateDashboard(staffCode) {
+            const dashboard = document.getElementById('dashboard');
+            const person = staff[staffCode];
+
+            if (!staffCode || staffCode === 'all') {
+                dashboard.classList.add('hidden');
+                return;
+            }
+
+            dashboard.classList.remove('hidden');
+            document.getElementById('dashboardName').textContent = `${person.name}'s On-Call Schedule`;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Get selected month for filtering stats
+            const { year, month } = getSelectedMonth();
+            const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            let upcoming = [];
+            let firstCount = 0;
+            let secondCount = 0;
+
+            // Find all on-calls for this person
+            Object.entries(oncallData).forEach(([dateKey, data]) => {
+                const date = parseDate(dateKey);
+                let role = null;
+
+                if (data.first === staffCode) {
+                    role = '1st';
+                    // Only count for selected month
+                    if (dateKey.startsWith(monthPrefix)) firstCount++;
+                } else if (data.second === staffCode) {
+                    role = '2nd';
+                    // Only count for selected month
+                    if (dateKey.startsWith(monthPrefix)) secondCount++;
+                }
+
+                if (role && date >= today) {
+                    upcoming.push({ date, dateKey, role });
+                }
+            });
+
+            // Sort upcoming by date
+            upcoming.sort((a, b) => a.date - b.date);
+
+            // Filter upcoming list to selected month only
+            const upcomingThisMonth = upcoming.filter(item => item.dateKey.startsWith(monthPrefix));
+
+            // Next on-call (still shows absolute next, regardless of month view)
+            const nextOncallDiv = document.getElementById('nextOncall');
+            if (upcoming.length > 0) {
+                const next = upcoming[0];
+                const daysUntil = Math.ceil((next.date - today) / (1000 * 60 * 60 * 24));
+
+                if (daysUntil === 0) {
+                    nextOncallDiv.textContent = `ON CALL TODAY (${next.role})`;
+                    nextOncallDiv.classList.add('today');
+                } else if (daysUntil === 1) {
+                    nextOncallDiv.textContent = `Next on-call: Tomorrow (${next.role})`;
+                    nextOncallDiv.classList.remove('today');
+                } else {
+                    nextOncallDiv.textContent = `Next on-call: ${daysUntil} days (${formatDateDisplay(next.date)}, ${next.role})`;
+                    nextOncallDiv.classList.remove('today');
+                }
+            } else {
+                nextOncallDiv.textContent = 'No upcoming on-calls';
+                nextOncallDiv.classList.remove('today');
+            }
+
+            // Upcoming list - show only selected month's on-calls
+            const upcomingList = document.getElementById('upcomingList');
+            upcomingList.innerHTML = upcomingThisMonth.slice(0, 10).map(item => `
+                <div class="upcoming-item ${item.role === '2nd' ? 'second' : ''}">
+                    ${formatDateDisplay(item.date)} (${item.role})
+                </div>
+            `).join('');
+
+            // Stats (now filtered to selected month)
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('statsMonthLabel').textContent = `On-calls in ${months[month]}:`;
+            document.getElementById('totalOncalls').textContent = firstCount + secondCount;
+            document.getElementById('firstOncalls').textContent = firstCount;
+            document.getElementById('secondOncalls').textContent = secondCount;
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const container = document.getElementById('calendar');
+            const filter = document.getElementById('staffFilter').value;
+            container.innerHTML = '';
+
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+            // Get selected month from navigation
+            const { year: selectedYear, month: selectedMonth } = getSelectedMonth();
+            const calendarMonths = [
+                { year: selectedYear, month: selectedMonth }
+            ];
+
+            calendarMonths.forEach(({ year, month }) => {
+                const monthCard = document.createElement('div');
+                monthCard.className = 'month-card';
+                monthCard.id = `month-${year}-${month}`;
+
+                const header = document.createElement('div');
+                header.className = 'month-header';
+                header.textContent = months[month] + ' ' + year;
+                monthCard.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'month-grid';
+
+                // Day headers
+                days.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.textContent = day;
+                    grid.appendChild(dayHeader);
+                });
+
+                // Get first day of month and number of days
+                const firstDayRaw = new Date(year, month, 1).getDay();
+                // Convert Sun=0 to Mon-Sun layout (Mon=0, Sun=6)
+                const firstDay = firstDayRaw === 0 ? 6 : firstDayRaw - 1;
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Empty cells before first day
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell empty';
+                    grid.appendChild(emptyCell);
+                }
+
+                // Day cells
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    const dateKey = formatDateKey(date);
+                    const dayOfWeek = date.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isHoliday = publicHolidays[dateKey];
+
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    if (isWeekend) cell.className += ' weekend';
+                    if (isHoliday) cell.className += ' public-holiday';
+
+                    const dayNum = document.createElement('div');
+                    dayNum.className = 'day-number';
+                    dayNum.textContent = day;
+                    cell.appendChild(dayNum);
+
+                    // Add on-call entries
+                    const oncall = getOncallForDate(dateKey);
+                    if (oncall) {
+                        // First on-call
+                        if (oncall.first) {
+                            const person = staff[oncall.first];
+                            const tag = document.createElement('span');
+                            let classes = 'oncall-tag first';
+                            if (person.isTrainee) classes += ' trainee';
+                            if (person.isLocum) classes += ' locum';
+                            if (filter !== 'all' && oncall.first === filter) classes += ' highlight';
+                            tag.className = classes;
+                            tag.textContent = `1: ${person.initials}`;
+                            tag.title = `1st: ${person.name}`;
+
+                            if (filter === 'all' || oncall.first === filter || oncall.second === filter) {
+                                cell.appendChild(tag);
+                            }
+                        }
+
+                        // Second on-call
+                        if (oncall.second) {
+                            const person = staff[oncall.second];
+                            const tag = document.createElement('span');
+                            let classes = 'oncall-tag second';
+                            if (person.isTrainee) classes += ' trainee';
+                            if (person.isLocum) classes += ' locum';
+                            if (filter !== 'all' && oncall.second === filter) classes += ' highlight';
+                            tag.className = classes;
+                            tag.textContent = `2: ${person.initials}`;
+                            tag.title = `2nd: ${person.name}`;
+
+                            if (filter === 'all' || oncall.first === filter || oncall.second === filter) {
+                                cell.appendChild(tag);
+                            }
+                        }
+                    }
+
+                    grid.appendChild(cell);
+                }
+
+                // Add Feb 1 to complete the weekend display
+                if (month === 0 && year === 2026) {
+                    const feb1 = new Date(2026, 1, 1);
+                    const dateKey = formatDateKey(feb1);
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell weekend';
+
+                    const dayNum = document.createElement('div');
+                    dayNum.className = 'day-number';
+                    dayNum.textContent = '1 Feb';
+                    dayNum.style.fontSize = '0.65rem';
+                    cell.appendChild(dayNum);
+
+                    const oncall = getOncallForDate(dateKey);
+                    if (oncall && oncall.first) {
+                        const person = staff[oncall.first];
+                        const tag = document.createElement('span');
+                        let classes = 'oncall-tag first';
+                        if (person.isTrainee) classes += ' trainee';
+                        if (person.isLocum) classes += ' locum';
+                        if (filter !== 'all' && oncall.first === filter) classes += ' highlight';
+                        tag.className = classes;
+                        tag.textContent = `1: ${person.initials}`;
+                        tag.title = `1st: ${person.name}`;
+
+                        if (filter === 'all' || oncall.first === filter) {
+                            cell.appendChild(tag);
+                        }
+                    }
+
+                    grid.appendChild(cell);
+                }
+
+                monthCard.appendChild(grid);
+                container.appendChild(monthCard);
+            });
+
+            // Update summary table
+            renderSummary();
+        }
+
+        // Render summary table
+        function renderSummary() {
+            const tbody = document.getElementById('summaryBody');
+
+            // Get selected month
+            const { year, month } = getSelectedMonth();
+            const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            // Update summary title
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('summaryTitle').textContent = `On-Call Load Summary - ${months[month]} ${year}`;
+
+            // Count on-calls per person
+            const counts = {};
+            Object.keys(staff).forEach(code => {
+                counts[code] = { first: 0, second: 0 };
+            });
+
+            Object.entries(oncallData).forEach(([dateKey, data]) => {
+                // Only count selected month
+                if (dateKey.startsWith(monthPrefix)) {
+                    if (data.first && counts[data.first]) counts[data.first].first++;
+                    if (data.second && counts[data.second]) counts[data.second].second++;
+                }
+            });
+
+            // Sort: Staff Specialists alphabetically, then Trainees alphabetically
+            const sorted = Object.entries(counts)
+                .map(([code, c]) => ({ code, ...c, total: c.first + c.second }))
+                .filter(x => x.total > 0)
+                .sort((a, b) => {
+                    const personA = staff[a.code];
+                    const personB = staff[b.code];
+                    // Staff Specialists first, then Trainees
+                    if (personA.isTrainee !== personB.isTrainee) {
+                        return personA.isTrainee ? 1 : -1;
+                    }
+                    // Within each group, sort alphabetically by surname
+                    const surnameA = personA.name.split(' ').pop();
+                    const surnameB = personB.name.split(' ').pop();
+                    return surnameA.localeCompare(surnameB);
+                });
+
+            tbody.innerHTML = sorted.map(({ code, first, second, total }) => {
+                const person = staff[code];
+                return `
+                    <tr>
+                        <td>
+                            ${person.name}
+                            ${person.isTrainee ? '<span class="trainee-badge">AT</span>' : ''}
+                        </td>
+                        <td>${first}</td>
+                        <td>${second}</td>
+                        <td><strong>${total}</strong></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Clear filter
+        function clearFilter() {
+            document.getElementById('staffFilter').value = 'all';
+            document.getElementById('dashboard').classList.add('hidden');
+            renderCalendar();
+        }
+
+        // Month navigation - relative to current month
+        let monthOffset = 0; // 0 = this month, negative = past months, positive = future
+
+        // Calculate navigation bounds from roster data
+        function getMonthBounds() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const dates = Object.keys(oncallData).sort();
+            if (dates.length === 0) return { min: 0, max: 0 };
+            const earliest = new Date(dates[0] + 'T00:00:00');
+            const latest = new Date(dates[dates.length - 1] + 'T00:00:00');
+            const minOffset = (earliest.getFullYear() - currentYear) * 12 + (earliest.getMonth() - currentMonth);
+            const maxOffset = (latest.getFullYear() - currentYear) * 12 + (latest.getMonth() - currentMonth);
+            return { min: minOffset, max: maxOffset };
+        }
+
+        function updateMonthLabel() {
+            const label = document.getElementById('monthLabel');
+            const now = new Date();
+            const targetDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            label.textContent = `${months[targetDate.getMonth()]} ${targetDate.getFullYear()}`;
+        }
+
+        function getSelectedMonth() {
+            const now = new Date();
+            return {
+                year: now.getFullYear() + Math.floor((now.getMonth() + monthOffset) / 12),
+                month: (now.getMonth() + monthOffset) % 12
+            };
+        }
+
+        function prevMonth() {
+            const bounds = getMonthBounds();
+            if (monthOffset > bounds.min) {
+                monthOffset--;
+                updateMonthLabel();
+                renderCalendar();
+                const filter = document.getElementById('staffFilter').value;
+                if (filter !== 'all') updateDashboard(filter);
+            }
+        }
+
+        function nextMonth() {
+            const bounds = getMonthBounds();
+            if (monthOffset < bounds.max) {
+                monthOffset++;
+                updateMonthLabel();
+                renderCalendar();
+                const filter = document.getElementById('staffFilter').value;
+                if (filter !== 'all') updateDashboard(filter);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('staffFilter').addEventListener('change', function() {
+            updateDashboard(this.value);
+            renderCalendar();
+        });
+
+        // Initial load
+        updateMonthLabel();
+        renderCalendar();
+    </script>
+</body>
+</html>

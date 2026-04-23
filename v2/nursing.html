@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Nursing Leave Calendar 2026 - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #0d9488;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        button {
+            background: #0d9488;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #0f766e;
+        }
+
+        button.btn-outline {
+            background: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        button.btn-outline:hover {
+            background: #f3f4f6;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .month-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .month-header {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            padding: 1px;
+        }
+
+        .day-header {
+            background: #f3f4f6;
+            padding: 6px 2px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .day-cell {
+            background: white;
+            min-height: 60px;
+            padding: 4px;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .day-cell.empty {
+            background: #fafafa;
+        }
+
+        .day-cell.weekend {
+            background: #f9fafb;
+        }
+
+        .day-number {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .day-cell.weekend .day-number {
+            color: #999;
+        }
+
+        .day-cell.public-holiday {
+            background: #fce7f3;
+        }
+
+        .day-cell.public-holiday .day-number {
+            color: #be185d;
+        }
+
+        .leave-tag {
+            display: block;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .leave-tag.annual { background: #dbeafe; color: #1e40af; }
+        .leave-tag.lsl { background: #e9d5ff; color: #6b21a8; }
+        .leave-tag.lwop { background: #e5e7eb; color: #374151; }
+
+        .status-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .status-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: #0d9488;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .summary-card {
+            background: #f0fdfa;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        .summary-value.warning { color: #f59e0b; }
+        .summary-value.critical { color: #ef4444; }
+
+        .upcoming-leave {
+            display: grid;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .leave-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .leave-item.lsl { border-left-color: #7c3aed; }
+        .leave-item.lwop { border-left-color: #6b7280; }
+
+        .leave-item-info {
+            flex: 1;
+        }
+
+        .leave-item-name { font-weight: 500; font-size: 0.9rem; }
+        .leave-item-role { font-size: 0.75rem; color: #666; }
+        .leave-item-dates { color: #666; font-size: 0.85rem; }
+        .leave-item-type {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            h1 { font-size: 1.2rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .calendar-container { grid-template-columns: 1fr; }
+            .day-cell { min-height: 50px; }
+            .leave-tag { font-size: 0.55rem; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Senior Nursing Leave Calendar 2026</h1>
+    <p class="subtitle">ISLHD Palliative and End of Life Care (CC182605)</p>
+    <p class="last-updated">Last updated: 20 January 2026</p>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="staffFilter">Show:</label>
+            <select id="staffFilter">
+                <option value="all">All Staff</option>
+                <optgroup label="Role">
+                    <option value="NP">Nurse Practitioners</option>
+                    <option value="CNC">Clinical Nurse Consultants</option>
+                    <option value="CNS2">Clinical Nurse Specialists</option>
+                    <option value="NUM">Nurse Unit Managers</option>
+                </optgroup>
+                <optgroup label="Individual">
+                </optgroup>
+            </select>
+        </div>
+        <div class="control-group">
+            <label for="monthJump">Jump to:</label>
+            <select id="monthJump">
+                <option value="2026-0">January 2026</option>
+                <option value="2026-1">February 2026</option>
+                <option value="2026-2">March 2026</option>
+                <option value="2026-3">April 2026</option>
+                <option value="2026-4">May 2026</option>
+                <option value="2026-5">June 2026</option>
+                <option value="2026-6">July 2026</option>
+                <option value="2026-7">August 2026</option>
+                <option value="2026-8">September 2026</option>
+                <option value="2026-9">October 2026</option>
+                <option value="2026-10">November 2026</option>
+                <option value="2026-11">December 2026</option>
+                <option value="2027-0">January 2027</option>
+            </select>
+        </div>
+        <button id="myLeaveBtn" class="btn-outline">My Upcoming Leave</button>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #dbeafe;"></div>
+            <span>Annual Leave</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e9d5ff;"></div>
+            <span>Long Service Leave</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e5e7eb;"></div>
+            <span>Leave Without Pay</span>
+        </div>
+    </div>
+
+    <div class="status-panel">
+        <h3>This Week's Summary</h3>
+        <div class="summary-grid" id="summaryGrid"></div>
+        <div class="upcoming-leave" id="upcomingLeave"></div>
+    </div>
+
+    <div class="calendar-container" id="calendarContainer"></div>
+
+    <div class="footer">
+        Built for Ashlie by Ben with help from Claude
+    </div>
+
+    <script>
+        // Staff data
+        const staffData = [
+            { code: 'TG', name: 'Teresa Gillies', role: 'NP', fte: 1.0 },
+            { code: 'MG', name: 'Mira Glavan', role: 'NP', fte: 0.84 },
+            { code: 'JT', name: 'Jacqueline Turner', role: 'NP', fte: 1.0 },
+            { code: 'MH', name: 'Melissa Heufel', role: 'CNC', fte: 0.74 },
+            { code: 'LH', name: 'Lucy Hood', role: 'CNC', fte: 1.0 },
+            { code: 'LM', name: 'Liz Micovska', role: 'CNC', fte: 0.84 },
+            { code: 'AP', name: 'Amy Purkiss', role: 'CNC', fte: 0.74 },
+            { code: 'KW', name: 'Kerrie Womsley', role: 'CNC', fte: 1.0 },
+            { code: 'KWu', name: 'Kathleen Wurth', role: 'CNC', fte: 0.84 },
+            { code: 'BA', name: 'Bukola Adeniyi', role: 'CNS2', fte: 0.84 },
+            { code: 'SH', name: 'Susan Hagen', role: 'CNS2', fte: 0.84 },
+            { code: 'SJ', name: 'Susan Jenkins', role: 'NM2', fte: 1.0 },
+            { code: 'YJ', name: 'Young Jung', role: 'CNS2', fte: 0.63 },
+            { code: 'CK', name: 'Claire Kulyk', role: 'CNS2', fte: 0.84 },
+            { code: 'EM', name: 'Emily McBride', role: 'CNS2', fte: 1.0 },
+            { code: 'RP', name: 'Rebecca Perry', role: 'CNS2', fte: 1.0 },
+            { code: 'KP', name: 'Kirsty Price', role: 'CNS2', fte: 0.63 },
+            { code: 'SR', name: 'Sandra Rawson', role: 'CNS2', fte: 0.63 },
+            { code: 'CWa', name: 'Claire Walker', role: 'CNS2', fte: 0.37 },
+            { code: 'GW', name: 'Gemma Watson', role: 'CNS2', fte: 0.63 },
+            { code: 'AZ', name: 'Annie Zhang', role: 'CNS2', fte: 1.0 },
+            { code: 'AB', name: 'Allison Barnaba', role: 'NUM', fte: 0.47 },
+            { code: 'CM', name: 'Chenelle Morrison', role: 'NUM', fte: 1.0 },
+            { code: 'CT', name: 'Charmaine Tatton', role: 'NUM', fte: 0.84 },
+            { code: 'NW', name: 'Nicole Wheatley', role: 'NUM', fte: 0.58 }
+        ];
+
+        // Leave data - converted from weekly to date ranges
+        const leaveData = [
+            // Jacqueline Turner
+            { staffCode: 'JT', startDate: new Date(2026, 1, 9), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'JT', startDate: new Date(2026, 2, 23), endDate: new Date(2026, 3, 3), leaveType: 'Annual Leave' },
+            // Lucy Hood
+            { staffCode: 'LH', startDate: new Date(2026, 1, 9), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave' },
+            { staffCode: 'LH', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 26), leaveType: 'Annual Leave' },
+            // Kerrie Womsley - LSL
+            { staffCode: 'KW', startDate: new Date(2026, 0, 5), endDate: new Date(2026, 3, 24), leaveType: 'LSL' },
+            // Kathleen Wurth
+            { staffCode: 'KWu', startDate: new Date(2026, 0, 26), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'KWu', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 2, 13), leaveType: 'LSL' },
+            // Bukola Adeniyi
+            { staffCode: 'BA', startDate: new Date(2026, 0, 26), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            // Susan Jenkins
+            { staffCode: 'SJ', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            // Young Jung
+            { staffCode: 'YJ', startDate: new Date(2026, 0, 5), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+            // Sandra Rawson
+            { staffCode: 'SR', startDate: new Date(2026, 1, 9), endDate: new Date(2026, 1, 20), leaveType: 'Annual Leave' },
+            // Claire Walker - long LSL then LWOP
+            { staffCode: 'CWa', startDate: new Date(2026, 0, 5), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'CWa', startDate: new Date(2026, 1, 16), endDate: new Date(2026, 7, 21), leaveType: 'LSL' },
+            { staffCode: 'CWa', startDate: new Date(2026, 7, 24), endDate: new Date(2026, 8, 18), leaveType: 'LWOP' },
+            // Annie Zhang
+            { staffCode: 'AZ', startDate: new Date(2026, 3, 6), endDate: new Date(2026, 3, 10), leaveType: 'Annual Leave' },
+            { staffCode: 'AZ', startDate: new Date(2026, 5, 29), endDate: new Date(2026, 6, 3), leaveType: 'Annual Leave' },
+            { staffCode: 'AZ', startDate: new Date(2026, 8, 21), endDate: new Date(2026, 8, 25), leaveType: 'Annual Leave' },
+            // Allison Barnaba
+            { staffCode: 'AB', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'AB', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 2, 13), leaveType: 'LSL' },
+            // Chenelle Morrison
+            { staffCode: 'CM', startDate: new Date(2026, 1, 16), endDate: new Date(2026, 1, 20), leaveType: 'Annual Leave' },
+            { staffCode: 'CM', startDate: new Date(2026, 5, 29), endDate: new Date(2026, 6, 3), leaveType: 'Annual Leave' },
+            // Charmaine Tatton
+            { staffCode: 'CT', startDate: new Date(2026, 2, 16), endDate: new Date(2026, 2, 27), leaveType: 'Annual Leave' },
+            { staffCode: 'CT', startDate: new Date(2026, 8, 21), endDate: new Date(2026, 9, 2), leaveType: 'Annual Leave' },
+            // Kirsty Price
+            { staffCode: 'KP', startDate: new Date(2026, 9, 26), endDate: new Date(2026, 10, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'KP', startDate: new Date(2026, 11, 14), endDate: new Date(2026, 11, 25), leaveType: 'Annual Leave' }
+        ];
+
+        // NSW Public Holidays 2026
+        const publicHolidays = [
+            new Date(2026, 0, 1),   // New Year
+            new Date(2026, 0, 26),  // Australia Day
+            new Date(2026, 3, 3),   // Good Friday
+            new Date(2026, 3, 4),   // Easter Saturday
+            new Date(2026, 3, 6),   // Easter Monday
+            new Date(2026, 3, 25),  // Anzac Day
+            new Date(2026, 5, 8),   // Queen's Birthday
+            new Date(2026, 9, 5),   // Labour Day
+            new Date(2026, 11, 25), // Christmas
+            new Date(2026, 11, 26), // Boxing Day
+            new Date(2026, 11, 28), // Boxing Day observed
+            new Date(2027, 0, 1),   // New Year 2027
+            new Date(2027, 0, 26)   // Australia Day 2027
+        ];
+
+        const roleNames = {
+            'NP': 'Nurse Practitioner',
+            'CNC': 'Clinical Nurse Consultant',
+            'CNS2': 'Clinical Nurse Specialist',
+            'NM2': 'Nurse Manager',
+            'NUM': 'Nurse Unit Manager'
+        };
+
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+        let currentFilter = 'all';
+
+        // Populate individual staff in dropdown
+        function populateStaffDropdown() {
+            const select = document.getElementById('staffFilter');
+            const optgroup = select.querySelector('optgroup[label="Individual"]');
+            staffData.forEach(staff => {
+                const option = document.createElement('option');
+                option.value = staff.code;
+                option.textContent = `${staff.name} (${staff.role})`;
+                optgroup.appendChild(option);
+            });
+        }
+
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function isPublicHoliday(date) {
+            return publicHolidays.some(h =>
+                h.getDate() === date.getDate() &&
+                h.getMonth() === date.getMonth() &&
+                h.getFullYear() === date.getFullYear()
+            );
+        }
+
+        function isWeekend(date) {
+            const day = date.getDay();
+            return day === 0 || day === 6;
+        }
+
+        function getLeaveForDate(date) {
+            const leaves = [];
+            const dateTime = date.getTime();
+
+            leaveData.forEach(leave => {
+                const start = new Date(leave.startDate);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(leave.endDate);
+                end.setHours(23, 59, 59, 999);
+
+                if (dateTime >= start.getTime() && dateTime <= end.getTime()) {
+                    const staff = staffData.find(s => s.code === leave.staffCode);
+                    if (staff) {
+                        // Apply filter
+                        if (currentFilter === 'all' ||
+                            currentFilter === staff.role ||
+                            (currentFilter === 'NUM' && staff.role === 'NM2') ||
+                            currentFilter === staff.code) {
+                            leaves.push({
+                                ...leave,
+                                staffName: staff.name,
+                                staffRole: staff.role,
+                                fte: staff.fte
+                            });
+                        }
+                    }
+                }
+            });
+
+            return leaves;
+        }
+
+        function formatDateRange(start, end) {
+            const startStr = `${start.getDate()} ${monthNames[start.getMonth()].substring(0, 3)}`;
+            const endStr = `${end.getDate()} ${monthNames[end.getMonth()].substring(0, 3)}`;
+            if (start.getTime() === end.getTime()) {
+                return startStr;
+            }
+            return `${startStr} - ${endStr}`;
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarContainer');
+            let html = '';
+
+            // Render months from Jan 2026 to Jan 2027
+            for (let m = 0; m <= 12; m++) {
+                const year = m < 12 ? 2026 : 2027;
+                const month = m < 12 ? m : 0;
+
+                html += `<div class="month-card" id="month-${year}-${month}">`;
+                html += `<div class="month-header">${monthNames[month]} ${year}</div>`;
+                html += `<div class="month-grid">`;
+
+                // Day headers
+                dayNames.forEach(day => {
+                    html += `<div class="day-header">${day}</div>`;
+                });
+
+                // Get first day of month and total days
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const totalDays = lastDay.getDate();
+
+                // Monday = 0, Sunday = 6 for our grid
+                let startDay = firstDay.getDay() - 1;
+                if (startDay < 0) startDay = 6;
+
+                // Empty cells before first day
+                for (let i = 0; i < startDay; i++) {
+                    html += `<div class="day-cell empty"></div>`;
+                }
+
+                // Day cells
+                for (let day = 1; day <= totalDays; day++) {
+                    const date = new Date(year, month, day);
+                    const isWknd = isWeekend(date);
+                    const isPH = isPublicHoliday(date);
+                    const leaves = getLeaveForDate(date);
+
+                    let cellClass = 'day-cell';
+                    if (isWknd) cellClass += ' weekend';
+                    if (isPH) cellClass += ' public-holiday';
+
+                    html += `<div class="${cellClass}">`;
+                    html += `<div class="day-number">${day}</div>`;
+
+                    // Show leave tags (max 3, then +X more)
+                    const maxTags = 3;
+                    leaves.slice(0, maxTags).forEach(leave => {
+                        const leaveClass = leave.leaveType === 'LSL' ? 'lsl' :
+                                          leave.leaveType === 'LWOP' ? 'lwop' : 'annual';
+                        const firstName = leave.staffName.split(' ')[0];
+                        html += `<span class="leave-tag ${leaveClass}" title="${leave.staffName} - ${leave.leaveType}">${firstName}</span>`;
+                    });
+
+                    if (leaves.length > maxTags) {
+                        html += `<span class="leave-tag" style="background:#f1f5f9;color:#666;">+${leaves.length - maxTags} more</span>`;
+                    }
+
+                    html += `</div>`;
+                }
+
+                // Empty cells after last day
+                const endDay = lastDay.getDay() - 1;
+                const remaining = endDay < 0 ? 0 : 6 - endDay;
+                for (let i = 0; i < remaining; i++) {
+                    html += `<div class="day-cell empty"></div>`;
+                }
+
+                html += `</div></div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderSummary() {
+            const today = new Date();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay() + 1);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+
+            // Count staff on leave this week
+            let onLeaveThisWeek = new Set();
+            let totalFteOnLeave = 0;
+
+            for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+                const leaves = getLeaveForDate(new Date(d));
+                leaves.forEach(l => {
+                    if (!onLeaveThisWeek.has(l.staffCode)) {
+                        onLeaveThisWeek.add(l.staffCode);
+                        totalFteOnLeave += l.fte;
+                    }
+                });
+            }
+
+            const totalFte = staffData.reduce((sum, s) => sum + s.fte, 0);
+            const availableFte = totalFte - totalFteOnLeave;
+            const percentAvailable = Math.round((availableFte / totalFte) * 100);
+
+            const summaryClass = percentAvailable < 70 ? 'critical' : percentAvailable < 85 ? 'warning' : '';
+
+            document.getElementById('summaryGrid').innerHTML = `
+                <div class="summary-card">
+                    <h4>Total Staff</h4>
+                    <div class="summary-value">${staffData.length}</div>
+                </div>
+                <div class="summary-card">
+                    <h4>On Leave</h4>
+                    <div class="summary-value ${onLeaveThisWeek.size > 3 ? 'warning' : ''}">${onLeaveThisWeek.size}</div>
+                </div>
+                <div class="summary-card">
+                    <h4>FTE Available</h4>
+                    <div class="summary-value ${summaryClass}">${availableFte.toFixed(1)}</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Capacity</h4>
+                    <div class="summary-value ${summaryClass}">${percentAvailable}%</div>
+                </div>
+            `;
+
+            // Upcoming leave (next 4 weeks)
+            const upcoming = [];
+            const fourWeeks = new Date(today);
+            fourWeeks.setDate(fourWeeks.getDate() + 28);
+
+            leaveData.forEach(leave => {
+                if (leave.startDate >= today && leave.startDate <= fourWeeks) {
+                    const staff = staffData.find(s => s.code === leave.staffCode);
+                    if (staff) {
+                        upcoming.push({
+                            ...leave,
+                            staffName: staff.name,
+                            staffRole: staff.role
+                        });
+                    }
+                }
+            });
+
+            // Sort by start date
+            upcoming.sort((a, b) => a.startDate - b.startDate);
+
+            if (upcoming.length > 0) {
+                let upcomingHtml = '<h3 style="margin-top:16px;margin-bottom:12px;font-size:0.9rem;color:#0d9488;">Upcoming Leave (Next 4 Weeks)</h3>';
+                upcoming.slice(0, 6).forEach(leave => {
+                    const leaveClass = leave.leaveType === 'LSL' ? 'lsl' :
+                                      leave.leaveType === 'LWOP' ? 'lwop' : '';
+                    upcomingHtml += `
+                        <div class="leave-item ${leaveClass}">
+                            <div class="leave-item-info">
+                                <div class="leave-item-name">${leave.staffName}</div>
+                                <div class="leave-item-role">${roleNames[leave.staffRole] || leave.staffRole}</div>
+                                <div class="leave-item-dates">${formatDateRange(leave.startDate, leave.endDate)}</div>
+                            </div>
+                            <span class="leave-item-type">${leave.leaveType}</span>
+                        </div>
+                    `;
+                });
+                document.getElementById('upcomingLeave').innerHTML = upcomingHtml;
+            } else {
+                document.getElementById('upcomingLeave').innerHTML = '';
+            }
+        }
+
+        function scrollToMonth(year, month) {
+            const element = document.getElementById(`month-${year}-${month}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Event listeners
+        document.getElementById('staffFilter').addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            renderCalendar();
+            renderSummary();
+        });
+
+        document.getElementById('monthJump').addEventListener('change', (e) => {
+            const [year, month] = e.target.value.split('-').map(Number);
+            scrollToMonth(year, month);
+        });
+
+        document.getElementById('myLeaveBtn').addEventListener('click', () => {
+            const staffName = prompt('Enter your first name to see your leave:');
+            if (staffName) {
+                const staff = staffData.find(s =>
+                    s.name.toLowerCase().includes(staffName.toLowerCase())
+                );
+                if (staff) {
+                    document.getElementById('staffFilter').value = staff.code;
+                    currentFilter = staff.code;
+                    renderCalendar();
+                    renderSummary();
+                } else {
+                    alert('Staff member not found');
+                }
+            }
+        });
+
+        // Initialize
+        populateStaffDropdown();
+        renderCalendar();
+        renderSummary();
+
+        // Set current month in dropdown
+        const now = new Date();
+        document.getElementById('monthJump').value = `${now.getFullYear()}-${now.getMonth()}`;
+    </script>
+</body>
+</html>

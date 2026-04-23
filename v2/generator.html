@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Call Roster Generator - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .nav-links {
+            margin-bottom: 16px;
+        }
+
+        .nav-links a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Test Mode Banner */
+        .test-banner {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-banner-text {
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .test-banner button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .test-banner button:hover {
+            background: #b91c1c;
+        }
+
+        /* Controls */
+        .controls-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .controls-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        select, input, button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button.btn-green {
+            background: #059669;
+        }
+
+        button.btn-green:hover {
+            background: #047857;
+        }
+
+        button.btn-outline {
+            background: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        button.btn-outline:hover {
+            background: #f3f4f6;
+        }
+
+        button.btn-red {
+            background: #dc2626;
+        }
+
+        button.btn-red:hover {
+            background: #b91c1c;
+        }
+
+        /* Checkbox Grid for Last Month's Weekends */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .checkbox-grid input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Unavailability Section */
+        .unavailability-list {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .unavailability-item {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .unavailability-item button {
+            background: transparent;
+            color: #92400e;
+            border: none;
+            padding: 0 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Leave Preview Panel */
+        .leave-preview {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .leave-preview h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .leave-preview-empty {
+            color: #059669;
+            font-size: 0.9rem;
+        }
+
+        .leave-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        .leave-item:last-child {
+            border-bottom: none;
+        }
+
+        .leave-item-name {
+            font-weight: 600;
+            width: 160px;
+            color: #1a365d;
+        }
+
+        .leave-item-dates {
+            flex: 1;
+            color: #374151;
+        }
+
+        .leave-item-type {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .leave-type-annual {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-type-tesl {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .leave-type-lsl {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .leave-type-unavailable {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* Equity Panel */
+        .equity-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .equity-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .equity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .equity-table th,
+        .equity-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .equity-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .equity-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .equity-bar {
+            width: 100px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .equity-bar-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 4px;
+        }
+
+        .equity-bar-fill.over {
+            background: #dc2626;
+        }
+
+        .equity-bar-fill.under {
+            background: #059669;
+        }
+
+        /* Roster Table */
+        .roster-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .roster-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .roster-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .roster-table th,
+        .roster-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .roster-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .roster-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .roster-table tr.weekend {
+            background: #fef3c7;
+        }
+
+        .roster-table tr.weekend:hover {
+            background: #fde68a;
+        }
+
+        .roster-table tr.public-holiday {
+            background: #fce7f3;
+        }
+
+        .roster-table select {
+            padding: 4px 8px;
+            font-size: 0.85rem;
+        }
+
+        .shift-type {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .shift-type.weekend {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .shift-type.weeknight {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-indicator {
+            font-size: 0.7rem;
+            color: #dc2626;
+            margin-left: 4px;
+        }
+
+        /* View Toggle Buttons */
+        .view-btn {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .view-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        /* Calendar View */
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            table-layout: fixed;
+        }
+
+        .calendar-table th {
+            background: #f3f4f6;
+            padding: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
+        .calendar-table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px;
+            vertical-align: top;
+            height: 70px;
+        }
+
+        .calendar-table td.weekend {
+            background: #fef3c7;
+        }
+
+        .calendar-table td.empty {
+            background: #f9fafb;
+        }
+
+        .cal-date {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .cal-staff {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .cal-staff.weekend {
+            background: #fde68a;
+            color: #92400e;
+        }
+
+        /* Export Section */
+        .export-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .export-section h2 {
+            font-size: 1.1rem;
+            color: #1a365d;
+            margin-bottom: 12px;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .export-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #0369a1;
+        }
+
+        /* Warnings */
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #b91c1c;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #047857;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 8px; }
+            h1 { font-size: 1.2rem; }
+            .control-row { flex-direction: column; }
+            .equity-bar { width: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="index.html">&larr; Back to Home</a>
+    </div>
+
+    <h1>On-Call Roster Generator</h1>
+    <p class="subtitle">Generate FTE-equitable, leave-aware on-call rosters for Staff Specialists</p>
+
+    <!-- Generation Controls -->
+    <div class="controls-section">
+        <h2>Generate Roster</h2>
+        <div class="control-row">
+            <div class="control-group">
+                <label for="monthSelect">Month</label>
+                <select id="monthSelect"></select>
+            </div>
+            <div class="control-group">
+                <label for="yearSelect">Year</label>
+                <select id="yearSelect">
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            <button onclick="generateRoster()">Generate Draft</button>
+            <button class="btn-outline" onclick="loadSavedDraft()">Load Saved Draft</button>
+        </div>
+
+        <div style="margin-top: 16px; padding: 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; font-weight: 500;">
+                <input type="checkbox" id="locumToggle" onchange="toggleLocum(this.checked)"
+                       style="width: 18px; height: 18px; cursor: pointer;">
+                Locum available this month
+            </label>
+            <p id="locumTargetInfo" style="font-size: 0.8rem; color: #666; margin: 6px 0 0 28px; display: none;">
+                Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
+                Everyone else's targets adjusted proportionally.
+            </p>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 8px;">Tick who had a weekend last month (they'll be deprioritized for weekends this month)</p>
+        <div id="lastMonthWeekends" class="checkbox-grid"></div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Add Unavailability</h3>
+        <div class="control-row">
+            <div class="control-group">
+                <label for="unavailPerson">Person</label>
+                <select id="unavailPerson"></select>
+            </div>
+            <div class="control-group">
+                <label for="unavailDate">Date</label>
+                <input type="date" id="unavailDate">
+            </div>
+            <button class="btn-outline" onclick="addUnavailability()">Add</button>
+        </div>
+        <div id="unavailabilityList" class="unavailability-list"></div>
+    </div>
+
+    <!-- Leave This Month Preview -->
+    <div class="leave-preview">
+        <h2>Leave This Month - <span id="leavePreviewMonth">Select Month</span></h2>
+        <div id="leavePreviewContent">
+            <p class="leave-preview-empty">Select a month above to see booked leave.</p>
+        </div>
+    </div>
+
+    <!-- Historical Weeknight Balance -->
+    <div class="leave-preview" style="border-color: #a5b4fc;">
+        <h2 style="color: #4338ca;">Historical Weeknight Balance
+            <span style="font-size: 0.75rem; font-weight: normal; color: #666;">
+                (from <span id="historyMonthCount">0</span> months of data)
+            </span>
+        </h2>
+        <div id="historicalBalanceContent">
+            <p class="leave-preview-empty">Calculating...</p>
+        </div>
+    </div>
+
+    <!-- Warnings -->
+    <div id="warningsContainer"></div>
+
+    <!-- Allocation Summary -->
+    <div class="equity-section">
+        <h2>Monthly Allocation Summary</h2>
+        <table class="equity-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>FTE</th>
+                    <th>Target</th>
+                    <th>Weekends</th>
+                    <th>Weeknights</th>
+                    <th>Status</th>
+                    <th>Hist. Bal.</th>
+                </tr>
+            </thead>
+            <tbody id="equityBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Generated Roster -->
+    <div class="roster-section">
+        <h2>Draft Roster - <span id="rosterMonthLabel">Select Month</span></h2>
+        <div style="margin-bottom: 10px;">
+            <button id="viewListBtn" class="view-btn" onclick="showListView()">List View</button>
+            <button id="viewCalBtn" class="view-btn active" onclick="showCalendarView()">Calendar View</button>
+        </div>
+        <div id="listView" style="display: none;">
+            <table class="roster-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Type</th>
+                        <th>On-Call</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterBody"></tbody>
+            </table>
+        </div>
+        <div id="calendarView">
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                        <th>Sun</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="export-section">
+        <h2>Export & Save</h2>
+        <div class="export-buttons">
+            <button onclick="saveDraft()">Save Draft</button>
+            <button class="btn-green" onclick="downloadRosterDataJS()">Download roster-data.js</button>
+            <button class="btn-outline" onclick="exportJSON()">Download Backup</button>
+            <button class="btn-outline" onclick="importJSON()">Restore from Backup</button>
+            <button class="btn-red" onclick="wipeTestData()">Clear All Data</button>
+        </div>
+        <div class="export-info">
+            <strong>Workflow:</strong> Generate draft &rarr; Review &amp; adjust &rarr; Save draft &rarr; When finalized, click "Download roster-data.js" and send to Ben for deployment.
+        </div>
+    </div>
+
+    <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
+
+    <script>
+        // ==================== STAFF DATA ====================
+        const staffData = [
+            { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5] },
+            { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
+            { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] },
+            { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', workDays: [3,4,5] },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
+            { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
+            { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
+        ];
+
+        const locumStaff = { code: 'Locum', name: 'Ratnayake (L)', fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        let locumEnabled = false;
+
+        function getActiveStaff() {
+            return locumEnabled ? [...staffData, locumStaff] : [...staffData];
+        }
+
+        function getMonthlyWeekNightTarget(staffCode) {
+            const active = getActiveStaff();
+            const totalFTE = active.reduce((sum, s) => sum + s.fte, 0);
+            const person = active.find(s => s.code === staffCode);
+            if (!person) return 0;
+            return Math.round((person.fte / totalFTE) * 22);
+        }
+
+        // ==================== LEAVE DATA ====================
+        // This should match the leave calendar data
+        const leaveData = [
+            { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 18), endDate: new Date(2026, 1, 18), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 3), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 2, 19), endDate: new Date(2026, 2, 19), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 3, 23), endDate: new Date(2026, 3, 23), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 7), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 26), endDate: new Date(2026, 4, 26), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 5), endDate: new Date(2026, 7, 5), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 8, 3), endDate: new Date(2026, 8, 3), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 8, 23), endDate: new Date(2026, 8, 23), leaveType: 'Unavailable' },
+            { staffCode: 'BT', startDate: new Date(2026, 9, 20), endDate: new Date(2026, 9, 20), leaveType: 'Unavailable' },
+            { staffCode: 'AL', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 4, 27), endDate: new Date(2026, 4, 28), leaveType: 'TESL' },
+            { staffCode: 'AL', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 25), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 25), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2027, 0, 5), endDate: new Date(2027, 0, 18), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 4, 11), endDate: new Date(2026, 4, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'RW', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
+            { staffCode: 'Fadz', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' }
+        ];
+
+        // ==================== PUBLIC HOLIDAYS ====================
+        const publicHolidays = {
+            '2026-01-01': "New Year's Day",
+            '2026-01-26': 'Australia Day',
+            '2026-04-03': 'Good Friday',
+            '2026-04-04': 'Easter Saturday',
+            '2026-04-06': 'Easter Monday',
+            '2026-04-25': 'ANZAC Day',
+            '2026-06-08': "Queen's Birthday",
+            '2026-08-03': 'Bank Holiday',
+            '2026-10-05': 'Labour Day',
+            '2026-12-25': 'Christmas Day',
+            '2026-12-26': 'Boxing Day',
+            '2026-12-28': 'Boxing Day (observed)',
+            '2027-01-01': "New Year's Day"
+        };
+
+        // ==================== STATE ====================
+        let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
+        let adHocUnavailability = []; // [{ staffCode, date }]
+        let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
+
+        // Historical roster data (Jan-Mar 2026)
+        // For trainee entries (PL/DS/MP as 1st on-call with consultant as 2nd),
+        // the consultant is credited since they provide the real backup.
+        const historicalRosters = {
+            '2026-01': {
+                '2026-01-01': 'AL',
+                '2026-01-02': 'GB',
+                '2026-01-03': 'Fadz',  // Trainee 1st, Fadz 2nd
+                '2026-01-04': 'Fadz',  // Trainee 1st, Fadz 2nd
+                '2026-01-05': 'Fadz',
+                '2026-01-06': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-07': 'BT',
+                '2026-01-08': 'HY',
+                '2026-01-09': 'AL',
+                '2026-01-10': 'BT',    // Trainee 1st, BT 2nd
+                '2026-01-11': 'BT',    // Trainee 1st, BT 2nd
+                '2026-01-12': 'SR',    // Trainee 1st, SR 2nd
+                '2026-01-13': 'GB',
+                '2026-01-14': 'HY',
+                '2026-01-15': 'MK',
+                '2026-01-16': 'BT',
+                '2026-01-17': 'SR',
+                '2026-01-18': 'SR',
+                '2026-01-19': 'RW',
+                '2026-01-20': 'BT',
+                '2026-01-21': 'MK',    // Trainee 1st, MK 2nd
+                '2026-01-22': 'Fadz',
+                '2026-01-23': 'HY',    // Trainee 1st, HY 2nd
+                '2026-01-24': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-25': 'RW',    // Trainee 1st, RW 2nd
+                '2026-01-26': 'HY',
+                '2026-01-27': 'AL',
+                '2026-01-28': 'MK',
+                '2026-01-29': 'SR',    // Trainee 1st, SR 2nd
+                '2026-01-30': 'GB',
+                '2026-01-31': 'AL'
+            },
+            '2026-02': {
+                '2026-02-01': 'AL',
+                '2026-02-02': 'SR',
+                '2026-02-03': 'RW',
+                '2026-02-04': 'HY',
+                '2026-02-05': 'MK',
+                '2026-02-06': 'Fadz',
+                '2026-02-07': 'GB',
+                '2026-02-08': 'GB',
+                '2026-02-09': 'SR',
+                '2026-02-10': 'BT',
+                '2026-02-11': 'Fadz',
+                '2026-02-12': 'AL',
+                '2026-02-13': 'GB',
+                '2026-02-14': 'BT',
+                '2026-02-15': 'BT',
+                '2026-02-16': 'RW',
+                '2026-02-17': 'AL',
+                '2026-02-18': 'SR',
+                '2026-02-19': 'MK',
+                '2026-02-20': 'HY',
+                '2026-02-21': 'MK',
+                '2026-02-22': 'MK',
+                '2026-02-23': 'Fadz',
+                '2026-02-24': 'GB',
+                '2026-02-25': 'BT',
+                '2026-02-26': 'SR',
+                '2026-02-27': 'AL',
+                '2026-02-28': 'HY'
+            },
+            '2026-03': {
+                '2026-03-01': 'HY',
+                '2026-03-02': 'BT',
+                '2026-03-03': 'SR',
+                '2026-03-04': 'Fadz',
+                '2026-03-05': 'AL',
+                '2026-03-06': 'HY',
+                '2026-03-07': 'SR',
+                '2026-03-08': 'SR',
+                '2026-03-09': 'RW',
+                '2026-03-10': 'GB',
+                '2026-03-11': 'BT',
+                '2026-03-12': 'SR',
+                '2026-03-13': 'AL',
+                '2026-03-14': 'BT',
+                '2026-03-15': 'BT',
+                '2026-03-16': 'Fadz',
+                '2026-03-17': 'SR',
+                '2026-03-18': 'MK',
+                '2026-03-19': 'HY',
+                '2026-03-20': 'BT',
+                '2026-03-21': 'RW',
+                '2026-03-22': 'RW',
+                '2026-03-23': 'Fadz',
+                '2026-03-24': 'AL',
+                '2026-03-25': 'SR',
+                '2026-03-26': 'MK',
+                '2026-03-27': 'GB',
+                '2026-03-28': 'Fadz',
+                '2026-03-29': 'Fadz',
+                '2026-03-30': 'RW',
+                '2026-03-31': 'BT'
+            },
+            '2026-04': {
+                '2026-04-01': 'BT',
+                '2026-04-02': 'SR',
+                '2026-04-03': 'GB',
+                '2026-04-04': 'SR',
+                '2026-04-05': 'SR',
+                '2026-04-06': 'Fadz',
+                '2026-04-07': 'RW',   // Trainee 1st, RW 2nd
+                '2026-04-08': 'BT',
+                '2026-04-09': 'HY',
+                '2026-04-10': 'AL',
+                '2026-04-11': 'GB',
+                '2026-04-12': 'GB',
+                '2026-04-13': 'Fadz',
+                '2026-04-14': 'SR',
+                '2026-04-15': 'Locum',
+                '2026-04-16': 'AL',
+                '2026-04-17': 'BT',
+                '2026-04-18': 'Locum',
+                '2026-04-19': 'Locum',
+                '2026-04-20': 'RW',
+                '2026-04-21': 'MK',
+                '2026-04-22': 'Locum',
+                '2026-04-23': 'HY',
+                '2026-04-24': 'GB',
+                '2026-04-25': 'MK',   // Trainee 1st, MK 2nd
+                '2026-04-26': 'MK',   // Trainee 1st, MK 2nd
+                '2026-04-27': 'AL',
+                '2026-04-28': 'SR',
+                '2026-04-29': 'BT',
+                '2026-04-30': 'Fadz'
+            },
+            '2026-05': {
+                '2026-05-01': 'BT',
+                '2026-05-04': 'AL',
+                '2026-05-05': 'MK',
+                '2026-05-06': 'SR',
+                '2026-05-07': 'Locum',
+                '2026-05-08': 'GB',
+                '2026-05-11': 'BT',
+                '2026-05-12': 'AL',
+                '2026-05-13': 'SR',
+                '2026-05-14': 'HY',
+                '2026-05-15': 'Fadz',
+                '2026-05-18': 'Locum',
+                '2026-05-19': 'SR',
+                '2026-05-20': 'Fadz',
+                '2026-05-21': 'AL',
+                '2026-05-22': 'HY',
+                '2026-05-25': 'Fadz',
+                '2026-05-26': 'RW',
+                '2026-05-27': 'Locum',
+                '2026-05-28': 'MK',
+                '2026-05-29': 'BT'
+            }
+        };
+        let currentMonth = null;
+        let currentYear = null;
+
+        // ==================== UTILITIES ====================
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function parseDate(dateKey) {
+            const [y, m, d] = dateKey.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function getDayName(date) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            return days[date.getDay()];
+        }
+
+        function isWeekend(date) {
+            const day = date.getDay();
+            return day === 0 || day === 6;
+        }
+
+        function isOnLeave(staffCode, date) {
+            const dateTime = date.getTime();
+            for (const leave of leaveData) {
+                if (leave.staffCode === staffCode) {
+                    const start = new Date(leave.startDate);
+                    start.setHours(0, 0, 0, 0);
+                    const end = new Date(leave.endDate);
+                    end.setHours(23, 59, 59, 999);
+                    if (dateTime >= start.getTime() && dateTime <= end.getTime()) {
+                        return leave.leaveType;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function isAdHocUnavailable(staffCode, dateKey) {
+            return adHocUnavailability.some(u => u.staffCode === staffCode && u.date === dateKey);
+        }
+
+        function isWorkDay(staff, date) {
+            // For on-call, we don't restrict by work days since it's after hours
+            // But we track it for information
+            return staff.workDays.includes(date.getDay());
+        }
+
+        function getMonthDays(year, month) {
+            const days = [];
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            for (let d = 1; d <= daysInMonth; d++) {
+                days.push(new Date(year, month, d));
+            }
+            return days;
+        }
+
+        function getWeekendBlocks(year, month) {
+            // Returns array of weekend blocks, each block is { sat, sun } dates
+            const blocks = [];
+            const days = getMonthDays(year, month);
+
+            for (const day of days) {
+                if (day.getDay() === 6) { // Saturday
+                    const sun = new Date(day);
+                    sun.setDate(sun.getDate() + 1);
+                    blocks.push({
+                        sat: day,
+                        sun: sun,
+                        satKey: formatDateKey(day),
+                        sunKey: formatDateKey(sun)
+                    });
+                }
+            }
+            return blocks;
+        }
+
+        function getWeekNights(year, month) {
+            // Returns array of weeknight dates (Mon-Fri evenings)
+            const days = getMonthDays(year, month);
+            return days.filter(d => {
+                const dow = d.getDay();
+                return dow >= 1 && dow <= 5; // Mon-Fri
+            });
+        }
+
+        // ==================== ROSTER GENERATION ====================
+
+        // Check if someone is returning from leave on a Monday (making weekend before unavailable)
+        function isReturningFromLeaveOnMonday(staffCode, satDate) {
+            const monday = new Date(satDate);
+            monday.setDate(monday.getDate() + 2); // Saturday + 2 = Monday
+            const friday = new Date(satDate);
+            friday.setDate(friday.getDate() - 1);
+            return isOnLeave(staffCode, friday) && !isOnLeave(staffCode, monday);
+        }
+
+        // Get ISO week number for a date
+        function getWeekNumber(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+            const yearStart = new Date(d.getFullYear(), 0, 1);
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        // Count weeknights assigned this week for a person
+        function weeknightsThisWeek(staffCode, currentDate, roster) {
+            const currentWeek = getWeekNumber(currentDate);
+            const currentYear = currentDate.getFullYear();
+            let count = 0;
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate) &&
+                        getWeekNumber(assignDate) === currentWeek &&
+                        assignDate.getFullYear() === currentYear) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        // Check if person has the upcoming weekend (for Thu/Fri exclusion)
+        function hasUpcomingWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+            // Calculate days until Saturday
+            const daysUntilSat = 6 - dow;
+            const saturday = new Date(weeknightDate);
+            saturday.setDate(saturday.getDate() + daysUntilSat);
+            const satKey = formatDateKey(saturday);
+            const assignment = roster[satKey];
+            return assignment && assignment.staffCode === staffCode;
+        }
+
+        // Check if person had the previous weekend (for Mon/Tue exclusion)
+        function hadPreviousWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, etc.
+            // Calculate days since Sunday
+            const daysSinceSun = dow; // Mon=1, Tue=2, etc.
+            const sunday = new Date(weeknightDate);
+            sunday.setDate(sunday.getDate() - daysSinceSun);
+            const sunKey = formatDateKey(sunday);
+            const assignment = roster[sunKey];
+            return assignment && assignment.staffCode === staffCode;
+        }
+
+        // Check 2-day buffer around weekends
+        // Returns true if this weeknight is too close to a weekend for this person
+        function tooCloseToWeekend(staffCode, weeknightDate, roster) {
+            const dow = weeknightDate.getDay(); // 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+            const staff = getActiveStaff().find(s => s.code === staffCode);
+
+            // After weekend: Mon/Tue excluded if had previous weekend (no exceptions)
+            if (dow === 1 || dow === 2) {
+                if (hadPreviousWeekend(staffCode, weeknightDate, roster)) {
+                    return true;
+                }
+            }
+
+            // Before weekend: Thu/Fri excluded if has upcoming weekend
+            // EXCEPTION: Staff who only work Mon/Tue can do weeknight before their weekend
+            if (dow === 4 || dow === 5) {
+                if (hasUpcomingWeekend(staffCode, weeknightDate, roster)) {
+                    // Check if they only work Mon/Tue (exception for Ron)
+                    const onlyWorksMonTue = staff.workDays.every(d => d <= 2);
+                    if (!onlyWorksMonTue) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // Count how many times a person has been assigned to a specific day-of-week this month
+        function dayOfWeekCount(staffCode, dow, roster) {
+            let count = 0;
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        // Count weeknights assigned this month for a person
+        function weeknightsThisMonth(staffCode, roster) {
+            let count = 0;
+            for (const [dateKey, assignment] of Object.entries(roster)) {
+                if (assignment.staffCode === staffCode) {
+                    const assignDate = parseDate(dateKey);
+                    if (!isWeekend(assignDate)) count++;
+                }
+            }
+            return count;
+        }
+
+        // Check if person had a weekend last month (from checkboxes)
+        function hadWeekendLastMonth(staffCode) {
+            const checkbox = document.getElementById(`lastWeekend_${staffCode}`);
+            return checkbox && checkbox.checked;
+        }
+
+        // Check if person has a weekend this month already (in current roster)
+        function hasWeekendThisMonth(staffCode) {
+            for (const [dateKey, assignment] of Object.entries(currentRoster)) {
+                if (assignment.staffCode === staffCode) {
+                    const d = parseDate(dateKey);
+                    if (isWeekend(d)) return true;
+                }
+            }
+            return false;
+        }
+
+        // Calculate historical weeknight balance across all historical months
+        // Uses staffData (not getActiveStaff) - only tracks 8 regular staff, not Locum
+        function getHistoricalWeeknightBalance() {
+            const balance = {};
+            staffData.forEach(s => { balance[s.code] = { actual: 0, fair: 0, surplus: 0 }; });
+
+            let totalWeeknights = 0;
+            const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0);
+
+            for (const [monthKey, roster] of Object.entries(historicalRosters)) {
+                for (const [dateKey, staffCode] of Object.entries(roster)) {
+                    const date = parseDate(dateKey);
+                    const dow = date.getDay();
+                    if (dow >= 1 && dow <= 5) { // Weeknight (Mon-Fri)
+                        totalWeeknights++;
+                        if (balance[staffCode]) {
+                            balance[staffCode].actual++;
+                        }
+                    }
+                }
+            }
+
+            staffData.forEach(s => {
+                balance[s.code].fair = (s.fte / totalFTE) * totalWeeknights;
+                balance[s.code].surplus = balance[s.code].actual - balance[s.code].fair;
+            });
+
+            return balance;
+        }
+
+        function generateRoster() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+
+            currentMonth = month;
+            currentYear = year;
+            currentRoster = {};
+
+            // Calculate historical balance once for use in priority scoring
+            historicalBalance = getHistoricalWeeknightBalance();
+
+            const warnings = [];
+
+            // Get all shifts for the month
+            const weekendBlocks = getWeekendBlocks(year, month);
+            const weekNights = getWeekNights(year, month);
+
+            // Track assignments this month
+            const monthWeekends = {};
+            const monthWeekNights = {};
+            getActiveStaff().forEach(s => {
+                monthWeekends[s.code] = 0;
+                monthWeekNights[s.code] = 0;
+            });
+
+            // Weekend priority: prioritize those who didn't have a weekend last month
+            function getWeekendPriority(staffCode) {
+                let priority = 0;
+
+                // Big penalty if they already have a weekend this month
+                if (hasWeekendThisMonth(staffCode)) priority += 100;
+
+                // Penalty if they had a weekend last month (from checkboxes)
+                if (hadWeekendLastMonth(staffCode)) priority += 50;
+
+                // Small random factor for tie-breaking
+                priority += Math.random() * 0.1;
+
+                return priority; // Lower = higher priority
+            }
+
+            // Weeknight priority: prioritize those under their monthly target
+            function getWeekNightPriority(staffCode, date) {
+                const staff = getActiveStaff().find(s => s.code === staffCode);
+                const assigned = monthWeekNights[staffCode];
+                const target = getMonthlyWeekNightTarget(staffCode);
+
+                // Base: how far from target (negative = under target = higher priority)
+                let priority = assigned - target;
+
+                // Historical balance nudge (skip for Locum - no history)
+                if (staffCode !== 'Locum') {
+                    const hist = historicalBalance[staffCode];
+                    if (hist) {
+                        // surplus > 0 = historically overdone → add penalty
+                        // surplus < 0 = historically underdone → boost priority
+                        // Scale: 0.5 per weeknight surplus/deficit (moderate nudge)
+                        priority += hist.surplus * 0.5;
+                    }
+                }
+
+                // Heavy penalty if already has a shift this week
+                const thisWeek = weeknightsThisWeek(staffCode, date, currentRoster);
+                if (thisWeek >= 1) priority += 100;
+
+                // Penalty for repeat day-of-week assignments (avoid identical sequences)
+                const dow = date.getDay();
+                const sameDayCount = dayOfWeekCount(staffCode, dow, currentRoster);
+                priority += sameDayCount * 5;
+
+                return priority;
+            }
+
+            // Get available staff for weekends
+            function getAvailableForWeekend(satDate) {
+                const dateKey = formatDateKey(satDate);
+                return getActiveStaff().filter(s => {
+                    // Check leave on Saturday and Sunday
+                    if (isOnLeave(s.code, satDate)) return false;
+                    const sunDate = new Date(satDate);
+                    sunDate.setDate(sunDate.getDate() + 1);
+                    if (isOnLeave(s.code, sunDate)) return false;
+
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+                    const sunKey = formatDateKey(sunDate);
+                    if (isAdHocUnavailable(s.code, sunKey)) return false;
+
+                    // Check if returning from leave on Monday
+                    if (isReturningFromLeaveOnMonday(s.code, satDate)) return false;
+
+                    return true;
+                });
+            }
+
+            // Get available staff for weeknights
+            function getAvailableForWeeknight(date) {
+                const dateKey = formatDateKey(date);
+                const dow = date.getDay(); // 1=Mon, 2=Tue, etc.
+
+                return getActiveStaff().filter(s => {
+                    // Check leave
+                    if (isOnLeave(s.code, date)) return false;
+
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+
+                    // Check if this is one of their work days
+                    if (!s.workDays.includes(dow)) return false;
+
+                    // 2-day buffer around weekends (Mon/Tue after, Thu/Fri before)
+                    if (tooCloseToWeekend(s.code, date, currentRoster)) return false;
+
+                    return true;
+                });
+            }
+
+            // Get fallback staff for weeknights (relax work day constraint if needed)
+            function getFallbackForWeeknight(date) {
+                const dateKey = formatDateKey(date);
+
+                return getActiveStaff().filter(s => {
+                    // Check leave
+                    if (isOnLeave(s.code, date)) return false;
+
+                    // Check ad-hoc unavailability
+                    if (isAdHocUnavailable(s.code, dateKey)) return false;
+
+                    // Still enforce 2-day weekend buffer even in fallback
+                    if (tooCloseToWeekend(s.code, date, currentRoster)) return false;
+
+                    return true;
+                });
+            }
+
+            // Assign weekends first (Sat-Sun as a block)
+            weekendBlocks.forEach(block => {
+                const available = getAvailableForWeekend(block.sat);
+                if (available.length === 0) {
+                    warnings.push(`No staff available for weekend ${block.satKey}`);
+                    return;
+                }
+
+                // Sort by priority (those who didn't have weekend last month first)
+                available.sort((a, b) => {
+                    return getWeekendPriority(a.code) - getWeekendPriority(b.code);
+                });
+
+                const assigned = available[0];
+                currentRoster[block.satKey] = { staffCode: assigned.code };
+                currentRoster[block.sunKey] = { staffCode: assigned.code };
+                monthWeekends[assigned.code]++;
+            });
+
+            // Assign weeknights
+            weekNights.forEach(night => {
+                const dateKey = formatDateKey(night);
+                let available = getAvailableForWeeknight(night);
+
+                if (available.length === 0) {
+                    // Fallback: relax work day constraint
+                    available = getFallbackForWeeknight(night);
+                    if (available.length === 0) {
+                        warnings.push(`No staff available for ${dateKey} - check leave coverage`);
+                        return;
+                    }
+
+                    // Sort by priority
+                    available.sort((a, b) => {
+                        const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
+                        if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
+                        return diff;
+                    });
+
+                    const assigned = available[0];
+                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Non-work day' };
+                    monthWeekNights[assigned.code]++;
+                    return;
+                }
+
+                // Sort by priority with random tie-breaker
+                available.sort((a, b) => {
+                    const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
+                    if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
+                    return diff;
+                });
+
+                const assigned = available[0];
+                currentRoster[dateKey] = { staffCode: assigned.code };
+                monthWeekNights[assigned.code]++;
+            });
+
+            // Display
+            renderRoster();
+            renderCalendarView();
+            renderEquity(month, year);
+            showWarnings(warnings);
+
+            // Update label
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('rosterMonthLabel').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        // ==================== RENDERING ====================
+        function renderRoster() {
+            const tbody = document.getElementById('rosterBody');
+            tbody.innerHTML = '';
+
+            if (currentMonth === null) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#666;">Select a month and click Generate</td></tr>';
+                return;
+            }
+
+            const days = getMonthDays(currentYear, currentMonth);
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            days.forEach(day => {
+                const dateKey = formatDateKey(day);
+                const assignment = currentRoster[dateKey];
+                const dow = day.getDay();
+                const isWknd = isWeekend(day);
+                const holiday = publicHolidays[dateKey];
+
+                const tr = document.createElement('tr');
+                if (isWknd) tr.className = 'weekend';
+                if (holiday) tr.className = 'public-holiday';
+
+                // Date
+                const tdDate = document.createElement('td');
+                tdDate.textContent = `${day.getDate()}/${day.getMonth() + 1}`;
+                tr.appendChild(tdDate);
+
+                // Day
+                const tdDay = document.createElement('td');
+                tdDay.textContent = dayNames[dow];
+                tr.appendChild(tdDay);
+
+                // Type
+                const tdType = document.createElement('td');
+                const typeSpan = document.createElement('span');
+                typeSpan.className = `shift-type ${isWknd ? 'weekend' : 'weeknight'}`;
+                typeSpan.textContent = isWknd ? 'Weekend' : 'Weeknight';
+                tdType.appendChild(typeSpan);
+                tr.appendChild(tdType);
+
+                // On-Call (editable dropdown)
+                const tdOncall = document.createElement('td');
+                const select = document.createElement('select');
+                select.dataset.dateKey = dateKey;
+                select.onchange = function() { updateAssignment(dateKey, this.value); };
+
+                // Empty option
+                const emptyOpt = document.createElement('option');
+                emptyOpt.value = '';
+                emptyOpt.textContent = '-- Select --';
+                select.appendChild(emptyOpt);
+
+                getActiveStaff().forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.code;
+                    opt.textContent = s.isLocum ? 'Locum' : s.name;
+
+                    // Check if on leave
+                    const leave = isOnLeave(s.code, day);
+                    if (leave) {
+                        opt.textContent += ` (${leave})`;
+                        opt.style.color = '#dc2626';
+                    }
+                    if (isAdHocUnavailable(s.code, dateKey)) {
+                        opt.textContent += ' (Unavail)';
+                        opt.style.color = '#dc2626';
+                    }
+
+                    if (assignment && assignment.staffCode === s.code) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+
+                tdOncall.appendChild(select);
+                tr.appendChild(tdOncall);
+
+                // Notes
+                const tdNotes = document.createElement('td');
+                let notes = [];
+                if (holiday) notes.push(holiday);
+                if (assignment && assignment.warning) notes.push(assignment.warning);
+                tdNotes.textContent = notes.join(', ');
+                tr.appendChild(tdNotes);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderEquity(month, year) {
+            const tbody = document.getElementById('equityBody');
+            tbody.innerHTML = '';
+
+            // Count assignments from current roster
+            const activeStaff = getActiveStaff();
+            const counts = {};
+            activeStaff.forEach(s => {
+                counts[s.code] = { weekends: 0, weeknights: 0 };
+            });
+
+            Object.keys(currentRoster).forEach(dateKey => {
+                const date = parseDate(dateKey);
+                const assignment = currentRoster[dateKey];
+                if (assignment && counts[assignment.staffCode]) {
+                    if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
+                        counts[assignment.staffCode].weekends++;
+                    } else if (!isWeekend(date)) {
+                        counts[assignment.staffCode].weeknights++;
+                    }
+                }
+            });
+
+            // Get historical balance once for all rows
+            const histBal = getHistoricalWeeknightBalance();
+
+            activeStaff.forEach(s => {
+                const c = counts[s.code];
+                if (!c) return;
+                const target = getMonthlyWeekNightTarget(s.code);
+                const tr = document.createElement('tr');
+
+                // Name
+                const tdName = document.createElement('td');
+                tdName.textContent = s.isLocum ? 'Locum' : s.name;
+                tr.appendChild(tdName);
+
+                // FTE
+                const tdFTE = document.createElement('td');
+                tdFTE.textContent = s.fte;
+                tr.appendChild(tdFTE);
+
+                // Target (weeknights)
+                const tdTarget = document.createElement('td');
+                tdTarget.textContent = target;
+                tr.appendChild(tdTarget);
+
+                // Weekends this month
+                const tdWeekends = document.createElement('td');
+                tdWeekends.textContent = c.weekends;
+                tr.appendChild(tdWeekends);
+
+                // Weeknights this month
+                const tdNights = document.createElement('td');
+                const nightDiff = c.weeknights - target;
+                const nightClass = nightDiff > 0 ? 'color:#dc2626' : nightDiff < 0 ? 'color:#059669' : '';
+                tdNights.innerHTML = `<span style="${nightClass}">${c.weeknights}</span>`;
+                tr.appendChild(tdNights);
+
+                // Status
+                const tdStatus = document.createElement('td');
+                if (c.weeknights > target) {
+                    tdStatus.innerHTML = '<span style="color:#dc2626;">Over</span>';
+                } else if (c.weeknights < target) {
+                    tdStatus.innerHTML = '<span style="color:#059669;">Under</span>';
+                } else {
+                    tdStatus.innerHTML = '<span style="color:#666;">On target</span>';
+                }
+                tr.appendChild(tdStatus);
+
+                // Historical balance (historical surplus + current month surplus)
+                const tdHist = document.createElement('td');
+                if (histBal[s.code]) {
+                    const currentSurplus = c.weeknights - target;
+                    const totalSurplus = histBal[s.code].surplus + currentSurplus;
+                    const display = totalSurplus > 0 ? `+${totalSurplus.toFixed(1)}` : totalSurplus.toFixed(1);
+                    tdHist.textContent = display;
+                    tdHist.style.color = totalSurplus > 1 ? '#dc2626' : totalSurplus < -1 ? '#059669' : '#666';
+                    tdHist.style.fontWeight = '600';
+                } else {
+                    tdHist.textContent = '-';
+                    tdHist.style.color = '#999';
+                }
+                tdHist.style.textAlign = 'center';
+                tr.appendChild(tdHist);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showListView() {
+            document.getElementById('listView').style.display = 'block';
+            document.getElementById('calendarView').style.display = 'none';
+            document.getElementById('viewListBtn').classList.add('active');
+            document.getElementById('viewCalBtn').classList.remove('active');
+        }
+
+        function showCalendarView() {
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('calendarView').style.display = 'block';
+            document.getElementById('viewListBtn').classList.remove('active');
+            document.getElementById('viewCalBtn').classList.add('active');
+            renderCalendarView();
+        }
+
+        function renderCalendarView() {
+            const tbody = document.getElementById('calendarBody');
+            tbody.innerHTML = '';
+
+            if (currentMonth === null) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#666;">Generate a roster first</td></tr>';
+                return;
+            }
+
+            const days = getMonthDays(currentYear, currentMonth);
+            const firstDay = days[0].getDay(); // 0=Sun, 1=Mon, etc.
+            // Adjust to Monday-start week (0=Mon, 6=Sun)
+            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+            const getStaffName = (code) => {
+                if (code === 'Locum') return 'Locum';
+                const staff = getActiveStaff().find(s => s.code === code);
+                return staff ? staff.name.split(' ').pop() : code; // Last name only
+            };
+
+            let currentRow = document.createElement('tr');
+
+            // Add empty cells for days before the 1st
+            for (let i = 0; i < startOffset; i++) {
+                const td = document.createElement('td');
+                td.className = 'empty';
+                currentRow.appendChild(td);
+            }
+
+            days.forEach((day, idx) => {
+                const dateKey = formatDateKey(day);
+                const assignment = currentRoster[dateKey];
+                const dow = day.getDay();
+                const isWknd = dow === 0 || dow === 6;
+
+                const td = document.createElement('td');
+                if (isWknd) td.className = 'weekend';
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'cal-date';
+                dateDiv.textContent = day.getDate();
+                td.appendChild(dateDiv);
+
+                if (assignment) {
+                    const staffDiv = document.createElement('div');
+                    staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
+                    staffDiv.textContent = getStaffName(assignment.staffCode);
+                    if (assignment.staffCode === 'Locum') {
+                        staffDiv.style.background = '#e5e7eb';
+                        staffDiv.style.color = '#374151';
+                    }
+                    td.appendChild(staffDiv);
+                }
+
+                currentRow.appendChild(td);
+
+                // If Sunday (end of week), start new row
+                if (dow === 0) {
+                    tbody.appendChild(currentRow);
+                    currentRow = document.createElement('tr');
+                }
+            });
+
+            // Add remaining empty cells if needed
+            const lastDay = days[days.length - 1].getDay();
+            if (lastDay !== 0) { // If month doesn't end on Sunday
+                const remaining = 7 - (lastDay === 0 ? 7 : lastDay);
+                for (let i = 0; i < remaining; i++) {
+                    const td = document.createElement('td');
+                    td.className = 'empty';
+                    currentRow.appendChild(td);
+                }
+                tbody.appendChild(currentRow);
+            }
+        }
+
+        function showWarnings(warnings) {
+            const container = document.getElementById('warningsContainer');
+            if (warnings.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = `
+                <div class="warning-box">
+                    <strong>Warnings:</strong><br>
+                    ${warnings.map(w => `• ${w}`).join('<br>')}
+                </div>
+            `;
+        }
+
+        function updateAssignment(dateKey, staffCode) {
+            if (staffCode) {
+                currentRoster[dateKey] = { staffCode };
+            } else {
+                delete currentRoster[dateKey];
+            }
+            renderEquity(currentMonth, currentYear);
+        }
+
+        // ==================== UNAVAILABILITY ====================
+        function renderUnavailability() {
+            const container = document.getElementById('unavailabilityList');
+            container.innerHTML = adHocUnavailability.map((u, i) => {
+                const staff = getActiveStaff().find(s => s.code === u.staffCode);
+                return `
+                    <div class="unavailability-item">
+                        ${staff ? (staff.isLocum ? 'Locum' : staff.name) : u.staffCode} - ${u.date}
+                        <button onclick="removeUnavailability(${i})">&times;</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addUnavailability() {
+            const person = document.getElementById('unavailPerson').value;
+            const date = document.getElementById('unavailDate').value;
+
+            if (!person || !date) {
+                alert('Please select a person and date');
+                return;
+            }
+
+            adHocUnavailability.push({ staffCode: person, date });
+            renderUnavailability();
+            saveToLocalStorage();
+
+            // Re-render roster if already generated
+            if (currentMonth !== null) {
+                renderRoster();
+            }
+        }
+
+        function removeUnavailability(index) {
+            adHocUnavailability.splice(index, 1);
+            renderUnavailability();
+            saveToLocalStorage();
+
+            if (currentMonth !== null) {
+                renderRoster();
+            }
+        }
+
+        // ==================== SAVE/LOAD ====================
+        let savedDrafts = {}; // { 'YYYY-MM': { roster: {...}, savedAt: '...' } }
+
+        function saveToLocalStorage() {
+            const data = {
+                adHocUnavailability,
+                savedDrafts,
+                currentRoster,
+                currentMonth,
+                currentYear,
+                locumEnabled
+            };
+            localStorage.setItem('oncall_generator_test', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('oncall_generator_test');
+            if (saved) {
+                const data = JSON.parse(saved);
+                adHocUnavailability = data.adHocUnavailability || [];
+                savedDrafts = data.savedDrafts || data.historicalData || {}; // backwards compat
+                currentRoster = data.currentRoster || {};
+                currentMonth = data.currentMonth;
+                currentYear = data.currentYear;
+
+                if (data.locumEnabled !== undefined) {
+                    locumEnabled = data.locumEnabled;
+                    document.getElementById('locumToggle').checked = locumEnabled;
+                    toggleLocum(locumEnabled);
+                }
+
+                renderUnavailability();
+                if (currentMonth !== null) {
+                    document.getElementById('monthSelect').value = currentMonth;
+                    document.getElementById('yearSelect').value = currentYear;
+                    renderRoster();
+                    renderEquity(currentMonth, currentYear);
+                }
+            }
+        }
+
+        function saveDraft() {
+            if (currentMonth === null) {
+                alert('No roster generated yet');
+                return;
+            }
+
+            const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            savedDrafts[monthKey] = {
+                roster: { ...currentRoster },
+                savedAt: new Date().toISOString()
+            };
+
+            saveToLocalStorage();
+            alert(`Draft saved for ${monthKey}`);
+        }
+
+        function loadSavedDraft() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            if (savedDrafts[monthKey]) {
+                currentMonth = month;
+                currentYear = year;
+                currentRoster = { ...savedDrafts[monthKey].roster };
+                renderRoster();
+                renderEquity(month, year);
+
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
+                document.getElementById('rosterMonthLabel').textContent = `${monthNames[month]} ${year} (Loaded)`;
+            } else {
+                alert(`No saved draft for ${monthKey}`);
+            }
+        }
+
+        // ==================== EXPORT ====================
+        function downloadRosterDataJS() {
+            if (Object.keys(currentRoster).length === 0) {
+                alert('No roster data to export');
+                return;
+            }
+
+            // Convert current roster to oncallData format
+            const oncallEntries = Object.entries(currentRoster)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.staffCode}', second: null }`)
+                .join(',\n');
+
+            const jsContent = `// On-Call Roster Data
+// Generated: ${new Date().toISOString()}
+// Month: ${currentYear}-${String(currentMonth + 1).padStart(2, '0')}
+
+const oncallData = {
+${oncallEntries}
+};
+
+// Saved drafts
+const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
+`;
+
+            const blob = new Blob([jsContent], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'roster-data.js';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportJSON() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                currentRoster,
+                currentMonth,
+                currentYear,
+                savedDrafts,
+                adHocUnavailability,
+                locumEnabled
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oncall-roster-${currentYear}-${String(currentMonth + 1).padStart(2, '0')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importJSON() {
+            document.getElementById('jsonFileInput').click();
+        }
+
+        function handleJSONImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    if (data.currentRoster) currentRoster = data.currentRoster;
+                    if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
+                    if (data.currentYear !== undefined) currentYear = data.currentYear;
+                    if (data.savedDrafts) savedDrafts = data.savedDrafts;
+                    else if (data.historicalData) savedDrafts = data.historicalData; // backwards compat
+                    if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
+
+                    if (data.locumEnabled !== undefined) {
+                        locumEnabled = data.locumEnabled;
+                        document.getElementById('locumToggle').checked = locumEnabled;
+                        toggleLocum(locumEnabled);
+                    }
+
+                    saveToLocalStorage();
+                    renderUnavailability();
+
+                    if (currentMonth !== null) {
+                        document.getElementById('monthSelect').value = currentMonth;
+                        document.getElementById('yearSelect').value = currentYear;
+                        renderRoster();
+                        renderEquity(currentMonth, currentYear);
+
+                        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                           'July', 'August', 'September', 'October', 'November', 'December'];
+                        document.getElementById('rosterMonthLabel').textContent = `${monthNames[currentMonth]} ${currentYear} (Imported)`;
+                    }
+
+                    alert('Import successful!');
+                } catch (err) {
+                    alert('Error importing file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset for re-import
+        }
+
+        function wipeTestData() {
+            if (confirm('Are you sure you want to wipe all test data? This cannot be undone.')) {
+                localStorage.removeItem('oncall_generator_test');
+                currentRoster = {};
+                savedDrafts = {};
+                adHocUnavailability = [];
+                currentMonth = null;
+                currentYear = null;
+                renderUnavailability();
+                renderRoster();
+                document.getElementById('equityBody').innerHTML = '';
+                document.getElementById('rosterMonthLabel').textContent = 'Select Month';
+                document.getElementById('warningsContainer').innerHTML = '';
+                alert('All test data wiped');
+            }
+        }
+
+        // ==================== HISTORICAL BALANCE ====================
+        function renderHistoricalBalance() {
+            const container = document.getElementById('historicalBalanceContent');
+            const monthCount = Object.keys(historicalRosters).length;
+            document.getElementById('historyMonthCount').textContent = monthCount;
+
+            if (monthCount === 0) {
+                container.innerHTML = '<p class="leave-preview-empty">No historical data available.</p>';
+                return;
+            }
+
+            const balance = getHistoricalWeeknightBalance();
+
+            let html = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:1px solid #e5e7eb;">' +
+                    '<th style="text-align:left; padding:4px 8px;">Name</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Weeknights</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Fair Share</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Balance</th></tr>';
+
+            const sorted = staffData.slice().sort((a, b) =>
+                a.name.split(' ').pop().localeCompare(b.name.split(' ').pop())
+            );
+
+            sorted.forEach(s => {
+                const b = balance[s.code];
+                const surplusDisplay = b.surplus > 0 ? `+${b.surplus.toFixed(1)}` : b.surplus.toFixed(1);
+                const color = b.surplus > 1 ? '#dc2626' : b.surplus < -1 ? '#059669' : '#666';
+                const bg = b.surplus > 1 ? '#fef2f2' : b.surplus < -1 ? '#f0fdf4' : '';
+
+                html += `<tr style="border-bottom:1px solid #f3f4f6; ${bg ? 'background:' + bg : ''}">` +
+                        `<td style="padding:4px 8px;">${s.name.split(' ').pop()}</td>` +
+                        `<td style="text-align:center; padding:4px 8px;">${b.actual}</td>` +
+                        `<td style="text-align:center; padding:4px 8px;">${b.fair.toFixed(1)}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; color:${color}; font-weight:600;">${surplusDisplay}</td></tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        // ==================== LEAVE PREVIEW ====================
+        function renderLeavePreview() {
+            const month = parseInt(document.getElementById('monthSelect').value);
+            const year = parseInt(document.getElementById('yearSelect').value);
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('leavePreviewMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const container = document.getElementById('leavePreviewContent');
+
+            // Find all leave that overlaps with this month
+            const monthStart = new Date(year, month, 1);
+            const monthEnd = new Date(year, month + 1, 0); // Last day of month
+
+            const relevantLeave = leaveData.filter(leave => {
+                // Exclude "Unavailable" - that's just non-clinical work markers
+                if (leave.leaveType === 'Unavailable') return false;
+
+                const leaveStart = new Date(leave.startDate);
+                const leaveEnd = new Date(leave.endDate);
+                // Check if leave overlaps with month
+                return leaveStart <= monthEnd && leaveEnd >= monthStart;
+            }).sort((a, b) => {
+                // Sort by start date, then by name
+                const dateCompare = new Date(a.startDate) - new Date(b.startDate);
+                if (dateCompare !== 0) return dateCompare;
+                return a.staffCode.localeCompare(b.staffCode);
+            });
+
+            if (relevantLeave.length === 0) {
+                container.innerHTML = '<p class="leave-preview-empty">No leave booked this month - all staff available!</p>';
+                return;
+            }
+
+            const formatDate = (date) => {
+                const d = new Date(date);
+                return `${d.getDate()}/${d.getMonth() + 1}`;
+            };
+
+            const getTypeClass = (type) => {
+                switch (type) {
+                    case 'Annual Leave': return 'leave-type-annual';
+                    case 'TESL': return 'leave-type-tesl';
+                    case 'Long Service Leave': return 'leave-type-lsl';
+                    default: return 'leave-type-unavailable';
+                }
+            };
+
+            const getStaffName = (code) => {
+                const staff = getActiveStaff().find(s => s.code === code);
+                return staff ? staff.name : code;
+            };
+
+            container.innerHTML = relevantLeave.map(leave => {
+                const startDate = new Date(leave.startDate);
+                const endDate = new Date(leave.endDate);
+                const sameDay = startDate.getTime() === endDate.getTime();
+                const dateStr = sameDay
+                    ? formatDate(startDate)
+                    : `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
+                return `
+                    <div class="leave-item">
+                        <span class="leave-item-name">${getStaffName(leave.staffCode)}</span>
+                        <span class="leave-item-dates">${dateStr}</span>
+                        <span class="leave-item-type ${getTypeClass(leave.leaveType)}">${leave.leaveType}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== LOCUM TOGGLE ====================
+        function toggleLocum(enabled) {
+            locumEnabled = enabled;
+            const info = document.getElementById('locumTargetInfo');
+            info.style.display = enabled ? 'block' : 'none';
+            if (enabled) {
+                document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
+            }
+            renderLastMonthWeekends();
+            renderUnavailabilityDropdown();
+            if (currentMonth !== null) {
+                renderRoster();
+                renderCalendarView();
+                renderEquity(currentMonth, currentYear);
+            }
+        }
+
+        function renderLastMonthWeekends() {
+            const weekendsDiv = document.getElementById('lastMonthWeekends');
+            const checkedCodes = new Set();
+            weekendsDiv.querySelectorAll('input:checked').forEach(cb => checkedCodes.add(cb.value));
+            weekendsDiv.innerHTML = '';
+            getActiveStaff().forEach(s => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `lastWeekend_${s.code}`;
+                checkbox.value = s.code;
+                if (checkedCodes.has(s.code)) checkbox.checked = true;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(s.isLocum ? 'Locum' : s.name.split(' ').pop()));
+                weekendsDiv.appendChild(label);
+            });
+        }
+
+        function renderUnavailabilityDropdown() {
+            const select = document.getElementById('unavailPerson');
+            const currentVal = select.value;
+            select.innerHTML = '';
+            getActiveStaff().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.code;
+                opt.textContent = s.isLocum ? 'Locum' : s.name;
+                select.appendChild(opt);
+            });
+            if (currentVal) select.value = currentVal;
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            // Populate month dropdown
+            const monthSelect = document.getElementById('monthSelect');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            monthNames.forEach((name, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = name;
+                monthSelect.appendChild(opt);
+            });
+
+            // Default to February 2026 (next month to generate)
+            monthSelect.value = 1;
+
+            // Populate staff dropdown and last month's weekends
+            renderUnavailabilityDropdown();
+            renderLastMonthWeekends();
+
+            // Set default date
+            document.getElementById('unavailDate').value = '2026-02-01';
+
+            // Load any saved data
+            loadFromLocalStorage();
+
+            // Add event listeners for month/year changes to update leave preview
+            monthSelect.addEventListener('change', renderLeavePreview);
+            document.getElementById('yearSelect').addEventListener('change', renderLeavePreview);
+
+            // Initial render
+            renderRoster();
+            renderLeavePreview();
+            renderHistoricalBalance();
+        }
+
+        init();
+    </script>
+</body>
+</html>

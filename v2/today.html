@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+        }
+
+        /* ==================== HEADER BAR ==================== */
+        .header-bar {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .current-date {
+            text-align: center;
+        }
+
+        .date-main {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .date-year {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        .weather-icon {
+            font-size: 1.8rem;
+        }
+
+        .weather-temp {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .weather-desc {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+        }
+
+        .view-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .view-btn.active {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .view-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* ==================== PUBLIC HOLIDAY BANNER ==================== */
+        .holiday-banner {
+            background: #fef3c7;
+            border-bottom: 2px solid #f59e0b;
+            padding: 12px 24px;
+            font-weight: 600;
+            color: #92400e;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* ==================== DESKTOP LAYOUT ==================== */
+        @media (min-width: 900px) {
+            .day-view {
+                display: grid;
+                grid-template-columns: 1fr 350px;
+                grid-template-rows: auto auto;
+                gap: 24px;
+            }
+
+            .oncall-hero {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .num-oncall-card {
+                grid-column: 1;
+                grid-row: 2;
+            }
+
+            .leave-card {
+                grid-column: 2;
+                grid-row: 1 / 3;
+            }
+
+            .sites-section {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
+            .trainee-section {
+                grid-column: 2;
+                grid-row: 3;
+            }
+        }
+
+        /* ==================== ON CALL HERO ==================== */
+        .oncall-hero {
+            background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .oncall-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .oncall-name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .oncall-backup {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .oncall-time {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .oncall-tomorrow {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+
+        .oncall-tomorrow strong {
+            opacity: 0.8;
+        }
+
+        /* ==================== NUM ON-CALL ==================== */
+        .num-oncall-card {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            border-radius: 16px;
+            padding: 20px 24px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .num-oncall-card .num-icon {
+            font-size: 1.6rem;
+            opacity: 0.85;
+        }
+
+        .num-oncall-card .num-details {
+            flex: 1;
+        }
+
+        .num-oncall-card .num-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .num-oncall-card .num-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .num-oncall-card .num-tomorrow {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            margin-top: 4px;
+        }
+
+        /* ==================== CARDS ==================== */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+        }
+
+        .card-header.leave {
+            background: #dc2626;
+        }
+
+        .card-header.north {
+            background: #1e40af;
+        }
+
+        .card-header.south {
+            background: #0d9488;
+        }
+
+        .card-header.trainee {
+            background: #059669;
+        }
+
+        .card-content {
+            padding: 16px 20px;
+        }
+
+        /* ==================== LEAVE CARD ==================== */
+        .leave-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .leave-item:last-child {
+            border-bottom: none;
+        }
+
+        .leave-name {
+            font-weight: 600;
+            color: #1a365d;
+        }
+
+        .leave-type {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .leave-type.tesl {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .leave-type.lsl {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .no-leave {
+            color: #059669;
+            font-style: italic;
+            padding: 8px 0;
+        }
+
+        /* ==================== SITES SECTION ==================== */
+        .sites-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .sites-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .site-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .site-row:last-child {
+            border-bottom: none;
+        }
+
+        .site-name {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .site-doctor {
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .site-doctor.empty {
+            color: #d1d5db;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* ==================== TRAINEE CARD ==================== */
+        .trainee-section .card {
+            height: fit-content;
+        }
+
+        /* ==================== WEEK VIEW ==================== */
+        .week-view {
+            display: none;
+        }
+
+        .week-view.active {
+            display: block;
+        }
+
+        .day-view.hidden {
+            display: none;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .week-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .week-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .week-day-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .week-day-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .week-day-card.today {
+            border: 3px solid #2563eb;
+        }
+
+        .week-day-card.weekend {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .week-day-name {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .week-day-date {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin: 4px 0 12px;
+        }
+
+        .week-day-oncall {
+            font-size: 0.85rem;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .week-day-leave {
+            font-size: 0.75rem;
+            color: #dc2626;
+            margin-top: 6px;
+        }
+
+        /* ==================== MOBILE ADJUSTMENTS ==================== */
+        @media (max-width: 899px) {
+            .header-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left {
+                order: 1;
+            }
+
+            .header-center {
+                order: 0;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-right {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .day-view {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .oncall-hero {
+                padding: 24px;
+            }
+
+            .oncall-name {
+                font-size: 1.6rem;
+            }
+
+            .sites-section {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+        }
+
+        /* ==================== FOOTER ==================== */
+        .last-updated {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: 32px;
+            padding-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="header-left">
+            <a href="index.html" class="back-link">&larr; Staff Tools</a>
+            <span class="header-title">ISLHD Palliative Care</span>
+        </div>
+        <div class="header-center">
+            <button class="nav-btn" onclick="previousDay()">&larr;</button>
+            <div class="current-date">
+                <div class="date-main" id="currentDate">Tuesday 14 January</div>
+                <div class="date-year" id="currentYear">2026</div>
+            </div>
+            <button class="nav-btn" onclick="nextDay()">&rarr;</button>
+            <button class="nav-btn" onclick="goToToday()">Today</button>
+        </div>
+        <div class="header-right">
+            <div class="weather" id="weatherWidget">
+                <span class="weather-icon">☀️</span>
+                <div>
+                    <div class="weather-temp">24°C</div>
+                    <div class="weather-desc">Wollongong</div>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button id="dayViewBtn" class="view-btn active" onclick="showDayView()">Day</button>
+                <button id="weekViewBtn" class="view-btn" onclick="showWeekView()">Week</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Public Holiday Banner -->
+    <div id="holidayBanner" class="holiday-banner" style="display: none;"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Day View -->
+        <div id="dayView" class="day-view">
+            <!-- On Call Hero -->
+            <div class="oncall-hero">
+                <div class="oncall-label">On Call Tonight</div>
+                <div class="oncall-name" id="oncallPrimary">Helen Yourlo</div>
+                <div class="oncall-backup" id="oncallBackup">Backup: Patrick Loui</div>
+                <div class="oncall-time">From 5:00 PM</div>
+                <div class="oncall-tomorrow">
+                    <strong>Tomorrow night:</strong> <span id="tomorrowOncall">Benjamin Thomas</span>
+                </div>
+            </div>
+
+            <!-- NUM On-Call Card -->
+            <div class="num-oncall-card">
+                <div class="num-icon">🏥</div>
+                <div class="num-details">
+                    <div class="num-label">NUM/NM On Call</div>
+                    <div class="num-name" id="numOncallName">—</div>
+                    <div class="num-tomorrow" id="numOncallTomorrow"></div>
+                </div>
+            </div>
+
+            <!-- Leave Card -->
+            <div class="leave-card card">
+                <div class="card-header leave">On Leave Today</div>
+                <div class="card-content" id="leaveContent">
+                    <div class="leave-item">
+                        <span class="leave-name">Angela Lo</span>
+                        <span class="leave-type">Annual Leave</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sites Section -->
+            <div class="sites-section">
+                <!-- North Region -->
+                <div class="card">
+                    <div class="card-header north">North</div>
+                    <!-- Leave roster message (shown before 9 Feb 2026) -->
+                    <div id="northLeaveRoster" class="card-content" style="display: none;">
+                        <div style="color: #6b7280; font-style: italic; padding: 8px 0;">
+                            Leave roster in effect until 9 Feb
+                        </div>
+                    </div>
+                    <!-- Regular site display (shown from 9 Feb 2026) -->
+                    <div id="northSitesContent" class="card-content">
+                        <div class="site-row">
+                            <span class="site-name">PCU (Bulli)</span>
+                            <span class="site-doctor" id="site-pcu">Thomas</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Community</span>
+                            <span class="site-doctor" id="site-community">Barclay</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Consults (TWH)</span>
+                            <span class="site-doctor" id="site-twh">Khou</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Consults (SHH)</span>
+                            <span class="site-doctor" id="site-shh">—</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Symptom Clinic</span>
+                            <span class="site-doctor" id="site-clinic">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- South Region -->
+                <div class="card">
+                    <div class="card-header south">South</div>
+                    <div class="card-content" id="southSites">
+                        <div class="site-row">
+                            <span class="site-name">Consults (SDMH)</span>
+                            <span class="site-doctor" id="site-sdmh">—</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Community</span>
+                            <span class="site-doctor" id="site-south-community">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainees -->
+            <div class="trainee-section">
+                <div class="card">
+                    <div class="card-header trainee">Trainees</div>
+                    <div class="card-content" id="traineeContent">
+                        <div class="site-row">
+                            <span class="site-name">Michelle Petersen</span>
+                            <span class="site-doctor">TWH</span>
+                        </div>
+                        <div class="site-row">
+                            <span class="site-name">Balaji</span>
+                            <span class="site-doctor">PCU (BPT)</span>
+                        </div>
+                    </div>
+                    <div style="padding: 8px 16px 12px; font-size: 0.75rem; color: #6b7280; border-top: 1px solid #f3f4f6;">
+                        Rotations as of March 2026
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Week View -->
+        <div id="weekView" class="week-view">
+            <div class="week-grid" id="weekGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="last-updated">Data from consultant roster, leave calendar, and on-call roster</div>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        // Consultant schedule by day of week (0=Sun, 1=Mon, etc.)
+        const consultantSchedule = {
+            'BT': { 1: 'PCU', 2: 'Community', 3: 'Community', 4: 'PCU', 5: 'Community' },
+            'GB': { 2: 'PCU', 5: 'PCU' },
+            'AL': { 1: 'Community', 2: 'Non-clinical', 3: 'Non-clinical', 4: 'Community' },
+            'RW': { 1: 'TWH', 2: 'Clinic' },
+            'MK': { 2: 'SHH', 3: 'TWH', 4: 'TWH' },
+            'HY': { 3: 'Clinic', 4: 'SHH', 5: 'TWH' },
+            'SR': { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' }, // Alternate Fridays off
+            'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off
+        };
+
+        const staffNames = {
+            'BT': 'Benjamin Thomas',
+            'GB': 'Greg Barclay',
+            'AL': 'Angela Lo',
+            'RW': 'Ron Wai',
+            'MK': 'Muoi Khou',
+            'HY': 'Helen Yourlo',
+            'SR': 'Stephanie Robinson',
+            'Fadz': 'Fadz wan Bahrum',
+            'PL': 'Patrick Loui',
+            'DS': 'Dominic Sellers',
+            'MP': 'Michelle Petersen',
+            'Locum': 'Ratnayake (L)'
+        };
+
+        // On-call data (from oncall_roster.html)
+        const oncallData = {
+            // January 2026
+            '2026-01-01': { first: 'AL', second: null },
+            '2026-01-02': { first: 'GB', second: null },
+            '2026-01-03': { first: 'MP', second: 'Fadz' },
+            '2026-01-04': { first: 'MP', second: 'Fadz' },
+            '2026-01-05': { first: 'Fadz', second: null },
+            '2026-01-06': { first: 'DS', second: 'RW' },
+            '2026-01-07': { first: 'BT', second: null },
+            '2026-01-08': { first: 'HY', second: null },
+            '2026-01-09': { first: 'AL', second: null },
+            '2026-01-10': { first: 'DS', second: 'BT' },
+            '2026-01-11': { first: 'DS', second: 'BT' },
+            '2026-01-12': { first: 'MP', second: 'SR' },
+            '2026-01-13': { first: 'GB', second: null },
+            '2026-01-14': { first: 'HY', second: null },
+            '2026-01-15': { first: 'MK', second: null },
+            '2026-01-16': { first: 'BT', second: null },
+            '2026-01-17': { first: 'SR', second: null },
+            '2026-01-18': { first: 'SR', second: null },
+            '2026-01-19': { first: 'RW', second: null },
+            '2026-01-20': { first: 'BT', second: null },
+            '2026-01-21': { first: 'PL', second: 'MK' },
+            '2026-01-22': { first: 'Fadz', second: null },
+            '2026-01-23': { first: 'DS', second: 'HY' },
+            '2026-01-24': { first: 'PL', second: 'RW' },
+            '2026-01-25': { first: 'PL', second: 'RW' },
+            '2026-01-26': { first: 'HY', second: null },
+            '2026-01-27': { first: 'AL', second: null },
+            '2026-01-28': { first: 'MK', second: null },
+            '2026-01-29': { first: 'MP', second: 'SR' },
+            '2026-01-30': { first: 'GB', second: null },
+            '2026-01-31': { first: 'AL', second: null },
+            // February 2026
+            '2026-02-01': { first: 'AL', second: null },
+            '2026-02-02': { first: 'SR', second: null },
+            '2026-02-03': { first: 'RW', second: null },
+            '2026-02-04': { first: 'HY', second: null },
+            '2026-02-05': { first: 'MK', second: null },
+            '2026-02-06': { first: 'Fadz', second: null },
+            '2026-02-07': { first: 'GB', second: null },
+            '2026-02-08': { first: 'GB', second: null },
+            '2026-02-09': { first: 'SR', second: null },
+            '2026-02-10': { first: 'BT', second: null },
+            '2026-02-11': { first: 'Fadz', second: null },
+            '2026-02-12': { first: 'AL', second: null },
+            '2026-02-13': { first: 'GB', second: null },
+            '2026-02-14': { first: 'BT', second: null },
+            '2026-02-15': { first: 'BT', second: null },
+            '2026-02-16': { first: 'RW', second: null },
+            '2026-02-17': { first: 'AL', second: null },
+            '2026-02-18': { first: 'SR', second: null },
+            '2026-02-19': { first: 'MK', second: null },
+            '2026-02-20': { first: 'HY', second: null },
+            '2026-02-21': { first: 'MK', second: null },
+            '2026-02-22': { first: 'MK', second: null },
+            '2026-02-23': { first: 'Fadz', second: null },
+            '2026-02-24': { first: 'GB', second: null },
+            '2026-02-25': { first: 'BT', second: null },
+            '2026-02-26': { first: 'SR', second: null },
+            '2026-02-27': { first: 'AL', second: null },
+            '2026-02-28': { first: 'HY', second: null },
+            // March 2026
+            '2026-03-01': { first: 'HY', second: null },
+            '2026-03-02': { first: 'BT', second: null },
+            '2026-03-03': { first: 'SR', second: null },
+            '2026-03-04': { first: 'Fadz', second: null },
+            '2026-03-05': { first: 'AL', second: null },
+            '2026-03-06': { first: 'HY', second: null },
+            '2026-03-07': { first: 'SR', second: null },
+            '2026-03-08': { first: 'SR', second: null },
+            '2026-03-09': { first: 'RW', second: null },
+            '2026-03-10': { first: 'GB', second: null },
+            '2026-03-11': { first: 'BT', second: null },
+            '2026-03-12': { first: 'SR', second: null },
+            '2026-03-13': { first: 'AL', second: null },
+            '2026-03-14': { first: 'BT', second: null },
+            '2026-03-15': { first: 'BT', second: null },
+            '2026-03-16': { first: 'Fadz', second: null },
+            '2026-03-17': { first: 'SR', second: null },
+            '2026-03-18': { first: 'MK', second: null },
+            '2026-03-19': { first: 'HY', second: null },
+            '2026-03-20': { first: 'BT', second: null },
+            '2026-03-21': { first: 'RW', second: null },
+            '2026-03-22': { first: 'RW', second: null },
+            '2026-03-23': { first: 'Fadz', second: null },
+            '2026-03-24': { first: 'AL', second: null },
+            '2026-03-25': { first: 'SR', second: null },
+            '2026-03-26': { first: 'MK', second: null },
+            '2026-03-27': { first: 'GB', second: null },
+            '2026-03-28': { first: 'Fadz', second: null },
+            '2026-03-29': { first: 'Fadz', second: null },
+            '2026-03-30': { first: 'RW', second: null },
+            '2026-03-31': { first: 'BT', second: null },
+            // April 2026
+            '2026-04-01': { first: 'BT', second: null },
+            '2026-04-02': { first: 'SR', second: null },
+            '2026-04-03': { first: 'GB', second: null },
+            '2026-04-04': { first: 'SR', second: null },
+            '2026-04-05': { first: 'SR', second: null },
+            '2026-04-06': { first: 'Fadz', second: null },
+            '2026-04-07': { first: 'MP', second: 'RW' },
+            '2026-04-08': { first: 'BT', second: null },
+            '2026-04-09': { first: 'HY', second: null },
+            '2026-04-10': { first: 'AL', second: null },
+            '2026-04-11': { first: 'GB', second: null },
+            '2026-04-12': { first: 'GB', second: null },
+            '2026-04-13': { first: 'Fadz', second: null },
+            '2026-04-14': { first: 'SR', second: null },
+            '2026-04-15': { first: 'Locum', second: null },
+            '2026-04-16': { first: 'AL', second: null },
+            '2026-04-17': { first: 'BT', second: null },
+            '2026-04-18': { first: 'Locum', second: null },
+            '2026-04-19': { first: 'Locum', second: null },
+            '2026-04-20': { first: 'RW', second: null },
+            '2026-04-21': { first: 'MK', second: null },
+            '2026-04-22': { first: 'Locum', second: null },
+            '2026-04-23': { first: 'HY', second: null },
+            '2026-04-24': { first: 'GB', second: null },
+            '2026-04-25': { first: 'MP', second: 'MK' },
+            '2026-04-26': { first: 'MP', second: 'MK' },
+            '2026-04-27': { first: 'AL', second: null },
+            '2026-04-28': { first: 'SR', second: null },
+            '2026-04-29': { first: 'BT', second: null },
+            '2026-04-30': { first: 'Fadz', second: null },
+            // May 2026
+            '2026-05-01': { first: 'BT', second: null },
+            '2026-05-02': { first: 'RW', second: null },
+            '2026-05-03': { first: 'RW', second: null },
+            '2026-05-04': { first: 'AL', second: null },
+            '2026-05-05': { first: 'MK', second: null },
+            '2026-05-06': { first: 'SR', second: null },
+            '2026-05-07': { first: 'Locum', second: null },
+            '2026-05-08': { first: 'GB', second: null },
+            '2026-05-09': { first: 'Fadz', second: null },
+            '2026-05-10': { first: 'Fadz', second: null },
+            '2026-05-11': { first: 'BT', second: null },
+            '2026-05-12': { first: 'AL', second: null },
+            '2026-05-13': { first: 'SR', second: null },
+            '2026-05-14': { first: 'HY', second: null },
+            '2026-05-15': { first: 'Fadz', second: null },
+            '2026-05-16': { first: 'AL', second: null },
+            '2026-05-17': { first: 'AL', second: null },
+            '2026-05-18': { first: 'Locum', second: null },
+            '2026-05-19': { first: 'SR', second: null },
+            '2026-05-20': { first: 'Fadz', second: null },
+            '2026-05-21': { first: 'AL', second: null },
+            '2026-05-22': { first: 'HY', second: null },
+            '2026-05-23': { first: 'BT', second: null },
+            '2026-05-24': { first: 'BT', second: null },
+            '2026-05-25': { first: 'Fadz', second: null },
+            '2026-05-26': { first: 'RW', second: null },
+            '2026-05-27': { first: 'Locum', second: null },
+            '2026-05-28': { first: 'MK', second: null },
+            '2026-05-29': { first: 'BT', second: null },
+            '2026-05-30': { first: 'HY', second: null },
+            '2026-05-31': { first: 'HY', second: null }
+        };
+
+        // Trainee codes for identification
+        const traineeCodes = ['PL', 'DS', 'MP'];
+
+        // Leave data (from leave_calendar.html)
+        const leaveData = [
+            { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
+            { staffCode: 'BT', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'BT', startDate: new Date(2026, 7, 10), endDate: new Date(2026, 10, 1), leaveType: 'Long Service Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 0, 12), endDate: new Date(2026, 0, 23), leaveType: 'Annual Leave' },
+            { staffCode: 'AL', startDate: new Date(2026, 4, 27), endDate: new Date(2026, 4, 28), leaveType: 'TESL' },
+            { staffCode: 'AL', startDate: new Date(2026, 5, 1), endDate: new Date(2026, 5, 12), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 2, 3), endDate: new Date(2026, 2, 7), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 4, 25), endDate: new Date(2026, 5, 25), leaveType: 'Annual Leave' },
+            { staffCode: 'GB', startDate: new Date(2026, 6, 22), endDate: new Date(2026, 7, 28), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 1, 9), endDate: new Date(2026, 1, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 4, 6), endDate: new Date(2026, 4, 8), leaveType: 'Annual Leave' },
+            { staffCode: 'HY', startDate: new Date(2026, 10, 16), endDate: new Date(2026, 10, 22), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 3, 7), endDate: new Date(2026, 3, 13), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 4, 7), endDate: new Date(2026, 4, 25), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2026, 6, 7), endDate: new Date(2026, 6, 14), leaveType: 'Annual Leave' },
+            { staffCode: 'MK', startDate: new Date(2027, 0, 5), endDate: new Date(2027, 0, 18), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 1, 23), endDate: new Date(2026, 1, 27), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 4, 11), endDate: new Date(2026, 4, 11), leaveType: 'Annual Leave' },
+            { staffCode: 'RW', startDate: new Date(2026, 4, 12), endDate: new Date(2026, 4, 18), leaveType: 'TESL' },
+            { staffCode: 'RW', startDate: new Date(2026, 5, 15), endDate: new Date(2026, 5, 30), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 0, 1), endDate: new Date(2026, 0, 9), leaveType: 'Annual Leave' },
+            { staffCode: 'SR', startDate: new Date(2026, 4, 31), endDate: new Date(2026, 6, 4), leaveType: 'Annual Leave' },
+            { staffCode: 'Fadz', startDate: new Date(2026, 0, 10), endDate: new Date(2026, 0, 20), leaveType: 'Annual Leave' },
+        ];
+
+        // Public holidays
+        const publicHolidays = {
+            '2026-01-26': 'Australia Day',
+            '2026-01-27': 'Australia Day (observed)',
+            '2026-04-03': 'Good Friday',
+            '2026-04-04': 'Easter Saturday',
+            '2026-04-06': 'Easter Monday',
+            '2026-04-25': 'ANZAC Day',
+            '2026-04-27': 'ANZAC Day (observed)',
+            '2026-06-08': "Queen's Birthday",
+            '2026-08-03': 'Bank Holiday',
+            '2026-10-05': 'Labour Day',
+            '2026-12-25': 'Christmas Day',
+            '2026-12-26': 'Boxing Day',
+            '2026-12-28': 'Boxing Day (observed)',
+        };
+
+        // ==================== NUM/NM ON-CALL DATA ====================
+        const numOncallData = {
+            // April 2026
+            '2026-04-01': 'Nicole Wheatley',
+            '2026-04-02': 'Nicole Wheatley',
+            '2026-04-03': 'Nicole Wheatley',
+            '2026-04-04': 'Nicole Wheatley',
+            '2026-04-05': 'Rose',
+            '2026-04-06': 'Fiona Hammond',
+            '2026-04-07': 'Nicole Davis',
+            '2026-04-08': 'Charmaine Tatton',
+            '2026-04-09': 'Charmaine Tatton',
+            '2026-04-10': 'Charmaine Tatton',
+            '2026-04-11': 'Charmaine Tatton',
+            '2026-04-12': 'Charmaine Tatton',
+            '2026-04-13': 'Nicole Davis',
+            '2026-04-14': 'Nicole Davis',
+            '2026-04-15': 'Nicole Davis',
+            '2026-04-16': 'Nicole Davis',
+            '2026-04-17': 'Dina Baytieh',
+            '2026-04-18': 'Charmaine Tatton',
+            '2026-04-19': 'Charmaine Tatton',
+            '2026-04-20': 'Fiona Hammond',
+            '2026-04-21': 'Fiona Hammond',
+            '2026-04-22': 'Fiona Hammond',
+            '2026-04-23': 'Fiona Hammond',
+            '2026-04-24': 'Fiona Hammond',
+            '2026-04-25': 'Nicole Wheatley',
+            '2026-04-26': 'Nicole Wheatley',
+            '2026-04-27': 'Nicole Wheatley',
+            '2026-04-28': 'Ashlie Taylor',
+            '2026-04-29': 'Ashlie Taylor',
+            '2026-04-30': 'Ashlie Taylor'
+        };
+
+        // ==================== STATE ====================
+        let currentDate = new Date();
+
+        // ==================== DATE HELPERS ====================
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatDisplayDate(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+        }
+
+        function isWeekend(date) {
+            const dow = date.getDay();
+            return dow === 0 || dow === 6;
+        }
+
+        // Check if North roster is active (on or after 9 Feb 2026)
+        function isNorthRosterActive(date) {
+            const northStartDate = new Date(2026, 1, 9); // 9 Feb 2026
+            return date >= northStartDate;
+        }
+
+        // ==================== NAVIGATION ====================
+        function previousDay() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            render();
+        }
+
+        function nextDay() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            render();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            render();
+        }
+
+        // ==================== VIEW TOGGLE ====================
+        function showDayView() {
+            document.getElementById('dayView').classList.remove('hidden');
+            document.getElementById('weekView').classList.remove('active');
+            document.getElementById('dayViewBtn').classList.add('active');
+            document.getElementById('weekViewBtn').classList.remove('active');
+        }
+
+        function showWeekView() {
+            document.getElementById('dayView').classList.add('hidden');
+            document.getElementById('weekView').classList.add('active');
+            document.getElementById('dayViewBtn').classList.remove('active');
+            document.getElementById('weekViewBtn').classList.add('active');
+            renderWeekView();
+        }
+
+        // ==================== RENDERING ====================
+        function render() {
+            const dateKey = formatDateKey(currentDate);
+            const dow = currentDate.getDay();
+
+            // Update header
+            document.getElementById('currentDate').textContent = formatDisplayDate(currentDate);
+            document.getElementById('currentYear').textContent = currentDate.getFullYear();
+
+            // Check for public holiday
+            const holiday = publicHolidays[dateKey];
+            const holidayBanner = document.getElementById('holidayBanner');
+            if (holiday) {
+                holidayBanner.textContent = `🎉 ${holiday}`;
+                holidayBanner.style.display = 'block';
+            } else {
+                holidayBanner.style.display = 'none';
+            }
+
+            // Update sites based on day of week (and leave status)
+            renderSites(dow, currentDate);
+
+            // Update on-call
+            renderOncall(dateKey);
+            renderNumOncall(dateKey);
+
+            // Update leave
+            renderLeave(currentDate);
+
+            // Update weather
+            renderWeather();
+        }
+
+        // Check if a staff member is on leave on a given date
+        function isOnLeave(staffCode, date) {
+            return leaveData.some(l =>
+                l.staffCode === staffCode &&
+                date >= l.startDate &&
+                date <= l.endDate
+            );
+        }
+
+        // Check if Steph is off on a given Friday (alternate Fridays starting 23 Jan 2026 OFF)
+        function isStephFridayOff(date) {
+            if (date.getDay() !== 5) return false; // Not a Friday
+            // Reference: 16 Jan 2026 (Fri) is ON, 23 Jan 2026 (Fri) is OFF
+            const referenceOff = new Date(2026, 0, 23); // 23 Jan 2026 - first OFF Friday
+            const diffTime = date.getTime() - referenceOff.getTime();
+            const diffWeeks = Math.round(diffTime / (7 * 24 * 60 * 60 * 1000));
+            // Every even number of weeks from reference is OFF
+            return diffWeeks % 2 === 0;
+        }
+
+        function renderSites(dow, date) {
+            // Check if North roster is active
+            const northActive = isNorthRosterActive(date);
+            const northLeaveRoster = document.getElementById('northLeaveRoster');
+            const northSitesContent = document.getElementById('northSitesContent');
+
+            if (northActive) {
+                northLeaveRoster.style.display = 'none';
+                northSitesContent.style.display = 'block';
+            } else {
+                northLeaveRoster.style.display = 'block';
+                northSitesContent.style.display = 'none';
+                // Still render South sites below
+            }
+
+            // North region sites
+            const northSites = {
+                'pcu': '—',
+                'community': '—',
+                'twh': '—',
+                'shh': '—',
+                'clinic': '—'
+            };
+
+            // South region sites
+            const southSites = {
+                'sdmh': [],
+                'south-community': []
+            };
+
+            // Map consultant schedules to sites (excluding those on leave)
+            Object.entries(consultantSchedule).forEach(([code, schedule]) => {
+                // Skip if on leave
+                if (isOnLeave(code, date)) return;
+
+                // Skip Steph on her alternate Fridays off
+                if (code === 'SR' && isStephFridayOff(date)) return;
+
+                const location = schedule[dow];
+                if (location) {
+                    const surname = staffNames[code].split(' ').pop();
+                    // North sites (only if roster is active)
+                    if (northActive) {
+                        if (location === 'PCU') northSites.pcu = surname;
+                        if (location === 'Community' && !['SR', 'Fadz'].includes(code)) northSites.community = surname;
+                        if (location === 'TWH') northSites.twh = surname;
+                        if (location === 'SHH') northSites.shh = surname;
+                        if (location === 'Clinic') northSites.clinic = surname;
+                    }
+                    // South sites
+                    if (location === 'SDMH') southSites.sdmh.push(surname);
+                    if (location === 'Community' && ['SR', 'Fadz'].includes(code)) southSites['south-community'].push(surname);
+                }
+            });
+
+            // Update North DOM (only if active)
+            if (northActive) {
+                Object.entries(northSites).forEach(([site, doctor]) => {
+                    const el = document.getElementById(`site-${site}`);
+                    if (el) {
+                        el.textContent = doctor;
+                        el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
+                    }
+                });
+            }
+
+            // Update South DOM
+            Object.entries(southSites).forEach(([site, doctors]) => {
+                const el = document.getElementById(`site-${site}`);
+                if (el) {
+                    if (doctors.length === 0) {
+                        el.textContent = '—';
+                        el.className = 'site-doctor empty';
+                    } else {
+                        el.textContent = doctors.join(', ');
+                        el.className = 'site-doctor';
+                    }
+                }
+            });
+        }
+
+        function renderOncall(dateKey) {
+            const oncall = oncallData[dateKey];
+            const primaryEl = document.getElementById('oncallPrimary');
+            const backupEl = document.getElementById('oncallBackup');
+
+            if (oncall) {
+                const isTraineeFirst = traineeCodes.includes(oncall.first);
+
+                if (isTraineeFirst && oncall.second) {
+                    // Trainee is 1st on-call, staff specialist is backup (2nd)
+                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
+                    backupEl.textContent = `Backup: ${staffNames[oncall.second]}`;
+                    backupEl.style.display = 'block';
+                } else if (isTraineeFirst) {
+                    // Trainee alone (shouldn't happen but handle it)
+                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
+                    backupEl.style.display = 'none';
+                } else {
+                    // Staff specialist is primary
+                    primaryEl.textContent = staffNames[oncall.first] || oncall.first;
+                    backupEl.style.display = 'none';
+                }
+            } else {
+                primaryEl.textContent = 'Not rostered';
+                backupEl.style.display = 'none';
+            }
+
+            // Tomorrow preview
+            const tomorrow = new Date(currentDate);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowKey = formatDateKey(tomorrow);
+            const tomorrowOncall = oncallData[tomorrowKey];
+            const tomorrowEl = document.getElementById('tomorrowOncall');
+            if (tomorrowOncall) {
+                const isTomorrowTrainee = traineeCodes.includes(tomorrowOncall.first);
+                if (isTomorrowTrainee && tomorrowOncall.second) {
+                    tomorrowEl.textContent = `${staffNames[tomorrowOncall.first]} + ${staffNames[tomorrowOncall.second]}`;
+                } else {
+                    tomorrowEl.textContent = staffNames[tomorrowOncall.first] || tomorrowOncall.first;
+                }
+            } else {
+                tomorrowEl.textContent = 'Not rostered';
+            }
+        }
+
+        function renderNumOncall(dateKey) {
+            const numNameEl = document.getElementById('numOncallName');
+            const numTomorrowEl = document.getElementById('numOncallTomorrow');
+            const numCard = document.querySelector('.num-oncall-card');
+
+            const numName = numOncallData[dateKey];
+            if (numName) {
+                numNameEl.textContent = numName;
+                numCard.style.display = 'flex';
+            } else {
+                numNameEl.textContent = '—';
+                numCard.style.display = 'none';
+            }
+
+            // Tomorrow preview
+            const tomorrow = new Date(currentDate);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowKey = formatDateKey(tomorrow);
+            const tomorrowNum = numOncallData[tomorrowKey];
+            if (tomorrowNum && tomorrowNum !== numName) {
+                numTomorrowEl.textContent = `Tomorrow: ${tomorrowNum}`;
+            } else if (tomorrowNum) {
+                numTomorrowEl.textContent = '';
+            } else {
+                numTomorrowEl.textContent = '';
+            }
+        }
+
+        function renderLeave(date) {
+            const container = document.getElementById('leaveContent');
+            const onLeave = leaveData.filter(l => date >= l.startDate && date <= l.endDate);
+
+            if (onLeave.length === 0) {
+                container.innerHTML = '<div class="no-leave">No one on leave today</div>';
+                return;
+            }
+
+            container.innerHTML = onLeave.map(l => {
+                const typeClass = l.leaveType === 'TESL' ? 'tesl' :
+                                  l.leaveType === 'Long Service Leave' ? 'lsl' : '';
+                return `
+                    <div class="leave-item">
+                        <span class="leave-name">${staffNames[l.staffCode] || l.staffCode}</span>
+                        <span class="leave-type ${typeClass}">${l.leaveType}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function renderWeather() {
+            const widget = document.getElementById('weatherWidget');
+
+            // Wollongong coordinates
+            const lat = -34.4278;
+            const lon = 150.8931;
+
+            try {
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=Australia%2FSydney`
+                );
+                const data = await response.json();
+
+                if (data.current) {
+                    const temp = Math.round(data.current.temperature_2m);
+                    const weatherCode = data.current.weather_code;
+                    const { icon, desc } = getWeatherDescription(weatherCode);
+
+                    widget.innerHTML = `
+                        <span class="weather-icon">${icon}</span>
+                        <div>
+                            <div class="weather-temp">${temp}°C</div>
+                            <div class="weather-desc">${desc}</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Weather fetch failed:', error);
+                widget.innerHTML = `
+                    <span class="weather-icon">🌡️</span>
+                    <div>
+                        <div class="weather-temp">--°C</div>
+                        <div class="weather-desc">Wollongong</div>
+                    </div>
+                `;
+            }
+        }
+
+        function getWeatherDescription(code) {
+            // WMO Weather interpretation codes
+            const weatherCodes = {
+                0: { icon: '☀️', desc: 'Clear sky' },
+                1: { icon: '🌤️', desc: 'Mainly clear' },
+                2: { icon: '⛅', desc: 'Partly cloudy' },
+                3: { icon: '☁️', desc: 'Overcast' },
+                45: { icon: '🌫️', desc: 'Foggy' },
+                48: { icon: '🌫️', desc: 'Rime fog' },
+                51: { icon: '🌧️', desc: 'Light drizzle' },
+                53: { icon: '🌧️', desc: 'Drizzle' },
+                55: { icon: '🌧️', desc: 'Heavy drizzle' },
+                56: { icon: '🌧️', desc: 'Freezing drizzle' },
+                57: { icon: '🌧️', desc: 'Freezing drizzle' },
+                61: { icon: '🌧️', desc: 'Light rain' },
+                63: { icon: '🌧️', desc: 'Rain' },
+                65: { icon: '🌧️', desc: 'Heavy rain' },
+                66: { icon: '🌧️', desc: 'Freezing rain' },
+                67: { icon: '🌧️', desc: 'Freezing rain' },
+                71: { icon: '🌨️', desc: 'Light snow' },
+                73: { icon: '🌨️', desc: 'Snow' },
+                75: { icon: '🌨️', desc: 'Heavy snow' },
+                77: { icon: '🌨️', desc: 'Snow grains' },
+                80: { icon: '🌦️', desc: 'Light showers' },
+                81: { icon: '🌦️', desc: 'Showers' },
+                82: { icon: '⛈️', desc: 'Heavy showers' },
+                85: { icon: '🌨️', desc: 'Snow showers' },
+                86: { icon: '🌨️', desc: 'Heavy snow showers' },
+                95: { icon: '⛈️', desc: 'Thunderstorm' },
+                96: { icon: '⛈️', desc: 'Thunderstorm + hail' },
+                99: { icon: '⛈️', desc: 'Severe thunderstorm' },
+            };
+            return weatherCodes[code] || { icon: '🌡️', desc: 'Unknown' };
+        }
+
+        function renderWeekView() {
+            const container = document.getElementById('weekGrid');
+            container.innerHTML = '';
+
+            // Find Monday of current week
+            const monday = new Date(currentDate);
+            const dayOfWeek = monday.getDay();
+            const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            monday.setDate(monday.getDate() + diff);
+
+            const today = new Date();
+            const todayKey = formatDateKey(today);
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(date.getDate() + i);
+                const dateKey = formatDateKey(date);
+                const isToday = dateKey === todayKey;
+                const isWknd = isWeekend(date);
+
+                const oncall = oncallData[dateKey];
+                const onLeave = leaveData.filter(l => date >= l.startDate && date <= l.endDate);
+
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+                // Format on-call display with trainee handling
+                let oncallDisplay = '—';
+                if (oncall) {
+                    const isTrainee = traineeCodes.includes(oncall.first);
+                    const firstName = staffNames[oncall.first]?.split(' ').pop() || oncall.first;
+                    if (isTrainee && oncall.second) {
+                        const backupName = staffNames[oncall.second]?.split(' ').pop() || oncall.second;
+                        oncallDisplay = `${firstName}* + ${backupName}`;
+                    } else {
+                        oncallDisplay = firstName;
+                    }
+                }
+
+                const card = document.createElement('div');
+                card.className = `week-day-card${isToday ? ' today' : ''}${isWknd ? ' weekend' : ''}`;
+                card.onclick = () => {
+                    currentDate = new Date(date);
+                    showDayView();
+                    render();
+                };
+
+                card.innerHTML = `
+                    <div class="week-day-name">${dayNames[date.getDay()]}</div>
+                    <div class="week-day-date">${date.getDate()}</div>
+                    <div class="week-day-oncall">${oncallDisplay}</div>
+                    ${onLeave.length > 0 ? `<div class="week-day-leave">${onLeave.length} on leave</div>` : ''}
+                `;
+
+                container.appendChild(card);
+            }
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            // Default to actual today
+            currentDate = new Date();
+            render();
+        }
+
+        init();
+    </script>
+</body>
+</html>

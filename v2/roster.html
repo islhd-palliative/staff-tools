@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultant Roster - ISLHD Palliative Care</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .page-header-left {
+            flex: 1;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-toggle button {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .view-toggle button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        .info-banner {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #0369a1;
+        }
+
+        .info-banner strong {
+            color: #075985;
+        }
+
+        /* Region Section */
+        .region-section {
+            margin-bottom: 24px;
+        }
+
+        .region-header {
+            background: #1e40af;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Service View - Table by Service */
+        .service-table-container {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .service-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .service-table th,
+        .service-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .service-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+
+        .service-table th:first-child,
+        .service-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+            background: #f8fafc;
+            min-width: 160px;
+        }
+
+        .service-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .service-table td {
+            font-size: 0.9rem;
+        }
+
+        .doctor-name {
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .registrar {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .no-cover {
+            color: #d1d5db;
+        }
+
+        /* Doctor View - Cards by Doctor */
+        .doctor-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .doctor-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .doctor-card-header {
+            background: #f1f5f9;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #1e40af;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .doctor-card-header .fte {
+            font-weight: 400;
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        .doctor-schedule {
+            padding: 12px 16px;
+        }
+
+        .schedule-row {
+            display: flex;
+            padding: 6px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .schedule-row:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-day {
+            width: 60px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .schedule-location {
+            flex: 1;
+            color: #4b5563;
+        }
+
+        .schedule-location.off {
+            color: #d1d5db;
+            font-style: italic;
+        }
+
+        /* Location color coding - North (cool palette) */
+        .loc-pcu { color: #7c3aed; }
+        .loc-community { color: #059669; }
+        .loc-twh { color: #2563eb; }
+        .loc-shh { color: #0891b2; }
+        .loc-clinic { color: #dc2626; }
+        .loc-non-clinical { color: #6b7280; }
+        /* Location color coding - South (warm palette) */
+        .loc-sdmh { color: #0d9488; }
+        .loc-south-community { color: #d97706; }
+
+        .location-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.pcu { background: #7c3aed; }
+        .legend-dot.community { background: #059669; }
+        .legend-dot.twh { background: #2563eb; }
+        .legend-dot.shh { background: #0891b2; }
+        .legend-dot.clinic { background: #dc2626; }
+        .legend-dot.sdmh { background: #0d9488; }
+        .legend-dot.south-community { background: #d97706; }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        /* South placeholder */
+        .coming-soon {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 700px) {
+            .service-table th,
+            .service-table td {
+                padding: 8px 6px;
+                font-size: 0.8rem;
+            }
+            .doctor-cards {
+                grid-template-columns: 1fr;
+            }
+            .view-toggle {
+                width: 100%;
+            }
+            .view-toggle button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1>Consultant Roster</h1>
+            <p class="subtitle">ISLHD Palliative and End of Life Care - Weekly Timetable</p>
+        </div>
+        <div class="view-toggle">
+            <button id="btnServiceView" class="active">By Service</button>
+            <button id="btnDoctorView">By Doctor</button>
+        </div>
+    </div>
+
+    <div class="info-banner" id="infoBanner">
+        <strong>Effective from 9 February 2026</strong> — This roster shows the typical weekly consultant allocation. Actual coverage may vary due to leave or service needs.
+    </div>
+
+    <!-- North Region -->
+    <div class="region-section">
+        <div class="region-header">North (Illawarra)</div>
+
+        <!-- Coming Soon placeholder (shown before 9 Feb 2026) -->
+        <div id="northComingSoon" class="coming-soon" style="display: none;">
+            <div style="font-size: 1.2rem; margin-bottom: 8px; color: #374151;">Leave Roster Currently in Effect</div>
+            <div style="color: #6b7280;">The new consultant roster begins <strong>9 February 2026</strong>.</div>
+            <div style="color: #9ca3af; font-size: 0.85rem; margin-top: 12px;">Please check your email or StaffLink for the current leave coverage arrangements.</div>
+        </div>
+
+        <!-- Service View -->
+        <div id="northServiceView" class="service-table-container">
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PCU (Bulli)</td>
+                        <td><span class="doctor-name loc-pcu">Ben</span></td>
+                        <td><span class="doctor-name loc-pcu">Greg</span></td>
+                        <td><span class="registrar">(Registrar)</span></td>
+                        <td><span class="doctor-name loc-pcu">Ben</span></td>
+                        <td><span class="doctor-name loc-pcu">Greg</span></td>
+                    </tr>
+                    <tr>
+                        <td>Community</td>
+                        <td><span class="doctor-name loc-community">Angela</span></td>
+                        <td><span class="doctor-name loc-community">Ben</span></td>
+                        <td><span class="doctor-name loc-community">Ben</span></td>
+                        <td><span class="doctor-name loc-community">Angela</span></td>
+                        <td><span class="doctor-name loc-community">Ben</span></td>
+                    </tr>
+                    <tr>
+                        <td>Consults (TWH)</td>
+                        <td><span class="doctor-name loc-twh">Ron</span></td>
+                        <td><span class="registrar">(Registrar)</span></td>
+                        <td><span class="doctor-name loc-twh">Muoi</span></td>
+                        <td><span class="doctor-name loc-twh">Muoi</span></td>
+                        <td><span class="doctor-name loc-twh">Helen</span></td>
+                    </tr>
+                    <tr>
+                        <td>Consults (SHH)</td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-shh">Muoi</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-shh">Helen</span></td>
+                        <td><span class="no-cover">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Symptom Clinic (Dapto)</td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-clinic">Ron</span></td>
+                        <td><span class="doctor-name loc-clinic">Helen</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="no-cover">—</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="location-legend">
+                <div class="legend-item"><span class="legend-dot pcu"></span> PCU = Bulli Hospital</div>
+                <div class="legend-item"><span class="legend-dot community"></span> Community = Illawarra region</div>
+                <div class="legend-item"><span class="legend-dot twh"></span> TWH = Wollongong Hospital</div>
+                <div class="legend-item"><span class="legend-dot shh"></span> SHH = Shellharbour Hospital</div>
+                <div class="legend-item"><span class="legend-dot clinic"></span> Clinic = Dapto</div>
+            </div>
+        </div>
+
+        <!-- Doctor View -->
+        <div id="northDoctorView" class="doctor-cards" style="display: none;">
+            <div class="doctor-card">
+                <div class="doctor-card-header">Benjamin Thomas <span class="fte">1.0 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-community">Community</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Greg Barclay <span class="fte">0.4 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Angela Lo <span class="fte">0.8 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-non-clinical">Non-clinical</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-non-clinical">Non-clinical</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">Day off (floating)</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Ron Wai <span class="fte">0.4 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-clinic">Symptom Clinic</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">—</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Muoi Khou <span class="fte">0.6 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-shh">Consults (SHH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">—</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Helen Yourlo <span class="fte">0.7 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-clinic">Symptom Clinic</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-shh">Consults (SHH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
+                </div>
+            </div>
+            <div class="location-legend" style="grid-column: 1 / -1;">
+                <div class="legend-item"><span class="legend-dot pcu"></span> PCU = Bulli Hospital</div>
+                <div class="legend-item"><span class="legend-dot community"></span> Community = Illawarra region</div>
+                <div class="legend-item"><span class="legend-dot twh"></span> TWH = Wollongong Hospital</div>
+                <div class="legend-item"><span class="legend-dot shh"></span> SHH = Shellharbour Hospital</div>
+                <div class="legend-item"><span class="legend-dot clinic"></span> Clinic = Dapto</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- South Region -->
+    <div class="region-section">
+        <div class="region-header">South (Shoalhaven)</div>
+
+        <!-- Service View -->
+        <div id="southServiceView" class="service-table-container">
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Consults (SDMH)</td>
+                        <td><span class="doctor-name loc-sdmh">Steph</span></td>
+                        <td><span class="doctor-name loc-sdmh">Steph</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-sdmh">Fadz</span></td>
+                        <td><span class="doctor-name loc-sdmh">Steph*</span></td>
+                    </tr>
+                    <tr>
+                        <td>Community</td>
+                        <td><span class="doctor-name loc-south-community">Fadz</span></td>
+                        <td><span class="no-cover">—</span></td>
+                        <td><span class="doctor-name loc-south-community">Steph</span>, <span class="doctor-name loc-south-community">Fadz</span></td>
+                        <td><span class="doctor-name loc-south-community">Steph</span></td>
+                        <td><span class="doctor-name loc-south-community">Fadz</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="location-legend">
+                <div class="legend-item"><span class="legend-dot sdmh"></span> Consults = SDMH (Shoalhaven District Memorial Hospital)</div>
+                <div class="legend-item"><span class="legend-dot south-community"></span> Community = Shoalhaven region</div>
+            </div>
+            <div style="padding: 8px 16px; font-size: 0.8rem; color: #666;">* Steph alternate Fridays off (next off: 23 Jan)</div>
+        </div>
+
+        <!-- Doctor View -->
+        <div id="southDoctorView" class="doctor-cards" style="display: none;">
+            <div class="doctor-card">
+                <div class="doctor-card-header">Stephanie Robinson <span class="fte">0.9 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-sdmh">Consults (SDMH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-sdmh">Consults (SDMH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-sdmh">Consults (SDMH) (alt. off)</span></div>
+                </div>
+            </div>
+            <div class="doctor-card">
+                <div class="doctor-card-header">Fadz wan Bahrum <span class="fte">0.8 FTE</span></div>
+                <div class="doctor-schedule">
+                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location off">—</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-south-community">Community</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-sdmh">Consults (SDMH)</span></div>
+                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-south-community">Community</span></div>
+                </div>
+            </div>
+            <div class="location-legend" style="grid-column: 1 / -1;">
+                <div class="legend-item"><span class="legend-dot sdmh"></span> Consults = SDMH (Shoalhaven District Memorial Hospital)</div>
+                <div class="legend-item"><span class="legend-dot south-community"></span> Community = Shoalhaven region</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-updated">Last updated: 19 January 2026</div>
+
+    <script>
+        const btnServiceView = document.getElementById('btnServiceView');
+        const btnDoctorView = document.getElementById('btnDoctorView');
+        const northServiceView = document.getElementById('northServiceView');
+        const northDoctorView = document.getElementById('northDoctorView');
+        const southServiceView = document.getElementById('southServiceView');
+        const southDoctorView = document.getElementById('southDoctorView');
+
+        btnServiceView.addEventListener('click', () => {
+            btnServiceView.classList.add('active');
+            btnDoctorView.classList.remove('active');
+            // Only show North views if roster is active
+            if (isNorthRosterActive()) {
+                northServiceView.style.display = 'block';
+                northDoctorView.style.display = 'none';
+            }
+            southServiceView.style.display = 'block';
+            southDoctorView.style.display = 'none';
+        });
+
+        btnDoctorView.addEventListener('click', () => {
+            btnDoctorView.classList.add('active');
+            btnServiceView.classList.remove('active');
+            // Only show North views if roster is active
+            if (isNorthRosterActive()) {
+                northServiceView.style.display = 'none';
+                northDoctorView.style.display = 'grid';
+            }
+            southServiceView.style.display = 'none';
+            southDoctorView.style.display = 'grid';
+        });
+
+        // Check if North roster is active (on or after 9 Feb 2026)
+        function isNorthRosterActive() {
+            const today = new Date();
+            const northStartDate = new Date(2026, 1, 9); // 9 Feb 2026
+            return today >= northStartDate;
+        }
+
+        // Initialize view based on date
+        function initDateAwareViews() {
+            const northComingSoon = document.getElementById('northComingSoon');
+            const infoBanner = document.getElementById('infoBanner');
+
+            if (isNorthRosterActive()) {
+                // Show the full roster
+                northComingSoon.style.display = 'none';
+                northServiceView.style.display = 'block';
+                infoBanner.innerHTML = '<strong>North:</strong> Effective from 9 February 2026 · <strong>South:</strong> Effective from 16 January 2026 — Actual coverage may vary due to leave or service needs.';
+            } else {
+                // Show coming soon for North
+                northComingSoon.style.display = 'block';
+                northServiceView.style.display = 'none';
+                northDoctorView.style.display = 'none';
+                infoBanner.innerHTML = '<strong>South:</strong> Effective from 16 January 2026 · <strong>North:</strong> New roster begins 9 February 2026 — Actual coverage may vary due to leave or service needs.';
+            }
+        }
+
+        // Run on page load
+        initDateAwareViews();
+    </script>
+</body>
+</html>
