@@ -718,7 +718,8 @@
 
     <script>
         // ==================== STAFF DATA ====================
-        const staffData = [
+        // Embedded fallback data — overridden by data.json fetch (see init)
+        let staffData = [
             { code: 'BT', name: 'Benjamin Thomas', fte: 1.0, region: 'North', workDays: [1,2,3,4,5] },
             { code: 'SR', name: 'Stephanie Robinson', fte: 0.9, region: 'South', workDays: [1,2,3,4,5] },
             { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
@@ -745,8 +746,8 @@
         }
 
         // ==================== LEAVE DATA ====================
-        // This should match the leave calendar data
-        const leaveData = [
+        // Embedded fallback; overridden by data.json fetch
+        let leaveData = [
             { staffCode: 'BT', startDate: new Date(2026, 0, 27), endDate: new Date(2026, 0, 30), leaveType: 'Annual Leave' },
             { staffCode: 'BT', startDate: new Date(2026, 1, 2), endDate: new Date(2026, 1, 6), leaveType: 'Annual Leave' },
             { staffCode: 'BT', startDate: new Date(2026, 1, 18), endDate: new Date(2026, 1, 18), leaveType: 'Unavailable' },
@@ -783,7 +784,7 @@
         ];
 
         // ==================== PUBLIC HOLIDAYS ====================
-        const publicHolidays = {
+        let publicHolidays = {
             '2026-01-01': "New Year's Day",
             '2026-01-26': 'Australia Day',
             '2026-04-03': 'Good Friday',
@@ -803,11 +804,23 @@
         let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
         let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
+        let historicalWeekendBalance = {}; // Set at generation time by getHistoricalWeekendBalance()
 
-        // Historical roster data (Jan-Mar 2026)
+        // v2: full historical on-call data (weekdays + weekends), populated from data.json
+        // Keyed by YYYY-MM-DD → { first: 'XX', second: 'YY'|null }
+        let historicalOnCall = {};
+
+        // v2: weekend balancing config
+        // alpha = 0 → pure equal share across staff
+        // alpha = 1 → pure FTE share
+        // alpha = 0.3 → mostly equal, slight FTE skew (our default)
+        const WEEKEND_ALPHA = 0.3;
+        const TRAINEE_CODES = ['PL', 'DS', 'MP'];
+
+        // Historical roster data (embedded fallback; overridden/extended by data.json)
         // For trainee entries (PL/DS/MP as 1st on-call with consultant as 2nd),
         // the consultant is credited since they provide the real backup.
-        const historicalRosters = {
+        let historicalRosters = {
             '2026-01': {
                 '2026-01-01': 'AL',
                 '2026-01-02': 'GB',
@@ -1183,30 +1196,139 @@
             return false;
         }
 
-        // Calculate historical weeknight balance across all historical months
+        // v2: count leave days for a staff member in [start, end] inclusive (calendar days)
+        function countLeaveDaysInRange(staffCode, start, end) {
+            let count = 0;
+            const day = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const last = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+            while (day <= last) {
+                if (isOnLeave(staffCode, day)) count++;
+                day.setDate(day.getDate() + 1);
+            }
+            return count;
+        }
+
+        // v2: availability fraction = (days not on leave) / total days in range
+        function availabilityFraction(staffCode, start, end) {
+            const totalDays = Math.round((end - start) / 86400000) + 1;
+            if (totalDays <= 0) return 1;
+            const leave = countLeaveDaysInRange(staffCode, start, end);
+            return Math.max(0, (totalDays - leave) / totalDays);
+        }
+
+        // v2: extract weeknight entries from historicalOnCall, crediting consultant (second) when first is trainee
+        function collectHistoricalWeeknightEntries() {
+            const entries = [];
+            for (const [dateKey, rec] of Object.entries(historicalOnCall)) {
+                const d = parseDate(dateKey);
+                const dow = d.getDay();
+                if (dow < 1 || dow > 5) continue; // Mon-Fri only
+                const credited = TRAINEE_CODES.includes(rec.first) ? rec.second : rec.first;
+                entries.push({ date: d, credited });
+            }
+            entries.sort((a, b) => a.date - b.date);
+            return entries;
+        }
+
+        // v2: extract weekend blocks from historicalOnCall (one entry per Sat-Sun block)
+        function collectHistoricalWeekendBlocks() {
+            const seen = new Set();
+            const blocks = [];
+            for (const [dateKey, rec] of Object.entries(historicalOnCall)) {
+                const d = parseDate(dateKey);
+                const dow = d.getDay();
+                if (dow !== 6 && dow !== 0) continue; // Sat or Sun
+                const sat = dow === 6 ? d : (() => {
+                    const s = new Date(d); s.setDate(s.getDate() - 1); return s;
+                })();
+                const satKey = formatDateKey(sat);
+                if (seen.has(satKey)) continue;
+                seen.add(satKey);
+                // Use the Saturday's record (fall back to this record if Sat missing)
+                const satRec = historicalOnCall[satKey] || rec;
+                const credited = TRAINEE_CODES.includes(satRec.first) ? satRec.second : satRec.first;
+                blocks.push({ sat, credited });
+            }
+            blocks.sort((a, b) => a.sat - b.sat);
+            return blocks;
+        }
+
+        // Calculate historical weeknight balance across all historical data (leave-aware)
         // Uses staffData (not getActiveStaff) - only tracks 8 regular staff, not Locum
         function getHistoricalWeeknightBalance() {
             const balance = {};
             staffData.forEach(s => { balance[s.code] = { actual: 0, fair: 0, surplus: 0 }; });
 
-            let totalWeeknights = 0;
-            const totalFTE = staffData.reduce((sum, s) => sum + s.fte, 0);
+            const entries = collectHistoricalWeeknightEntries();
+            if (entries.length === 0) return balance;
 
-            for (const [monthKey, roster] of Object.entries(historicalRosters)) {
-                for (const [dateKey, staffCode] of Object.entries(roster)) {
-                    const date = parseDate(dateKey);
-                    const dow = date.getDay();
-                    if (dow >= 1 && dow <= 5) { // Weeknight (Mon-Fri)
-                        totalWeeknights++;
-                        if (balance[staffCode]) {
-                            balance[staffCode].actual++;
-                        }
-                    }
+            // Count actual
+            let staffWeeknights = 0;
+            entries.forEach(e => {
+                if (e.credited && balance[e.credited]) {
+                    balance[e.credited].actual++;
+                    staffWeeknights++;
                 }
-            }
+            });
+
+            const start = entries[0].date;
+            const end = entries[entries.length - 1].date;
+
+            // Leave-aware effective FTE over the period
+            let totalEffFTE = 0;
+            const effFTE = {};
+            staffData.forEach(s => {
+                effFTE[s.code] = s.fte * availabilityFraction(s.code, start, end);
+                totalEffFTE += effFTE[s.code];
+            });
 
             staffData.forEach(s => {
-                balance[s.code].fair = (s.fte / totalFTE) * totalWeeknights;
+                balance[s.code].fair = totalEffFTE > 0
+                    ? (effFTE[s.code] / totalEffFTE) * staffWeeknights
+                    : 0;
+                balance[s.code].surplus = balance[s.code].actual - balance[s.code].fair;
+            });
+
+            return balance;
+        }
+
+        // v2: leave-aware weekend balance with alpha blend (equal vs FTE)
+        function getHistoricalWeekendBalance() {
+            const balance = {};
+            staffData.forEach(s => { balance[s.code] = { actual: 0, fair: 0, surplus: 0 }; });
+
+            const blocks = collectHistoricalWeekendBlocks();
+            if (blocks.length === 0) return balance;
+
+            // Count actual
+            let staffBlocks = 0;
+            blocks.forEach(b => {
+                if (b.credited && balance[b.credited]) {
+                    balance[b.credited].actual++;
+                    staffBlocks++;
+                }
+            });
+
+            const start = blocks[0].sat;
+            const end = blocks[blocks.length - 1].sat;
+
+            // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA
+            let totalAvail = 0, totalEffFTE = 0;
+            const avail = {}, effFTE = {};
+            staffData.forEach(s => {
+                avail[s.code] = availabilityFraction(s.code, start, end);
+                effFTE[s.code] = s.fte * avail[s.code];
+                totalAvail += avail[s.code];
+                totalEffFTE += effFTE[s.code];
+            });
+
+            const alpha = WEEKEND_ALPHA;
+            staffData.forEach(s => {
+                const equalShare = totalAvail > 0
+                    ? (avail[s.code] / totalAvail) * staffBlocks : 0;
+                const fteShare = totalEffFTE > 0
+                    ? (effFTE[s.code] / totalEffFTE) * staffBlocks : 0;
+                balance[s.code].fair = (1 - alpha) * equalShare + alpha * fteShare;
                 balance[s.code].surplus = balance[s.code].actual - balance[s.code].fair;
             });
 
@@ -1223,6 +1345,7 @@
 
             // Calculate historical balance once for use in priority scoring
             historicalBalance = getHistoricalWeeknightBalance();
+            historicalWeekendBalance = getHistoricalWeekendBalance();
 
             const warnings = [];
 
@@ -1239,6 +1362,7 @@
             });
 
             // Weekend priority: prioritize those who didn't have a weekend last month
+            // v2: also factor in historical weekend surplus (leave-aware, alpha=0.3 blend)
             function getWeekendPriority(staffCode) {
                 let priority = 0;
 
@@ -1247,6 +1371,17 @@
 
                 // Penalty if they had a weekend last month (from checkboxes)
                 if (hadWeekendLastMonth(staffCode)) priority += 50;
+
+                // v2: historical weekend balance nudge (skip Locum - no history)
+                if (staffCode !== 'Locum') {
+                    const hist = historicalWeekendBalance[staffCode];
+                    if (hist) {
+                        // surplus > 0 = historically over → lower priority (add)
+                        // surplus < 0 = under → boost priority (subtract)
+                        // Weight: 10 per unit surplus (strong nudge, since weekends are rare)
+                        priority += hist.surplus * 10;
+                    }
+                }
 
                 // Small random factor for tie-breaking
                 priority += Math.random() * 0.1;
@@ -1953,6 +2088,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
         }
 
         // ==================== HISTORICAL BALANCE ====================
+        // v2: shows BOTH weeknight (pure FTE, leave-aware) and weekend (alpha=0.3 blend, leave-aware) balance
         function renderHistoricalBalance() {
             const container = document.getElementById('historicalBalanceContent');
             const monthCount = Object.keys(historicalRosters).length;
@@ -1963,30 +2099,53 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 return;
             }
 
-            const balance = getHistoricalWeeknightBalance();
+            const wnBalance = getHistoricalWeeknightBalance();
+            const weBalance = getHistoricalWeekendBalance();
 
-            let html = '<table style="width:100%; font-size:0.85rem; border-collapse:collapse;">';
-            html += '<tr style="border-bottom:1px solid #e5e7eb;">' +
-                    '<th style="text-align:left; padding:4px 8px;">Name</th>' +
-                    '<th style="text-align:center; padding:4px 8px;">Weeknights</th>' +
-                    '<th style="text-align:center; padding:4px 8px;">Fair Share</th>' +
-                    '<th style="text-align:center; padding:4px 8px;">Balance</th></tr>';
+            const colorFor = (surplus, strong = 1, moderate = 0.5) => {
+                if (surplus > strong) return { color: '#dc2626', bg: '#fef2f2' };
+                if (surplus > moderate) return { color: '#d97706', bg: '' };
+                if (surplus < -strong) return { color: '#059669', bg: '#f0fdf4' };
+                if (surplus < -moderate) return { color: '#0284c7', bg: '' };
+                return { color: '#666', bg: '' };
+            };
+            const fmt = (n) => (n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
+
+            let html = '<div style="font-size:0.8rem; color:#666; margin-bottom:6px;">' +
+                       'Leave-aware · weeknights pure FTE · weekends α=0.3 (mostly equal, slight FTE skew)' +
+                       '</div>';
+            html += '<table style="width:100%; font-size:0.85rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:2px solid #e5e7eb;">' +
+                    '<th rowspan="2" style="text-align:left; padding:4px 8px; vertical-align:bottom;">Name</th>' +
+                    '<th colspan="3" style="text-align:center; padding:4px 8px; border-left:1px solid #e5e7eb;">Weeknights</th>' +
+                    '<th colspan="3" style="text-align:center; padding:4px 8px; border-left:1px solid #e5e7eb;">Weekends</th></tr>';
+            html += '<tr style="border-bottom:1px solid #e5e7eb; font-size:0.75rem; color:#666;">' +
+                    '<th style="text-align:center; padding:4px 8px; border-left:1px solid #e5e7eb;">Actual</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Fair</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Δ</th>' +
+                    '<th style="text-align:center; padding:4px 8px; border-left:1px solid #e5e7eb;">Actual</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Fair</th>' +
+                    '<th style="text-align:center; padding:4px 8px;">Δ</th></tr>';
 
             const sorted = staffData.slice().sort((a, b) =>
                 a.name.split(' ').pop().localeCompare(b.name.split(' ').pop())
             );
 
             sorted.forEach(s => {
-                const b = balance[s.code];
-                const surplusDisplay = b.surplus > 0 ? `+${b.surplus.toFixed(1)}` : b.surplus.toFixed(1);
-                const color = b.surplus > 1 ? '#dc2626' : b.surplus < -1 ? '#059669' : '#666';
-                const bg = b.surplus > 1 ? '#fef2f2' : b.surplus < -1 ? '#f0fdf4' : '';
+                const wn = wnBalance[s.code];
+                const we = weBalance[s.code];
+                const wnStyle = colorFor(wn.surplus, 1, 0.5);
+                const weStyle = colorFor(we.surplus, 0.6, 0.3);
 
-                html += `<tr style="border-bottom:1px solid #f3f4f6; ${bg ? 'background:' + bg : ''}">` +
-                        `<td style="padding:4px 8px;">${s.name.split(' ').pop()}</td>` +
-                        `<td style="text-align:center; padding:4px 8px;">${b.actual}</td>` +
-                        `<td style="text-align:center; padding:4px 8px;">${b.fair.toFixed(1)}</td>` +
-                        `<td style="text-align:center; padding:4px 8px; color:${color}; font-weight:600;">${surplusDisplay}</td></tr>`;
+                html += '<tr style="border-bottom:1px solid #f3f4f6;">' +
+                        `<td style="padding:4px 8px;">${s.name.split(' ').pop()} <span style="color:#999; font-size:0.75rem;">(${s.fte})</span></td>` +
+                        `<td style="text-align:center; padding:4px 8px; border-left:1px solid #f3f4f6; ${wnStyle.bg ? 'background:' + wnStyle.bg : ''}">${wn.actual}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; ${wnStyle.bg ? 'background:' + wnStyle.bg : ''}">${wn.fair.toFixed(1)}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; color:${wnStyle.color}; font-weight:600; ${wnStyle.bg ? 'background:' + wnStyle.bg : ''}">${fmt(wn.surplus)}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; border-left:1px solid #f3f4f6; ${weStyle.bg ? 'background:' + weStyle.bg : ''}">${we.actual}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; ${weStyle.bg ? 'background:' + weStyle.bg : ''}">${we.fair.toFixed(1)}</td>` +
+                        `<td style="text-align:center; padding:4px 8px; color:${weStyle.color}; font-weight:600; ${weStyle.bg ? 'background:' + weStyle.bg : ''}">${fmt(we.surplus)}</td>` +
+                        '</tr>';
             });
 
             html += '</table>';
@@ -2150,7 +2309,69 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             renderHistoricalBalance();
         }
 
-        init();
+        // v2: load data.json, apply overrides, then init
+        // Falls back to embedded data if fetch fails (site still works)
+        function parseISODateLocal(s) {
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function buildHistoricalOnCallFromData(oncallRoster) {
+            // Copy as-is; keys are YYYY-MM-DD, values are { first, second }
+            return { ...oncallRoster };
+        }
+
+        function buildHistoricalRostersFromOnCall(onCall) {
+            // Derive month-keyed weeknight map for backwards compat + monthCount UI
+            const out = {};
+            for (const [dateKey, rec] of Object.entries(onCall)) {
+                const d = parseISODateLocal(dateKey);
+                const dow = d.getDay();
+                if (dow < 1 || dow > 5) continue; // weeknights only
+                const credited = TRAINEE_CODES.includes(rec.first) ? rec.second : rec.first;
+                if (!credited) continue;
+                const monthKey = dateKey.slice(0, 7);
+                if (!out[monthKey]) out[monthKey] = {};
+                out[monthKey][dateKey] = credited;
+            }
+            return out;
+        }
+
+        (async function loadDataAndInit() {
+            try {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (res.ok) {
+                    const d = await res.json();
+                    if (d.staff) staffData = d.staff;
+                    if (d.publicHolidays) publicHolidays = d.publicHolidays;
+                    if (d.leave) {
+                        leaveData = d.leave.map(l => ({
+                            staffCode: l.staffCode,
+                            startDate: parseISODateLocal(l.startDate),
+                            endDate: parseISODateLocal(l.endDate),
+                            leaveType: l.leaveType
+                        }));
+                    }
+                    if (d.oncallRoster) {
+                        historicalOnCall = buildHistoricalOnCallFromData(d.oncallRoster);
+                        historicalRosters = buildHistoricalRostersFromOnCall(historicalOnCall);
+                    }
+                    console.log('[v2 generator] Loaded data.json (',
+                        Object.keys(historicalOnCall).length, 'historical days,',
+                        leaveData.length, 'leave entries,',
+                        staffData.length, 'staff)');
+                }
+            } catch (e) {
+                console.warn('[v2 generator] data.json fetch failed, using embedded fallback:', e);
+                // Build historicalOnCall from embedded historicalRosters (weeknights only)
+                for (const [monthKey, roster] of Object.entries(historicalRosters)) {
+                    for (const [dateKey, code] of Object.entries(roster)) {
+                        historicalOnCall[dateKey] = { first: code, second: null };
+                    }
+                }
+            }
+            init();
+        })();
     </script>
 </body>
 </html>

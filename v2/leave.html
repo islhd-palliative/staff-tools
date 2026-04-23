@@ -516,7 +516,7 @@
         let currentTypeFilter = 'all';
 
         // Staff data
-        const staff = {
+        let staff = {
             'BT': { name: 'Benjamin Thomas', region: 'North', role: 'Head of Service' },
             'AL': { name: 'Angela Lo', region: 'North', role: 'Divisional Director' },
             'GB': { name: 'Greg Barclay', region: 'North', role: 'Senior Staff Specialist' },
@@ -528,7 +528,7 @@
         };
 
         // NSW Public Holidays 2026-2027
-        const publicHolidays = {
+        let publicHolidays = {
             // 2026
             '2026-01-01': 'New Year\'s Day',
             '2026-01-26': 'Australia Day',
@@ -568,8 +568,37 @@
             return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
         }
 
-        // Load leave data - use embedded data directly
-        function loadLeaveData() {
+        // Parse 'YYYY-MM-DD' as local date
+        function parseISODate(s) {
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        // Load leave data - fetch data.json first, fall back to embedded
+        async function loadLeaveData() {
+            try {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.publicHolidays) publicHolidays = data.publicHolidays;
+                    if (data.leave) {
+                        leaveData = data.leave.map(l => ({
+                            staffCode: l.staffCode,
+                            staffName: l.staffName,
+                            region: l.region,
+                            startDate: parseISODate(l.startDate),
+                            endDate: parseISODate(l.endDate),
+                            leaveType: l.leaveType,
+                            notes: l.notes
+                        }));
+                        console.log('[v2] Loaded leave from data.json');
+                        renderCalendar();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('[v2] data.json fetch failed, using embedded fallback:', e);
+            }
             loadEmbeddedData();
         }
 
