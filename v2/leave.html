@@ -31,6 +31,7 @@
             margin-bottom: 16px;
         }
 
+        /* Legacy single-row controls (kept for backward compat; no longer used) */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -43,6 +44,66 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        /* New grouped toolbar — Option A */
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .toolbar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .toolbar-group-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .toolbar-group-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        /* Administration group gets a warning treatment so it reads "writes, careful" */
+        .toolbar-group.admin {
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+        .toolbar-group.admin .toolbar-group-label {
+            color: #92400e;
+        }
+        /* Links group is airier — less visual weight for external stuff */
+        .toolbar-group.links {
+            background: white;
+            border-style: dashed;
+        }
+        .toolbar-group.links .toolbar-group-buttons {
+            gap: 6px;
+        }
+        .toolbar-group.links a {
+            font-size: 0.85rem !important;
+            padding: 6px 10px !important;
         }
 
         label {
@@ -592,6 +653,8 @@
             body { padding: 8px; }
             h1 { font-size: 1.2rem; }
             .controls { flex-direction: column; align-items: stretch; }
+            .toolbar-row { flex-direction: column; }
+            .toolbar-group { width: 100%; }
             .type-filter { justify-content: center; }
             .calendar-container { grid-template-columns: 1fr; }
             .day-cell { min-height: 50px; }
@@ -611,57 +674,82 @@
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
     <p class="last-updated">Last updated: <span id="lastUpdatedText">—</span></p>
 
-    <div class="controls">
-        <div class="control-group">
-            <label for="staffFilter">Show:</label>
-            <select id="staffFilter">
-                <option value="all">All Staff</option>
-                <option value="north">North Only</option>
-                <option value="south">South Only</option>
-                <optgroup label="North">
-                    <option value="BT">Benjamin Thomas</option>
-                    <option value="AL">Angela Lo</option>
-                    <option value="GB">Greg Barclay</option>
-                    <option value="HY">Helen Yourlo</option>
-                    <option value="MK">Muoi Khou</option>
-                    <option value="RW">Ron Wai</option>
-                </optgroup>
-                <optgroup label="South">
-                    <option value="SR">Stephanie Robinson</option>
-                    <option value="Fadz">Fadz wan Bahrum</option>
-                </optgroup>
-            </select>
+    <div class="toolbar">
+        <!-- Row 1: Filter + Administration -->
+        <div class="toolbar-row">
+            <div class="toolbar-group">
+                <div class="toolbar-group-label">Filter</div>
+                <div class="toolbar-group-buttons">
+                    <label for="staffFilter">Show:</label>
+                    <select id="staffFilter">
+                        <option value="all">All Staff</option>
+                        <option value="north">North Only</option>
+                        <option value="south">South Only</option>
+                        <optgroup label="North">
+                            <option value="BT">Benjamin Thomas</option>
+                            <option value="AL">Angela Lo</option>
+                            <option value="GB">Greg Barclay</option>
+                            <option value="HY">Helen Yourlo</option>
+                            <option value="MK">Muoi Khou</option>
+                            <option value="RW">Ron Wai</option>
+                        </optgroup>
+                        <optgroup label="South">
+                            <option value="SR">Stephanie Robinson</option>
+                            <option value="Fadz">Fadz wan Bahrum</option>
+                        </optgroup>
+                    </select>
+                    <label for="monthJump">Jump to:</label>
+                    <select id="monthJump">
+                        <option value="2026-0">January 2026</option>
+                        <option value="2026-1">February 2026</option>
+                        <option value="2026-2">March 2026</option>
+                        <option value="2026-3">April 2026</option>
+                        <option value="2026-4">May 2026</option>
+                        <option value="2026-5">June 2026</option>
+                        <option value="2026-6">July 2026</option>
+                        <option value="2026-7">August 2026</option>
+                        <option value="2026-8">September 2026</option>
+                        <option value="2026-9">October 2026</option>
+                        <option value="2026-10">November 2026</option>
+                        <option value="2026-11">December 2026</option>
+                        <option value="2027-0">January 2027</option>
+                        <option value="2027-1">February 2027</option>
+                    </select>
+                    <button onclick="jumpToMonth()">Go</button>
+                </div>
+            </div>
+
+            <div class="toolbar-group admin" title="Administration — writes are password-protected and publish live to everyone">
+                <div class="toolbar-group-label">🔒 Administration</div>
+                <div class="toolbar-group-buttons">
+                    <button class="btn-add-leave" onclick="openAddLeaveModal()">+ Add leave</button>
+                    <button class="btn-manage" id="manageBtn" onclick="toggleManagePanel()">📋 Manage entries</button>
+                </div>
+            </div>
         </div>
-        <div class="control-group">
-            <label for="monthJump">Jump to:</label>
-            <select id="monthJump">
-                <option value="2026-0">January 2026</option>
-                <option value="2026-1">February 2026</option>
-                <option value="2026-2">March 2026</option>
-                <option value="2026-3">April 2026</option>
-                <option value="2026-4">May 2026</option>
-                <option value="2026-5">June 2026</option>
-                <option value="2026-6">July 2026</option>
-                <option value="2026-7">August 2026</option>
-                <option value="2026-8">September 2026</option>
-                <option value="2026-9">October 2026</option>
-                <option value="2026-10">November 2026</option>
-                <option value="2026-11">December 2026</option>
-                <option value="2027-0">January 2027</option>
-                <option value="2027-1">February 2027</option>
-            </select>
-            <button onclick="jumpToMonth()">Go</button>
+
+        <!-- Row 2: Availability checker + Links -->
+        <div class="toolbar-row">
+            <div class="toolbar-group">
+                <div class="toolbar-group-label">When can I take leave?</div>
+                <div class="toolbar-group-buttons">
+                    <button onclick="showUpcoming()">My Upcoming Leave</button>
+                    <button class="btn-green" onclick="showAvailable()" title="Highlight days where leave would currently be approved (under the regional cap)">Available</button>
+                    <button class="btn-amber" onclick="showLimited()" title="Highlight days where leave is limited (cap approaching)">Limited</button>
+                    <button class="btn-red" onclick="showRestricted()" title="Highlight days where leave is unlikely to be approved (cap reached)">Restricted</button>
+                    <button class="btn-outline" onclick="resetView()">Reset</button>
+                </div>
+            </div>
+
+            <div class="toolbar-group links">
+                <div class="toolbar-group-label">Links</div>
+                <div class="toolbar-group-buttons">
+                    <a href="summary.html" style="background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">Entitlements Summary</a>
+                    <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">Apply for Leave ↗</a>
+                    <a href="leave.ics" onclick="event.preventDefault(); navigator.clipboard.writeText('https://islhd-palliative.github.io/staff-tools/leave.ics').then(() => { const el = this; el.textContent = '✓ Link Copied!'; setTimeout(() => el.textContent = '📅 Subscribe to Calendar', 2000); });" style="background: #059669; color: white; border-radius: 6px; text-decoration: none; font-weight: 500; cursor: pointer;" title="Copy .ics subscription URL — paste into Outlook (File → Account Settings → Internet Calendars → New)">📅 Subscribe to Calendar</a>
+                </div>
+            </div>
         </div>
-        <button class="btn-add-leave" onclick="openAddLeaveModal()">+ Add leave</button>
-        <button class="btn-manage" id="manageBtn" onclick="toggleManagePanel()">📋 Manage entries</button>
-        <button onclick="showUpcoming()">My Upcoming Leave</button>
-        <button class="btn-green" onclick="showAvailable()">Available</button>
-        <button class="btn-amber" onclick="showLimited()">Limited</button>
-        <button class="btn-red" onclick="showRestricted()">Restricted</button>
-        <button class="btn-outline" onclick="resetView()">Reset</button>
-        <a href="summary.html" style="padding: 8px 12px; background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Entitlements Summary</a>
-        <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="padding: 8px 12px; background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Apply for Leave ↗</a>
-        <a href="leave.ics" onclick="event.preventDefault(); navigator.clipboard.writeText('https://islhd-palliative.github.io/staff-tools/leave.ics').then(() => { const el = this; el.textContent = '✓ Link Copied!'; setTimeout(() => el.textContent = '📅 Subscribe to Calendar', 2000); });" style="padding: 8px 12px; background: #059669; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; cursor: pointer;" title="Copy .ics subscription URL — paste into Outlook (File → Account Settings → Internet Calendars → New)">📅 Subscribe to Calendar</a>
     </div>
 
     <div class="type-filter">

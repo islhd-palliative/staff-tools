@@ -13,7 +13,9 @@
         3,
         4,
         5
-      ]
+      ],
+      "daysPerWeek": 5,
+      "excessBalanceWeeks": 0
     },
     {
       "code": "SR",
@@ -26,7 +28,9 @@
         3,
         4,
         5
-      ]
+      ],
+      "daysPerWeek": 4.5,
+      "excessBalanceWeeks": 8.4
     },
     {
       "code": "AL",
@@ -39,7 +43,9 @@
         3,
         4,
         5
-      ]
+      ],
+      "daysPerWeek": 4,
+      "excessBalanceWeeks": 17
     },
     {
       "code": "Fadz",
@@ -51,7 +57,9 @@
         3,
         4,
         5
-      ]
+      ],
+      "daysPerWeek": 4,
+      "excessBalanceWeeks": 0
     },
     {
       "code": "HY",
@@ -62,7 +70,9 @@
         3,
         4,
         5
-      ]
+      ],
+      "daysPerWeek": 3,
+      "excessBalanceWeeks": 0
     },
     {
       "code": "MK",
@@ -73,7 +83,9 @@
         2,
         3,
         4
-      ]
+      ],
+      "daysPerWeek": 3,
+      "excessBalanceWeeks": 0
     },
     {
       "code": "RW",
@@ -83,7 +95,9 @@
       "workDays": [
         1,
         2
-      ]
+      ],
+      "daysPerWeek": 2,
+      "excessBalanceWeeks": 0
     },
     {
       "code": "GB",
@@ -93,7 +107,9 @@
       "workDays": [
         2,
         5
-      ]
+      ],
+      "daysPerWeek": 2,
+      "excessBalanceWeeks": 25
     }
   ],
   "leave": [

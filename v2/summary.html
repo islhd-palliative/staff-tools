@@ -1016,9 +1016,7 @@
 
             container.innerHTML = html;
 
-            // Update timestamp
-            document.getElementById('lastUpdated').textContent =
-                `Last updated: ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            // Timestamp is set by setLastUpdatedLabel() after this returns
         }
 
         // Calculate leave for a specific year and staff member
@@ -1245,11 +1243,91 @@
 
             container.innerHTML = html;
 
-            document.getElementById('lastUpdated').textContent =
-                `Last updated: ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            // Timestamp is set by setLastUpdatedLabel() after this returns
         }
 
-        renderSummary();
+        // Parse YYYY-MM-DD as local date (avoids UTC off-by-one)
+        function parseISODate(s) {
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        // Fetch live data.json before first render. Summary falls back to embedded
+        // historical data for 2024/2025 (frozen) and merges live 2026+ data on top.
+        let liveDataGeneratedAt = null;
+
+        async function loadLiveDataAndRender() {
+            try {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const d = await res.json();
+                liveDataGeneratedAt = d.generatedAt || null;
+
+                // Override excessBalanceWeeks + daysPerWeek from data.json (updated after
+                // each StaffLink export, so stay out of the HTML)
+                if (Array.isArray(d.staff)) {
+                    const byCode = Object.fromEntries(d.staff.map(s => [s.code, s]));
+                    staffData.forEach(s => {
+                        const live = byCode[s.code];
+                        if (!live) return;
+                        if (typeof live.excessBalanceWeeks === 'number') {
+                            s.excessBalanceWeeks = live.excessBalanceWeeks;
+                        }
+                        if (typeof live.daysPerWeek === 'number') {
+                            s.daysPerWeek = live.daysPerWeek;
+                        }
+                    });
+                }
+
+                // Replace embedded 2026-2027 leave with the live version from data.json
+                if (Array.isArray(d.leave)) {
+                    leaveDataByYear['2026-2027'] = d.leave.map(l => ({
+                        staffCode: l.staffCode,
+                        startDate: parseISODate(l.startDate),
+                        endDate: parseISODate(l.endDate),
+                        leaveType: l.leaveType,
+                        notes: l.notes
+                    }));
+                }
+
+                // Replace embedded 2026-2027 public holidays with the live version
+                if (d.publicHolidays && typeof d.publicHolidays === 'object') {
+                    publicHolidaysByYear['2026-2027'] = Object.keys(d.publicHolidays)
+                        .map(parseISODate)
+                        .sort((a, b) => a - b);
+                }
+
+                // Re-point currently-selected year to the possibly-refreshed arrays
+                if (selectedYear !== 'trend') {
+                    leaveData = leaveDataByYear[selectedYear];
+                    publicHolidays = publicHolidaysByYear[selectedYear];
+                }
+
+                console.log('[v2 summary] Loaded data.json (generated ' + liveDataGeneratedAt + ')');
+            } catch (e) {
+                console.warn('[v2 summary] data.json fetch failed, using embedded fallback:', e);
+            }
+            renderSummary();
+            setLastUpdatedLabel();
+        }
+
+        function setLastUpdatedLabel() {
+            const el = document.getElementById('lastUpdated');
+            if (!el) return;
+            if (liveDataGeneratedAt) {
+                try {
+                    const d = parseISODate(liveDataGeneratedAt);
+                    el.textContent = 'Last updated: ' +
+                        d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) +
+                        ' (live)';
+                    return;
+                } catch { /* fall through */ }
+            }
+            el.textContent = 'Last updated: ' +
+                new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        loadLiveDataAndRender();
 
         // Year selector event listener
         document.getElementById('yearSelect').addEventListener('change', function() {
@@ -1261,6 +1339,7 @@
                 publicHolidays = publicHolidaysByYear[selectedYear];
                 renderSummary();
             }
+            setLastUpdatedLabel();
         });
     </script>
 </body>
