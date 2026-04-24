@@ -1148,6 +1148,134 @@
     "2026-09-30": {
       "first": "SR",
       "second": null
+    },
+    "2026-10-03": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-10-04": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-10-10": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-11": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-17": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-18": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-24": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-10-25": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-10-31": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-11-01": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-10-01": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-10-02": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-05": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-06": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-10-07": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-10-08": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-10-09": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-10-12": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-10-13": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-14": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-15": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-10-16": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-10-19": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-20": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-10-21": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-22": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-10-23": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-10-26": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-10-27": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-10-28": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-10-29": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-10-30": {
+      "first": "HY",
+      "second": null
     }
   },
   "numOncallRoster": {
