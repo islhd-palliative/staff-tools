@@ -319,9 +319,10 @@
       "staffCode": "MK",
       "staffName": "Muoi Khou",
       "region": "North",
-      "startDate": "2026-01-01",
+      "startDate": "2026-01-05",
       "endDate": "2026-01-11",
-      "leaveType": "Annual Leave"
+      "leaveType": "TESL",
+      "notes": "Corrected Apr 2026 from AL per leave analysis (StaffLink shows TESL)"
     },
     {
       "staffCode": "MK",
