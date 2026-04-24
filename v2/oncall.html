@@ -378,8 +378,8 @@
     <h1>After Hours On-Call Roster</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
 
-    <div class="roster-warning">
-        <strong>Last updated: 23 April 2026.</strong> For the most up-to-date roster, please refer to the latest version circulated via email.
+    <div class="roster-warning" id="lastUpdatedBanner">
+        <strong>Last updated: <span id="lastUpdatedDate">—</span>.</strong> Rosters update live when published from the generator.
     </div>
 
     <div class="controls">
@@ -1066,6 +1066,15 @@
             renderCalendar();
         });
 
+        // Format ISO date (YYYY-MM-DD) as "25 April 2026" for the banner
+        function formatLastUpdated(iso) {
+            if (!iso) return '—';
+            const [y, m, d] = String(iso).split('-').map(Number);
+            if (!y || !m || !d) return String(iso);
+            const date = new Date(y, m - 1, d);
+            return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
         // Initial load — fetch data.json then render (falls back to embedded on error)
         (async function loadAndRender() {
             try {
@@ -1074,10 +1083,14 @@
                     const d = await res.json();
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.oncallRoster) oncallData = d.oncallRoster;
-                    console.log('[v2] Loaded data.json');
+                    const lastUpdatedEl = document.getElementById('lastUpdatedDate');
+                    if (lastUpdatedEl) lastUpdatedEl.textContent = formatLastUpdated(d.generatedAt);
+                    console.log('[v2] Loaded data.json, generatedAt:', d.generatedAt);
                 }
             } catch (e) {
                 console.warn('[v2] data.json fetch failed, using embedded fallback:', e);
+                const lastUpdatedEl = document.getElementById('lastUpdatedDate');
+                if (lastUpdatedEl) lastUpdatedEl.textContent = 'unavailable';
             }
             updateMonthLabel();
             renderCalendar();
