@@ -521,6 +521,86 @@
             color: #0369a1;
         }
 
+        /* v2: new 4-button action bar */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+        @media (max-width: 720px) {
+            .action-buttons { grid-template-columns: repeat(2, 1fr); }
+        }
+        .action-btn-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .action-btn-card button {
+            padding: 14px 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 6px;
+            width: 100%;
+            line-height: 1.2;
+        }
+        .action-btn-card button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        button.btn-publish {
+            background: #dc2626;
+            color: white;
+        }
+        button.btn-publish:hover:not(:disabled) { background: #b91c1c; }
+        button.btn-save {
+            background: #2563eb;
+            color: white;
+        }
+        button.btn-save:hover:not(:disabled) { background: #1d4ed8; }
+        button.btn-open {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        button.btn-open:hover:not(:disabled) { background: #f3f4f6; }
+        button.btn-clear {
+            background: white;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        button.btn-clear:hover:not(:disabled) { background: #fef2f2; }
+        .action-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.4;
+            text-align: center;
+            padding: 0 4px;
+        }
+
+        /* auto-save indicator */
+        .auto-save-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            color: #6b7280;
+            padding: 4px 10px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        .auto-save-indicator .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            transition: background 0.2s;
+        }
+        .auto-save-indicator.saving .dot { background: #f59e0b; }
+        .auto-save-indicator.error .dot { background: #dc2626; }
+
         /* Warnings */
         .warning-box {
             background: #fef3c7;
@@ -699,18 +779,30 @@
         </div>
     </div>
 
-    <!-- Export Section -->
+    <!-- Save & Publish Section -->
     <div class="export-section">
-        <h2>Export & Save</h2>
-        <div class="export-buttons">
-            <button onclick="saveDraft()">Save Draft</button>
-            <button class="btn-green" onclick="downloadRosterDataJS()">Download roster-data.js</button>
-            <button class="btn-outline" onclick="exportJSON()">Download Backup</button>
-            <button class="btn-outline" onclick="importJSON()">Restore from Backup</button>
-            <button class="btn-red" onclick="wipeTestData()">Clear All Data</button>
+        <h2>Save &amp; Publish</h2>
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+            <span class="dot"></span>
+            <span id="autoSaveText">Your work auto-saves to this browser</span>
         </div>
-        <div class="export-info">
-            <strong>Workflow:</strong> Generate draft &rarr; Review &amp; adjust &rarr; Save draft &rarr; When finalized, click "Download roster-data.js" and send to Ben for deployment.
+        <div class="action-buttons">
+            <div class="action-btn-card">
+                <button class="btn-publish" onclick="publishToWebsite()">🚀 Publish to website</button>
+                <div class="action-desc">Sends the roster <strong>LIVE</strong> — staff will see it in about 1 minute.</div>
+            </div>
+            <div class="action-btn-card">
+                <button class="btn-save" onclick="saveFile()">💾 Save file</button>
+                <div class="action-desc">Downloads a backup to your computer.</div>
+            </div>
+            <div class="action-btn-card">
+                <button class="btn-open" onclick="openFile()">📂 Open file</button>
+                <div class="action-desc">Loads a roster you previously saved.</div>
+            </div>
+            <div class="action-btn-card">
+                <button class="btn-clear" onclick="clearAll()">🗑️ Clear</button>
+                <div class="action-desc">Wipes the current draft and starts over.</div>
+            </div>
         </div>
     </div>
 
@@ -1893,6 +1985,32 @@
         // ==================== SAVE/LOAD ====================
         let savedDrafts = {}; // { 'YYYY-MM': { roster: {...}, savedAt: '...' } }
 
+        // v2 publish endpoint
+        const PUBLISH_ENDPOINT = 'https://staff-tools-publish.benjamin-thomas.workers.dev';
+
+        // Raw data.json from initial fetch (used as base for publish merges)
+        let originalDataJson = null;
+
+        // Auto-save indicator — flashes amber while saving, green when done
+        function flashAutoSave(state) {
+            const el = document.getElementById('autoSaveIndicator');
+            const text = document.getElementById('autoSaveText');
+            if (!el || !text) return;
+            el.classList.remove('error', 'saving');
+            if (state === 'saving') {
+                el.classList.add('saving');
+                text.textContent = 'Saving draft…';
+                return;
+            }
+            if (state === 'error') {
+                el.classList.add('error');
+                text.textContent = 'Save failed — check browser storage';
+                return;
+            }
+            const ts = new Date().toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+            text.textContent = `Draft auto-saved · ${ts}`;
+        }
+
         function saveToLocalStorage() {
             const data = {
                 adHocUnavailability,
@@ -1902,7 +2020,13 @@
                 currentYear,
                 locumEnabled
             };
-            localStorage.setItem('oncall_generator_test', JSON.stringify(data));
+            try {
+                localStorage.setItem('oncall_generator_test', JSON.stringify(data));
+                flashAutoSave();
+            } catch (e) {
+                console.warn('[v2] localStorage save failed', e);
+                flashAutoSave('error');
+            }
         }
 
         function loadFromLocalStorage() {
@@ -2084,6 +2208,172 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 document.getElementById('rosterMonthLabel').textContent = 'Select Month';
                 document.getElementById('warningsContainer').innerHTML = '';
                 alert('All test data wiped');
+            }
+        }
+
+        // ==================== V2 ACTIONS (Save / Open / Clear / Publish) ====================
+
+        // Save current draft to a JSON file on the user's computer
+        function saveFile() {
+            if (Object.keys(currentRoster).length === 0 && Object.keys(savedDrafts).length === 0) {
+                alert('Nothing to save yet — generate a roster first.');
+                return;
+            }
+            const data = {
+                exportDate: new Date().toISOString(),
+                currentRoster,
+                currentMonth,
+                currentYear,
+                savedDrafts,
+                adHocUnavailability,
+                locumEnabled
+            };
+            const monthLabel = (currentMonth !== null)
+                ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
+                : 'draft';
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `oncall-roster-${monthLabel}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Open (upload) a saved JSON file from the user's computer
+        function openFile() {
+            const hasWork = Object.keys(currentRoster).length > 0
+                         || Object.keys(savedDrafts).length > 0
+                         || adHocUnavailability.length > 0;
+            if (hasWork) {
+                if (!confirm('This will REPLACE your current draft with the file you open.\n\nContinue?')) {
+                    return;
+                }
+            }
+            document.getElementById('jsonFileInput').click();
+        }
+
+        // Clear the current draft (confirms first)
+        function clearAll() {
+            if (!confirm('Wipe the current draft and start fresh?\n\nThis cannot be undone.')) return;
+            localStorage.removeItem('oncall_generator_test');
+            currentRoster = {};
+            savedDrafts = {};
+            adHocUnavailability = [];
+            currentMonth = null;
+            currentYear = null;
+            renderUnavailability();
+            renderRoster();
+            const equityBody = document.getElementById('equityBody');
+            if (equityBody) equityBody.innerHTML = '';
+            const label = document.getElementById('rosterMonthLabel');
+            if (label) label.textContent = 'Select Month';
+            const warns = document.getElementById('warningsContainer');
+            if (warns) warns.innerHTML = '';
+            flashAutoSave();
+        }
+
+        // Publish the current month's roster LIVE via the Cloudflare Worker
+        async function publishToWebsite() {
+            if (currentMonth === null || Object.keys(currentRoster).length === 0) {
+                alert('Nothing to publish — generate a roster first.');
+                return;
+            }
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthLabel = `${monthNames[currentMonth]} ${currentYear}`;
+            const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+
+            const ok = confirm(
+                `Publish the ${monthLabel} roster LIVE?\n\n` +
+                `Staff will see the updated roster on the website within about 1 minute.\n\n` +
+                `(Publish as many times as you like — each publish replaces the previous one.)`
+            );
+            if (!ok) return;
+
+            const password = prompt('Enter publish password:');
+            if (password === null) return;
+            if (!password.trim()) {
+                alert('No password entered.');
+                return;
+            }
+
+            // Build the new data.json payload. Start from the original data.json we fetched
+            // (preserves staff, leave, holidays, nursing roster, etc.) and only touch oncallRoster.
+            let base;
+            if (originalDataJson) {
+                base = JSON.parse(JSON.stringify(originalDataJson));
+            } else {
+                // Fallback: synthesise a minimal data.json from in-memory state
+                base = {
+                    schemaVersion: 1,
+                    staff: staffData,
+                    leave: [],
+                    publicHolidays,
+                    oncallRoster: { ...historicalOnCall },
+                    numOncallRoster: {}
+                };
+            }
+            if (!base.oncallRoster) base.oncallRoster = {};
+
+            // Strip existing entries for the publish month (so re-publish cleanly replaces)
+            for (const key of Object.keys(base.oncallRoster)) {
+                if (key.startsWith(monthKey + '-')) delete base.oncallRoster[key];
+            }
+
+            // Merge current roster in, formatted as { first, second }
+            for (const [dateKey, rec] of Object.entries(currentRoster)) {
+                base.oncallRoster[dateKey] = { first: rec.staffCode, second: null };
+            }
+
+            base.generatedAt = new Date().toISOString().slice(0, 10);
+
+            const btn = document.querySelector('.btn-publish');
+            const origText = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Publishing…'; }
+
+            try {
+                const res = await fetch(PUBLISH_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password,
+                        data: base,
+                        message: `v2: publish ${monthKey} roster via generator`
+                    })
+                });
+
+                let result = {};
+                try { result = await res.json(); } catch {}
+
+                if (res.ok && result.ok) {
+                    const shortSha = (result.commit || '').slice(0, 7);
+                    alert(
+                        `✓ Published!\n\n` +
+                        `The live website will update in about 1 minute.\n\n` +
+                        (shortSha ? `Commit: ${shortSha}` : '')
+                    );
+                } else if (res.status === 401) {
+                    alert('Wrong password — please try again.');
+                } else if (res.status === 409) {
+                    alert('Someone else published at the same time. Wait a moment and try again.');
+                } else {
+                    const detail = result.error || result.detail || `HTTP ${res.status}`;
+                    alert(
+                        `Publish failed: ${detail}\n\n` +
+                        `Your draft is still saved in your browser. Try again in a moment, ` +
+                        `or click "Save file" to keep a backup.`
+                    );
+                }
+            } catch (e) {
+                alert(
+                    `Couldn't reach the website:\n${e.message}\n\n` +
+                    `Check your internet connection and try again. ` +
+                    `Your draft is still safely saved in your browser.`
+                );
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = origText || '🚀 Publish to website'; }
             }
         }
 
@@ -2342,6 +2632,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 const res = await fetch('data.json', { cache: 'no-store' });
                 if (res.ok) {
                     const d = await res.json();
+                    originalDataJson = d; // keep raw for publish merges
                     if (d.staff) staffData = d.staff;
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.leave) {
