@@ -405,6 +405,15 @@
       "startDate": "2026-05-31",
       "endDate": "2026-07-04",
       "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "BT",
+      "staffName": "Benjamin Thomas",
+      "region": "North",
+      "startDate": "2099-02-02",
+      "endDate": "2099-02-02",
+      "leaveType": "Annual Leave",
+      "notes": "WORKER LOOP TEST — auto-revert in seconds"
     }
   ],
   "publicHolidays": {
