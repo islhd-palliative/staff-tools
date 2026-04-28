@@ -405,15 +405,6 @@
       "startDate": "2026-05-31",
       "endDate": "2026-07-04",
       "leaveType": "Annual Leave"
-    },
-    {
-      "staffCode": "BT",
-      "staffName": "Benjamin Thomas",
-      "region": "North",
-      "startDate": "2099-01-01",
-      "endDate": "2099-01-01",
-      "leaveType": "Annual Leave",
-      "notes": "AUTOMATION SMOKE TEST \u2014 will be removed within minutes"
     }
   ],
   "publicHolidays": {
