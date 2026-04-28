@@ -405,6 +405,14 @@
       "startDate": "2026-05-31",
       "endDate": "2026-07-04",
       "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "AL",
+      "staffName": "Angela Lo",
+      "region": "North",
+      "startDate": "2026-12-18",
+      "endDate": "2027-01-01",
+      "leaveType": "Annual Leave"
     }
   ],
   "publicHolidays": {
