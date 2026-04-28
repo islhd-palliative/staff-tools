@@ -1,0 +1,56 @@
+name: Regenerate leave.ics
+
+# Triggered whenever v2/data.json changes on main (which happens every time
+# the EA publishes via the Cloudflare Worker, or someone hand-edits the data
+# file). Regenerates leave.ics from data.json.leave and commits it back.
+#
+# Commits made by this workflow use the default GITHUB_TOKEN, which by GitHub
+# policy does NOT re-trigger workflows — so there is no infinite loop risk
+# even though we push back to main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v2/data.json'
+  workflow_dispatch:   # Allow manual run from the Actions tab
+
+permissions:
+  contents: write   # needed to commit the regenerated leave.ics
+
+concurrency:
+  # Serialise runs so two rapid publishes don't race on the file SHA.
+  group: regenerate-ics
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          # The token used here also signs the commit below — must be
+          # GITHUB_TOKEN so the resulting push doesn't fan out new runs.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Regenerate leave.ics
+        run: python3 scripts/regenerate_ics.py
+
+      - name: Commit and push (only if file changed)
+        run: |
+          if git diff --quiet -- leave.ics; then
+            echo "leave.ics unchanged — nothing to commit."
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add leave.ics
+          git commit -m "[auto] Regenerate leave.ics from v2/data.json"
+          git push
