@@ -31,6 +31,7 @@
             margin-bottom: 16px;
         }
 
+        /* Legacy single-row controls (kept for backward compat; no longer used) */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -43,6 +44,66 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        /* New grouped toolbar — Option A */
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .toolbar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .toolbar-group-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .toolbar-group-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        /* Administration group gets a warning treatment so it reads "writes, careful" */
+        .toolbar-group.admin {
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+        .toolbar-group.admin .toolbar-group-label {
+            color: #92400e;
+        }
+        /* Links group is airier — less visual weight for external stuff */
+        .toolbar-group.links {
+            background: white;
+            border-style: dashed;
+        }
+        .toolbar-group.links .toolbar-group-buttons {
+            gap: 6px;
+        }
+        .toolbar-group.links a {
+            font-size: 0.85rem !important;
+            padding: 6px 10px !important;
         }
 
         label {
@@ -387,14 +448,220 @@
             color: #b45309;
         }
 
+        /* Add leave & manage entries */
+        .btn-add-leave {
+            padding: 8px 14px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .btn-add-leave:hover { background: #047857; }
+
+        .btn-manage {
+            padding: 8px 12px;
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .btn-manage:hover { background: #e5e7eb; }
+        .btn-manage.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        /* Manage panel */
+        .manage-panel {
+            display: none;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .manage-panel.visible { display: block; }
+        .manage-panel h3 {
+            margin: 0 0 12px 0;
+            font-size: 1.05rem;
+            color: #111827;
+        }
+        .manage-panel .manage-hint {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        .manage-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .manage-table th,
+        .manage-table td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .manage-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            position: sticky;
+            top: 0;
+        }
+        .manage-table tbody tr:hover { background: #f9fafb; }
+        .manage-actions { white-space: nowrap; }
+        .manage-actions button {
+            padding: 4px 8px;
+            margin-right: 4px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .manage-actions button:hover { background: #f3f4f6; }
+        .manage-actions button.btn-delete { color: #b91c1c; border-color: #fecaca; }
+        .manage-actions button.btn-delete:hover { background: #fee2e2; }
+        .manage-table-wrap {
+            max-height: 420px;
+            overflow-y: auto;
+            border: 1px solid #f3f4f6;
+            border-radius: 6px;
+        }
+
+        /* Modal */
+        .leave-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .leave-modal-overlay.visible { display: flex; }
+        .leave-modal {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 9999;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .leave-modal h2 {
+            margin: 0 0 4px 0;
+            font-size: 1.25rem;
+            color: #111827;
+        }
+        .leave-modal .modal-subtitle {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 18px;
+        }
+        .leave-modal label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 12px 0 4px 0;
+        }
+        .leave-modal input,
+        .leave-modal select,
+        .leave-modal textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .leave-modal textarea { resize: vertical; min-height: 60px; }
+        .leave-modal .date-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .leave-modal .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .leave-modal .modal-actions-right {
+            display: flex;
+            gap: 8px;
+        }
+        .leave-modal .btn-save {
+            padding: 10px 18px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .leave-modal .btn-save:hover { background: #047857; }
+        .leave-modal .btn-save:disabled {
+            background: #9ca3af;
+            cursor: wait;
+        }
+        .leave-modal .btn-cancel {
+            padding: 10px 18px;
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .leave-modal .btn-cancel:hover { background: #f3f4f6; }
+        .leave-modal .btn-delete-modal {
+            padding: 10px 14px;
+            background: white;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .leave-modal .btn-delete-modal:hover { background: #fee2e2; }
+        .leave-modal .modal-error {
+            color: #b91c1c;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .leave-modal .modal-error.visible { display: block; }
+
         @media (max-width: 600px) {
             body { padding: 8px; }
             h1 { font-size: 1.2rem; }
             .controls { flex-direction: column; align-items: stretch; }
+            .toolbar-row { flex-direction: column; }
+            .toolbar-group { width: 100%; }
             .type-filter { justify-content: center; }
             .calendar-container { grid-template-columns: 1fr; }
             .day-cell { min-height: 50px; }
             .leave-tag { font-size: 0.6rem; }
+            .leave-modal .date-row { grid-template-columns: 1fr; }
+            .manage-table th:nth-child(4),
+            .manage-table td:nth-child(4) { display: none; }
         }
     </style>
 </head>
@@ -405,57 +672,84 @@
 
     <h1>Staff Specialist Leave Calendar 2026-27</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
-    <p class="last-updated">Last updated: 19 January 2026</p>
+    <p class="last-updated">Last updated: <span id="lastUpdatedText">—</span></p>
 
-    <div class="controls">
-        <div class="control-group">
-            <label for="staffFilter">Show:</label>
-            <select id="staffFilter">
-                <option value="all">All Staff</option>
-                <option value="north">North Only</option>
-                <option value="south">South Only</option>
-                <optgroup label="North">
-                    <option value="BT">Benjamin Thomas</option>
-                    <option value="AL">Angela Lo</option>
-                    <option value="GB">Greg Barclay</option>
-                    <option value="HY">Helen Yourlo</option>
-                    <option value="MK">Muoi Khou</option>
-                    <option value="RW">Ron Wai</option>
-                </optgroup>
-                <optgroup label="South">
-                    <option value="SR">Stephanie Robinson</option>
-                    <option value="Fadz">Fadz wan Bahrum</option>
-                </optgroup>
-            </select>
+    <div class="toolbar">
+        <!-- Row 1: Filter + Administration -->
+        <div class="toolbar-row">
+            <div class="toolbar-group">
+                <div class="toolbar-group-label">Filter</div>
+                <div class="toolbar-group-buttons">
+                    <label for="staffFilter">Show:</label>
+                    <select id="staffFilter">
+                        <option value="all">All Staff</option>
+                        <option value="north">North Only</option>
+                        <option value="south">South Only</option>
+                        <optgroup label="North">
+                            <option value="BT">Benjamin Thomas</option>
+                            <option value="AL">Angela Lo</option>
+                            <option value="GB">Greg Barclay</option>
+                            <option value="HY">Helen Yourlo</option>
+                            <option value="MK">Muoi Khou</option>
+                            <option value="RW">Ron Wai</option>
+                        </optgroup>
+                        <optgroup label="South">
+                            <option value="SR">Stephanie Robinson</option>
+                            <option value="Fadz">Fadz wan Bahrum</option>
+                        </optgroup>
+                    </select>
+                    <label for="monthJump">Jump to:</label>
+                    <select id="monthJump">
+                        <option value="2026-0">January 2026</option>
+                        <option value="2026-1">February 2026</option>
+                        <option value="2026-2">March 2026</option>
+                        <option value="2026-3">April 2026</option>
+                        <option value="2026-4">May 2026</option>
+                        <option value="2026-5">June 2026</option>
+                        <option value="2026-6">July 2026</option>
+                        <option value="2026-7">August 2026</option>
+                        <option value="2026-8">September 2026</option>
+                        <option value="2026-9">October 2026</option>
+                        <option value="2026-10">November 2026</option>
+                        <option value="2026-11">December 2026</option>
+                        <option value="2027-0">January 2027</option>
+                        <option value="2027-1">February 2027</option>
+                    </select>
+                    <button onclick="jumpToMonth()">Go</button>
+                </div>
+            </div>
+
+            <div class="toolbar-group admin" title="Administration — writes are password-protected and publish live to everyone">
+                <div class="toolbar-group-label">🔒 Administration</div>
+                <div class="toolbar-group-buttons">
+                    <button class="btn-add-leave" onclick="openAddLeaveModal()">+ Add leave</button>
+                    <button class="btn-manage" id="manageBtn" onclick="toggleManagePanel()">📋 Manage entries</button>
+                </div>
+            </div>
         </div>
-        <div class="control-group">
-            <label for="monthJump">Jump to:</label>
-            <select id="monthJump">
-                <option value="2026-0">January 2026</option>
-                <option value="2026-1">February 2026</option>
-                <option value="2026-2">March 2026</option>
-                <option value="2026-3">April 2026</option>
-                <option value="2026-4">May 2026</option>
-                <option value="2026-5">June 2026</option>
-                <option value="2026-6">July 2026</option>
-                <option value="2026-7">August 2026</option>
-                <option value="2026-8">September 2026</option>
-                <option value="2026-9">October 2026</option>
-                <option value="2026-10">November 2026</option>
-                <option value="2026-11">December 2026</option>
-                <option value="2027-0">January 2027</option>
-                <option value="2027-1">February 2027</option>
-            </select>
-            <button onclick="jumpToMonth()">Go</button>
+
+        <!-- Row 2: Availability checker + Links -->
+        <div class="toolbar-row">
+            <div class="toolbar-group">
+                <div class="toolbar-group-label">When can I take leave?</div>
+                <div class="toolbar-group-buttons">
+                    <button onclick="showUpcoming()">My Upcoming Leave</button>
+                    <button class="btn-green" onclick="showAvailable()" title="Highlight days where leave would currently be approved (under the regional cap)">Available</button>
+                    <button class="btn-amber" onclick="showLimited()" title="Highlight days where leave is limited (cap approaching)">Limited</button>
+                    <button class="btn-red" onclick="showRestricted()" title="Highlight days where leave is unlikely to be approved (cap reached)">Restricted</button>
+                    <button class="btn-outline" onclick="resetView()">Reset</button>
+                </div>
+            </div>
+
+            <div class="toolbar-group links">
+                <div class="toolbar-group-label">Links</div>
+                <div class="toolbar-group-buttons">
+                    <a href="summary.html" style="background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">Entitlements Summary</a>
+                    <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-weight: 500;">Apply for Leave ↗</a>
+                    <a href="leave.ics" onclick="event.preventDefault(); navigator.clipboard.writeText('https://islhd-palliative.github.io/staff-tools/leave.ics').then(() => { const el = this; el.textContent = '✓ Link Copied!'; setTimeout(() => el.textContent = '📅 Subscribe to Calendar', 2000); });" style="background: #059669; color: white; border-radius: 6px; text-decoration: none; font-weight: 500; cursor: pointer;" title="Copy .ics subscription URL — paste into Outlook (File → Account Settings → Internet Calendars → New)">📅 Subscribe to Calendar</a>
+                </div>
+            </div>
         </div>
-        <button onclick="showUpcoming()">My Upcoming Leave</button>
-        <button class="btn-green" onclick="showAvailable()">Available</button>
-        <button class="btn-amber" onclick="showLimited()">Limited</button>
-        <button class="btn-red" onclick="showRestricted()">Restricted</button>
-        <button class="btn-outline" onclick="resetView()">Reset</button>
-        <a href="summary.html" style="padding: 8px 12px; background: #1e40af; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Entitlements Summary</a>
-        <a href="https://sara.health.nsw.gov.au/customerportal?id=sc_cat_item&sys_id=160620bbdb9b6700b0d6bd16f49619cd" target="_blank" style="padding: 8px 12px; background: #7c3aed; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500;">Apply for Leave ↗</a>
-        <a href="leave.ics" onclick="event.preventDefault(); navigator.clipboard.writeText('https://islhd-palliative.github.io/staff-tools/leave.ics').then(() => { const el = this; el.textContent = '✓ Link Copied!'; setTimeout(() => el.textContent = '📅 Subscribe to Calendar', 2000); });" style="padding: 8px 12px; background: #059669; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; cursor: pointer;" title="Copy .ics subscription URL — paste into Outlook (File → Account Settings → Internet Calendars → New)">📅 Subscribe to Calendar</a>
     </div>
 
     <div class="type-filter">
@@ -509,6 +803,25 @@
         <div id="upcomingList" class="upcoming-leave"></div>
     </div>
 
+    <div id="managePanel" class="manage-panel">
+        <h3>Manage leave entries</h3>
+        <p class="manage-hint">Click Edit to adjust dates or type. Click Delete to remove an entry. Changes publish live to the website.</p>
+        <div class="manage-table-wrap">
+            <table class="manage-table">
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Dates</th>
+                        <th>Type</th>
+                        <th>Notes</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="manageTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
     <div id="calendar" class="calendar-container"></div>
 
     <script>
@@ -516,7 +829,7 @@
         let currentTypeFilter = 'all';
 
         // Staff data
-        const staff = {
+        let staff = {
             'BT': { name: 'Benjamin Thomas', region: 'North', role: 'Head of Service' },
             'AL': { name: 'Angela Lo', region: 'North', role: 'Divisional Director' },
             'GB': { name: 'Greg Barclay', region: 'North', role: 'Senior Staff Specialist' },
@@ -528,7 +841,7 @@
         };
 
         // NSW Public Holidays 2026-2027
-        const publicHolidays = {
+        let publicHolidays = {
             // 2026
             '2026-01-01': 'New Year\'s Day',
             '2026-01-26': 'Australia Day',
@@ -568,9 +881,54 @@
             return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
         }
 
-        // Load leave data - use embedded data directly
-        function loadLeaveData() {
+        // Parse 'YYYY-MM-DD' as local date
+        function parseISODate(s) {
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        // Format an ISO date or YYYY-MM-DD for "Last updated" display
+        function formatLastUpdatedLabel(iso) {
+            if (!iso) return '—';
+            try {
+                const d = (typeof iso === 'string' && iso.length === 10) ? parseISODate(iso) : new Date(iso);
+                if (isNaN(d.getTime())) return iso;
+                return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            } catch { return String(iso); }
+        }
+
+        // Load leave data - fetch data.json first, fall back to embedded
+        async function loadLeaveData() {
+            try {
+                const res = await fetch('v2/data.json', { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    // Expose raw data globally so the leave editor can re-use it
+                    window.leaveEditorOriginalData = data;
+                    if (data.publicHolidays) publicHolidays = data.publicHolidays;
+                    if (data.leave) {
+                        leaveData = data.leave.map(l => ({
+                            staffCode: l.staffCode,
+                            staffName: l.staffName,
+                            region: l.region,
+                            startDate: parseISODate(l.startDate),
+                            endDate: parseISODate(l.endDate),
+                            leaveType: l.leaveType,
+                            notes: l.notes
+                        }));
+                        const lastEl = document.getElementById('lastUpdatedText');
+                        if (lastEl) lastEl.textContent = formatLastUpdatedLabel(data.generatedAt);
+                        console.log('[v2] Loaded leave from data.json');
+                        renderCalendar();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('[v2] data.json fetch failed, using embedded fallback:', e);
+            }
             loadEmbeddedData();
+            const lastEl = document.getElementById('lastUpdatedText');
+            if (lastEl) lastEl.textContent = '(embedded fallback)';
         }
 
         // Embedded fallback data
@@ -918,6 +1276,422 @@
 
         // Initial load
         loadLeaveData();
+    </script>
+
+    <!-- Leave editor modal -->
+    <div id="leaveModalOverlay" class="leave-modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="leave-modal" onclick="event.stopPropagation()">
+            <h2 id="leaveModalTitle">Add leave</h2>
+            <p class="modal-subtitle" id="leaveModalSubtitle">Add a new leave entry. This will publish live to the website for everyone.</p>
+            <form id="leaveForm" onsubmit="submitLeaveForm(event)">
+                <label for="leaveStaff">Staff member</label>
+                <select id="leaveStaff" required>
+                    <option value="">Select staff…</option>
+                    <optgroup label="North">
+                        <option value="BT">Benjamin Thomas</option>
+                        <option value="AL">Angela Lo</option>
+                        <option value="GB">Greg Barclay</option>
+                        <option value="HY">Helen Yourlo</option>
+                        <option value="MK">Muoi Khou</option>
+                        <option value="RW">Ron Wai</option>
+                    </optgroup>
+                    <optgroup label="South">
+                        <option value="SR">Stephanie Robinson</option>
+                        <option value="Fadz">Fadz wan Bahrum</option>
+                    </optgroup>
+                </select>
+
+                <div class="date-row">
+                    <div>
+                        <label for="leaveStart">Start date</label>
+                        <input type="date" id="leaveStart" required>
+                    </div>
+                    <div>
+                        <label for="leaveEnd">End date</label>
+                        <input type="date" id="leaveEnd" required>
+                    </div>
+                </div>
+
+                <label for="leaveType">Leave type</label>
+                <select id="leaveType" required>
+                    <option value="Annual Leave">Annual Leave</option>
+                    <option value="Long Service Leave">Long Service Leave</option>
+                    <option value="TESL">TESL (Study Leave)</option>
+                    <option value="Unavailable">Unavailable</option>
+                </select>
+
+                <label for="leaveNotes">Notes (optional)</label>
+                <textarea id="leaveNotes" placeholder="e.g. EAPC Conference"></textarea>
+
+                <div class="modal-error" id="leaveModalError"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-delete-modal" id="leaveModalDeleteBtn" style="display:none;" onclick="deleteCurrentLeave()">🗑️ Delete</button>
+                    <div class="modal-actions-right" style="margin-left:auto;">
+                        <button type="button" class="btn-cancel" onclick="closeLeaveModal()">Cancel</button>
+                        <button type="submit" class="btn-save" id="leaveModalSaveBtn">Save &amp; publish</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ---- Leave editor ----
+        const LEAVE_PUBLISH_ENDPOINT = 'https://staff-tools-publish.benjamin-thomas.workers.dev';
+        let leaveEditorEditingKey = null;   // composite key of entry being edited
+
+        function leaveEntryKey(entry) {
+            // entry is in-memory shape: startDate/endDate are Date objects
+            const s = formatDateKey(entry.startDate);
+            const e = formatDateKey(entry.endDate);
+            return [entry.staffCode, s, e, entry.leaveType, entry.notes || ''].join('|');
+        }
+
+        function leaveEntryKeyFromData(entry) {
+            // entry is data.json shape: startDate/endDate are 'YYYY-MM-DD' strings
+            return [entry.staffCode, entry.startDate, entry.endDate, entry.leaveType, entry.notes || ''].join('|');
+        }
+
+        function openAddLeaveModal() {
+            leaveEditorEditingKey = null;
+            document.getElementById('leaveModalTitle').textContent = 'Add leave';
+            document.getElementById('leaveModalSubtitle').textContent = 'Add a new leave entry. This will publish live to the website for everyone.';
+            document.getElementById('leaveModalSaveBtn').textContent = 'Save & publish';
+            document.getElementById('leaveModalDeleteBtn').style.display = 'none';
+            document.getElementById('leaveForm').reset();
+            document.getElementById('leaveModalError').classList.remove('visible');
+
+            // Pre-fill staff from current filter if it's a specific person
+            const filter = document.getElementById('staffFilter').value;
+            if (filter && filter !== 'all' && filter !== 'north' && filter !== 'south') {
+                document.getElementById('leaveStaff').value = filter;
+            }
+            document.getElementById('leaveType').value = 'Annual Leave';
+
+            document.getElementById('leaveModalOverlay').classList.add('visible');
+            setTimeout(() => document.getElementById('leaveStaff').focus(), 50);
+        }
+
+        function openEditLeaveModal(key) {
+            const entry = leaveData.find(l => leaveEntryKey(l) === key);
+            if (!entry) {
+                alert('Could not find that entry — it may have just been deleted. Refresh the page.');
+                return;
+            }
+            leaveEditorEditingKey = key;
+            document.getElementById('leaveModalTitle').textContent = 'Edit leave';
+            document.getElementById('leaveModalSubtitle').textContent = 'Update this leave entry. Changes publish live to the website.';
+            document.getElementById('leaveModalSaveBtn').textContent = 'Save changes';
+            document.getElementById('leaveModalDeleteBtn').style.display = 'inline-block';
+            document.getElementById('leaveModalError').classList.remove('visible');
+
+            document.getElementById('leaveStaff').value = entry.staffCode;
+            document.getElementById('leaveStart').value = formatDateKey(entry.startDate);
+            document.getElementById('leaveEnd').value = formatDateKey(entry.endDate);
+            document.getElementById('leaveType').value = entry.leaveType;
+            document.getElementById('leaveNotes').value = entry.notes || '';
+
+            document.getElementById('leaveModalOverlay').classList.add('visible');
+            setTimeout(() => document.getElementById('leaveStart').focus(), 50);
+        }
+
+        function closeLeaveModal() {
+            document.getElementById('leaveModalOverlay').classList.remove('visible');
+            leaveEditorEditingKey = null;
+        }
+
+        function handleOverlayClick(event) {
+            if (event.target.id === 'leaveModalOverlay') closeLeaveModal();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('leaveModalOverlay').classList.contains('visible')) {
+                closeLeaveModal();
+            }
+        });
+
+        function showModalError(msg) {
+            const el = document.getElementById('leaveModalError');
+            el.textContent = msg;
+            el.classList.add('visible');
+        }
+
+        async function submitLeaveForm(event) {
+            event.preventDefault();
+            const staffCode = document.getElementById('leaveStaff').value;
+            const startDate = document.getElementById('leaveStart').value;
+            const endDate = document.getElementById('leaveEnd').value;
+            const leaveType = document.getElementById('leaveType').value;
+            const notes = document.getElementById('leaveNotes').value.trim();
+
+            if (!staffCode || !startDate || !endDate || !leaveType) {
+                showModalError('Please fill in staff, dates and leave type.');
+                return;
+            }
+            if (endDate < startDate) {
+                showModalError('End date must be the same as or after the start date.');
+                return;
+            }
+
+            const password = prompt('Enter publish password:');
+            if (password === null) return;
+            if (!password.trim()) { alert('No password entered.'); return; }
+
+            const saveBtn = document.getElementById('leaveModalSaveBtn');
+            const origText = saveBtn.textContent;
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Publishing…';
+
+            try {
+                // Fetch fresh data.json right before writing, to minimise stale-write risk
+                const res = await fetch('v2/data.json?' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) throw new Error('Could not load latest leave data.');
+                const fresh = await res.json();
+                if (!Array.isArray(fresh.leave)) fresh.leave = [];
+
+                const newEntry = {
+                    staffCode,
+                    staffName: staff[staffCode] ? staff[staffCode].name : staffCode,
+                    region: staff[staffCode] ? staff[staffCode].region : '',
+                    startDate,
+                    endDate,
+                    leaveType
+                };
+                if (notes) newEntry.notes = notes;
+
+                if (leaveEditorEditingKey) {
+                    // Edit: find the matching entry in fresh data, replace it
+                    const idx = fresh.leave.findIndex(l => leaveEntryKeyFromData(l) === leaveEditorEditingKey);
+                    if (idx === -1) {
+                        showModalError('That entry no longer exists on the server (someone else changed it). Close and reopen to see the latest.');
+                        return;
+                    }
+                    fresh.leave[idx] = newEntry;
+                } else {
+                    // Add: check for exact duplicate
+                    const dupKey = leaveEntryKeyFromData(newEntry);
+                    if (fresh.leave.some(l => leaveEntryKeyFromData(l) === dupKey)) {
+                        showModalError('An identical leave entry already exists.');
+                        return;
+                    }
+                    fresh.leave.push(newEntry);
+                }
+
+                fresh.generatedAt = new Date().toISOString().slice(0, 10);
+
+                const action = leaveEditorEditingKey ? 'update' : 'add';
+                const postRes = await fetch(LEAVE_PUBLISH_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password,
+                        data: fresh,
+                        message: `v2: ${action} leave for ${staffCode} ${startDate}..${endDate} (${leaveType})`
+                    })
+                });
+
+                let result = {};
+                try { result = await postRes.json(); } catch {}
+
+                if (postRes.ok && result.ok) {
+                    closeLeaveModal();
+                    alert(
+                        `✓ ${leaveEditorEditingKey ? 'Updated' : 'Added'}!\n\n` +
+                        `The live website will update in about 1 minute.`
+                    );
+                    await reloadLeaveDataAfterEdit();
+                } else if (postRes.status === 401) {
+                    showModalError('Wrong password — please try again.');
+                } else if (postRes.status === 409) {
+                    showModalError('Someone else just published. Close and reopen the editor, then try again.');
+                } else {
+                    const detail = result.error || result.detail || `HTTP ${postRes.status}`;
+                    showModalError(`Publish failed: ${detail}`);
+                }
+            } catch (e) {
+                showModalError(`Couldn't publish: ${e.message}`);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = origText;
+            }
+        }
+
+        async function deleteCurrentLeave() {
+            if (!leaveEditorEditingKey) return;
+            await deleteLeaveByKey(leaveEditorEditingKey, true);
+        }
+
+        async function deleteLeaveFromManage(key) {
+            await deleteLeaveByKey(key, false);
+        }
+
+        async function deleteLeaveByKey(key, fromModal) {
+            // Find human label for confirmation
+            const entry = leaveData.find(l => leaveEntryKey(l) === key);
+            if (!entry) {
+                alert('That entry no longer exists.');
+                return;
+            }
+            const label = `${entry.staffName}: ${formatDateDisplay(entry.startDate)} – ${formatDateDisplay(entry.endDate)} (${entry.leaveType})`;
+            if (!confirm(`Delete this leave entry?\n\n${label}\n\nThis will publish live to the website.`)) return;
+
+            const password = prompt('Enter publish password:');
+            if (password === null) return;
+            if (!password.trim()) { alert('No password entered.'); return; }
+
+            try {
+                const res = await fetch('v2/data.json?' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) throw new Error('Could not load latest leave data.');
+                const fresh = await res.json();
+                if (!Array.isArray(fresh.leave)) fresh.leave = [];
+
+                const idx = fresh.leave.findIndex(l => leaveEntryKeyFromData(l) === key);
+                if (idx === -1) {
+                    alert('That entry no longer exists on the server (someone else may have already deleted it).');
+                    await reloadLeaveDataAfterEdit();
+                    return;
+                }
+                fresh.leave.splice(idx, 1);
+                fresh.generatedAt = new Date().toISOString().slice(0, 10);
+
+                const postRes = await fetch(LEAVE_PUBLISH_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password,
+                        data: fresh,
+                        message: `v2: delete leave for ${entry.staffCode} ${formatDateKey(entry.startDate)}..${formatDateKey(entry.endDate)}`
+                    })
+                });
+
+                let result = {};
+                try { result = await postRes.json(); } catch {}
+
+                if (postRes.ok && result.ok) {
+                    if (fromModal) closeLeaveModal();
+                    alert('✓ Deleted!\n\nThe live website will update in about 1 minute.');
+                    await reloadLeaveDataAfterEdit();
+                } else if (postRes.status === 401) {
+                    alert('Wrong password — please try again.');
+                } else if (postRes.status === 409) {
+                    alert('Someone else just published. Please try again in a moment.');
+                } else {
+                    const detail = result.error || result.detail || `HTTP ${postRes.status}`;
+                    alert(`Delete failed: ${detail}`);
+                }
+            } catch (e) {
+                alert(`Couldn't delete: ${e.message}`);
+            }
+        }
+
+        async function reloadLeaveDataAfterEdit() {
+            try {
+                const res = await fetch('v2/data.json?' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) return;
+                const data = await res.json();
+                window.leaveEditorOriginalData = data;
+                if (data.publicHolidays) publicHolidays = data.publicHolidays;
+                if (Array.isArray(data.leave)) {
+                    leaveData = data.leave.map(l => ({
+                        staffCode: l.staffCode,
+                        staffName: l.staffName,
+                        region: l.region,
+                        startDate: parseISODate(l.startDate),
+                        endDate: parseISODate(l.endDate),
+                        leaveType: l.leaveType,
+                        notes: l.notes
+                    }));
+                }
+                document.getElementById('lastUpdatedText').textContent = formatLastUpdatedLabel(data.generatedAt);
+                renderCalendar();
+                if (document.getElementById('managePanel').classList.contains('visible')) {
+                    renderManageList();
+                }
+            } catch (e) {
+                console.warn('reload after edit failed:', e);
+            }
+        }
+
+        function toggleManagePanel() {
+            const panel = document.getElementById('managePanel');
+            const btn = document.getElementById('manageBtn');
+            const isVisible = panel.classList.toggle('visible');
+            btn.classList.toggle('active', isVisible);
+            if (isVisible) renderManageList();
+        }
+
+        // Keys of currently-displayed manage rows (index → composite key)
+        let manageRowKeys = [];
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderManageList() {
+            const tbody = document.getElementById('manageTableBody');
+            const filter = document.getElementById('staffFilter').value;
+
+            // Filter by current staff filter
+            let rows = leaveData.slice();
+            if (filter && filter !== 'all') {
+                if (filter === 'north') rows = rows.filter(l => l.region === 'North');
+                else if (filter === 'south') rows = rows.filter(l => l.region === 'South');
+                else rows = rows.filter(l => l.staffCode === filter);
+            }
+
+            // Sort by start date descending (most recent first)
+            rows.sort((a, b) => b.startDate - a.startDate);
+
+            manageRowKeys = rows.map(r => leaveEntryKey(r));
+
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#6b7280;padding:20px;">No leave entries to show.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map((entry, i) => {
+                const dateRange = entry.startDate.getTime() === entry.endDate.getTime()
+                    ? formatDateDisplay(entry.startDate) + ' ' + entry.startDate.getFullYear()
+                    : formatDateDisplay(entry.startDate) + ' – ' + formatDateDisplay(entry.endDate) + ' ' + entry.endDate.getFullYear();
+                return `
+                    <tr>
+                        <td>${escapeHtml(entry.staffName)}</td>
+                        <td>${escapeHtml(dateRange)}</td>
+                        <td>${escapeHtml(entry.leaveType)}</td>
+                        <td style="color:#6b7280;">${escapeHtml(entry.notes || '')}</td>
+                        <td class="manage-actions">
+                            <button data-action="edit" data-idx="${i}">✏️ Edit</button>
+                            <button class="btn-delete" data-action="delete" data-idx="${i}">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Event delegation on manage table
+        document.getElementById('manageTableBody').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const idx = parseInt(btn.dataset.idx, 10);
+            const key = manageRowKeys[idx];
+            if (!key) return;
+            if (btn.dataset.action === 'edit') openEditLeaveModal(key);
+            else if (btn.dataset.action === 'delete') deleteLeaveFromManage(key);
+        });
+
+        // Re-render manage list when filter changes
+        document.getElementById('staffFilter').addEventListener('change', () => {
+            if (document.getElementById('managePanel').classList.contains('visible')) {
+                renderManageList();
+            }
+        });
     </script>
 </body>
 </html>

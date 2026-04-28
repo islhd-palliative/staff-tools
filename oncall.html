@@ -378,8 +378,8 @@
     <h1>After Hours On-Call Roster</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
 
-    <div class="roster-warning">
-        <strong>Last updated: 23 April 2026.</strong> For the most up-to-date roster, please refer to the latest version circulated via email.
+    <div class="roster-warning" id="lastUpdatedBanner">
+        <strong>Last updated: <span id="lastUpdatedDate">—</span>.</strong> Rosters update live when published from the generator.
     </div>
 
     <div class="controls">
@@ -497,8 +497,8 @@
             'Locum': { name: 'Ratnayake (L)', initials: 'Rat', isTrainee: false, isLocum: true }
         };
 
-        // NSW Public Holidays
-        const publicHolidays = {
+        // NSW Public Holidays (embedded fallback; overridden by data.json fetch)
+        let publicHolidays = {
             '2026-01-01': 'New Year\'s Day',
             '2026-01-26': 'Australia Day',
             '2026-04-03': 'Good Friday',
@@ -514,8 +514,8 @@
             '2026-12-28': 'Boxing Day (observed)'
         };
 
-        // On-call roster data: { date: { first: 'CODE', second: 'CODE' or null } }
-        const oncallData = {
+        // On-call roster data (embedded fallback; overridden by data.json fetch)
+        let oncallData = {
             // January 2026
             '2026-01-01': { first: 'AL', second: null },
             '2026-01-02': { first: 'GB', second: null },
@@ -1066,9 +1066,35 @@
             renderCalendar();
         });
 
-        // Initial load
-        updateMonthLabel();
-        renderCalendar();
+        // Format ISO date (YYYY-MM-DD) as "25 April 2026" for the banner
+        function formatLastUpdated(iso) {
+            if (!iso) return '—';
+            const [y, m, d] = String(iso).split('-').map(Number);
+            if (!y || !m || !d) return String(iso);
+            const date = new Date(y, m - 1, d);
+            return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        // Initial load — fetch data.json then render (falls back to embedded on error)
+        (async function loadAndRender() {
+            try {
+                const res = await fetch('v2/data.json', { cache: 'no-store' });
+                if (res.ok) {
+                    const d = await res.json();
+                    if (d.publicHolidays) publicHolidays = d.publicHolidays;
+                    if (d.oncallRoster) oncallData = d.oncallRoster;
+                    const lastUpdatedEl = document.getElementById('lastUpdatedDate');
+                    if (lastUpdatedEl) lastUpdatedEl.textContent = formatLastUpdated(d.generatedAt);
+                    console.log('[v2] Loaded data.json, generatedAt:', d.generatedAt);
+                }
+            } catch (e) {
+                console.warn('[v2] data.json fetch failed, using embedded fallback:', e);
+                const lastUpdatedEl = document.getElementById('lastUpdatedDate');
+                if (lastUpdatedEl) lastUpdatedEl.textContent = 'unavailable';
+            }
+            updateMonthLabel();
+            renderCalendar();
+        })();
     </script>
 </body>
 </html>
