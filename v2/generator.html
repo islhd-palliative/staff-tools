@@ -711,6 +711,18 @@
         </div>
     </div>
 
+    <!-- Staff Specialists Panel -->
+    <div class="ss-panel controls-section" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleSSPanel()">
+            <span id="ssPanelArrow">▶</span>
+            Staff specialists
+            <span id="ssCount" class="badge" style="background:#2563eb; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="ssPanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="ssRows"></div>
+        </div>
+    </div>
+
     <!-- Leave This Month Preview -->
     <div class="leave-preview">
         <h2>Leave This Month - <span id="leavePreviewMonth">Select Month</span></h2>
@@ -2682,6 +2694,36 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             renderTrainees();
         }
 
+        // ==================== STAFF SPECIALISTS PANEL ====================
+        function toggleSSPanel() {
+            const body = document.getElementById('ssPanelBody');
+            const arrow = document.getElementById('ssPanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderSSPool() {
+            const container = document.getElementById('ssRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('ssCount').textContent = staffData.length;
+
+            staffData.forEach((s, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <span style="font-weight:600;">${s.code}</span>
+                    <span>${s.name}</span>
+                    <input type="text" value="${s.phone || ''}" data-i="${i}" placeholder="Phone" style="padding:4px;">
+                `;
+                row.querySelector('input').addEventListener('change', e => {
+                    staffData[+e.target.dataset.i].phone = e.target.value;
+                });
+                container.appendChild(row);
+            });
+        }
+
         // ==================== LOCUM TOGGLE ====================
         function toggleLocum(enabled) {
             locumEnabled = enabled;
@@ -2834,6 +2876,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             }
             init();
             renderTrainees();
+            renderSSPool();
         })();
     </script>
 </body>
