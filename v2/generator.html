@@ -677,6 +677,10 @@
                 Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
                 Everyone else's targets adjusted proportionally.
             </p>
+            <div id="locumDetails" style="display:none; margin: 6px 0 0 28px; font-size: 0.85rem;">
+                <label>Locum name: <input type="text" id="locumName" style="padding:3px;"></label>
+                <label style="margin-left:8px;">Phone: <input type="text" id="locumPhone" style="padding:3px;"></label>
+            </div>
         </div>
 
         <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
@@ -2728,9 +2732,21 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
         function toggleLocum(enabled) {
             locumEnabled = enabled;
             const info = document.getElementById('locumTargetInfo');
-            info.style.display = enabled ? 'block' : 'none';
+            const details = document.getElementById('locumDetails');
             if (enabled) {
-                document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
+                if (info) info.style.display = 'block';
+                if (details) details.style.display = 'block';
+                const wnTarget = document.getElementById('locumWeekNightTarget');
+                if (wnTarget) wnTarget.textContent = getMonthlyWeekNightTarget(getLocumStaffRecord().code);
+                if (locumData) {
+                    const nameInput = document.getElementById('locumName');
+                    const phoneInput = document.getElementById('locumPhone');
+                    if (nameInput) nameInput.value = locumData.name || '';
+                    if (phoneInput) phoneInput.value = locumData.phone || '';
+                }
+            } else {
+                if (info) info.style.display = 'none';
+                if (details) details.style.display = 'none';
             }
             renderLastMonthWeekends();
             renderUnavailabilityDropdown();
@@ -2801,6 +2817,22 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             // Add event listeners for month/year changes to update leave preview
             monthSelect.addEventListener('change', renderLeavePreview);
             document.getElementById('yearSelect').addEventListener('change', renderLeavePreview);
+
+            // Locum name/phone input handlers
+            const locumNameEl = document.getElementById('locumName');
+            const locumPhoneEl = document.getElementById('locumPhone');
+            if (locumNameEl) {
+                locumNameEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    locumData.name = e.target.value;
+                });
+            }
+            if (locumPhoneEl) {
+                locumPhoneEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    locumData.phone = e.target.value;
+                });
+            }
 
             // Initial render
             renderRoster();
