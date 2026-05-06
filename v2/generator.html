@@ -1442,6 +1442,13 @@
         }
 
         function generateRoster() {
+            // Guard: trainee-logic ES module is loaded asynchronously; if user clicks Generate
+            // before it resolves, fail loudly rather than throwing an unhandled TypeError.
+            if (!window.__traineeLogic) {
+                alert('Page is still loading — please wait a moment and try again.');
+                return;
+            }
+
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
 
@@ -1606,20 +1613,24 @@
                 });
             }
 
+            // Combined leave + ad-hoc unavailability check — applied to trainees same as SS
+            const isUnavailable = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+
             // Assign weekends first (Sat-Sun as a block); trainee as 1st when eligible, SS as 2nd
             weekendBlocks.forEach(block => {
-                const onLeaveFn = (code, d) => isOnLeave(code, d);
-
                 let firstCode = null, secondCode = null;
 
-                // Try trainee as 1st (must be available BOTH Saturday and Sunday)
+                // Try trainee as 1st (must be available BOTH Saturday and Sunday).
+                // If trainee is picked but unavailable on Sunday, leave the counter unincremented;
+                // they'll be retried on subsequent weekends (correct under-target catch-up behaviour).
                 const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    block.sat, activeTraineesThisMonth, traineeState, onLeaveFn, true
+                    block.sat, activeTraineesThisMonth, traineeState, isUnavailable, true
                 );
                 if (traineeCode) {
                     const sunDate = new Date(block.sat);
                     sunDate.setDate(sunDate.getDate() + 1);
-                    if (!isOnLeave(traineeCode, sunDate)) {
+                    if (!isUnavailable(traineeCode, sunDate)) {
                         firstCode = traineeCode;
                         traineeState[traineeCode].weekendAssigned++;
                     }
@@ -1656,10 +1667,9 @@
             // Assign weeknights; trainee as 1st when eligible, SS as 2nd
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
-                const onLeaveFn = (code, d) => isOnLeave(code, d);
 
                 const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    night, activeTraineesThisMonth, traineeState, onLeaveFn, false
+                    night, activeTraineesThisMonth, traineeState, isUnavailable, false
                 );
 
                 let firstCode = null;
