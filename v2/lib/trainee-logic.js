@@ -55,3 +55,38 @@ export function calculateTraineeTargets(trainee, year, month) {
         weekendTarget: Math.round(weekends * 0.25)
     };
 }
+
+// Returns the trainee code best suited to take this day's 1st slot, or null.
+// `state[code]` = { weeknightAssigned, weeknightTarget, weekendAssigned, weekendTarget }
+// `onLeave(code, date)` = boolean
+// `isWeekend` = whether to use weekend target/counter
+export function pickTraineeForDay(date, trainees, state, onLeave, isWeekend) {
+    const dateMs = date.getTime();
+    const eligible = trainees.filter(t => {
+        const rs = parseISO(t.rotationStart).getTime();
+        const re = parseISO(t.rotationEnd).getTime();
+        if (dateMs < rs || dateMs > re) return false;
+        if (onLeave(t.code, date)) return false;
+
+        const s = state[t.code];
+        if (!s) return false;
+        const assigned = isWeekend ? s.weekendAssigned : s.weeknightAssigned;
+        const target = isWeekend ? s.weekendTarget : s.weeknightTarget;
+        return assigned < target;
+    });
+
+    if (eligible.length === 0) return null;
+
+    eligible.sort((a, b) => {
+        const aS = state[a.code], bS = state[b.code];
+        const aDef = isWeekend
+            ? (aS.weekendAssigned - aS.weekendTarget)
+            : (aS.weeknightAssigned - aS.weeknightTarget);
+        const bDef = isWeekend
+            ? (bS.weekendAssigned - bS.weekendTarget)
+            : (bS.weeknightAssigned - bS.weeknightTarget);
+        return aDef - bDef;
+    });
+
+    return eligible[0].code;
+}

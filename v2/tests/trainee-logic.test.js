@@ -42,3 +42,59 @@ test('calculateTraineeTargets: rotation does not overlap month', () => {
     const result = calculateTraineeTargets(trainee, 2026, 3);
     assertDeepEq(result, { weeknightTarget: 0, weekendTarget: 0 });
 });
+
+import { pickTraineeForDay } from '../lib/trainee-logic.js';
+
+test('pickTraineeForDay: single active trainee under target', () => {
+    const date = new Date(2026, 3, 7); // Tuesday
+    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
+    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
+    const onLeave = () => false;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), 'MP');
+});
+
+test('pickTraineeForDay: trainee at target, returns null', () => {
+    const date = new Date(2026, 3, 7);
+    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
+    const state = { 'MP': { weeknightAssigned: 4, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
+    const onLeave = () => false;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
+});
+
+test('pickTraineeForDay: trainee on leave that day, returns null', () => {
+    const date = new Date(2026, 3, 17);
+    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
+    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
+    const onLeave = (code, d) => code === 'MP' && d.getDate() === 17;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
+});
+
+test('pickTraineeForDay: outside rotation period, returns null', () => {
+    const date = new Date(2026, 2, 15);
+    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
+    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
+    const onLeave = () => false;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
+});
+
+test('pickTraineeForDay: two trainees, picks furthest below target', () => {
+    const date = new Date(2026, 3, 7);
+    const trainees = [
+        { code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' },
+        { code: 'PL', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }
+    ];
+    const state = {
+        'MP': { weeknightAssigned: 2, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 },
+        'PL': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 }
+    };
+    const onLeave = () => false;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), 'PL');
+});
+
+test('pickTraineeForDay: weekend day, picks based on weekend target', () => {
+    const date = new Date(2026, 3, 25); // Saturday
+    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
+    const state = { 'MP': { weeknightAssigned: 4, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
+    const onLeave = () => false;
+    assertEq(pickTraineeForDay(date, trainees, state, onLeave, true), 'MP');
+});
