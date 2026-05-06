@@ -2461,6 +2461,9 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 base.oncallRoster[dateKey] = { first: rec.first, second: rec.second };
             }
 
+            base.staff = staffData; // includes phone edits
+            base.trainees = traineeData;
+            base.locum = locumData;
             base.generatedAt = new Date().toISOString().slice(0, 10);
 
             const btn = document.querySelector('.btn-publish');
