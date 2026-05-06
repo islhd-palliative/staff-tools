@@ -893,7 +893,7 @@
         };
 
         // ==================== STATE ====================
-        let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
+        let currentRoster = {}; // { 'YYYY-MM-DD': { first: 'XX', second: 'YY'|null, warning?: '...' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
         let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
         let historicalWeekendBalance = {}; // Set at generation time by getHistoricalWeekendBalance()
@@ -1181,7 +1181,7 @@
             const currentYear = currentDate.getFullYear();
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) &&
                         getWeekNumber(assignDate) === currentWeek &&
@@ -1202,7 +1202,7 @@
             saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
-            return assignment && assignment.staffCode === staffCode;
+            return assignment && assignment.first === staffCode;
         }
 
         // Check if person had the previous weekend (for Mon/Tue exclusion)
@@ -1214,7 +1214,7 @@
             sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
-            return assignment && assignment.staffCode === staffCode;
+            return assignment && assignment.first === staffCode;
         }
 
         // Check 2-day buffer around weekends
@@ -1249,7 +1249,7 @@
         function dayOfWeekCount(staffCode, dow, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
                         count++;
@@ -1263,7 +1263,7 @@
         function weeknightsThisMonth(staffCode, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate)) count++;
                 }
@@ -1280,7 +1280,7 @@
         // Check if person has a weekend this month already (in current roster)
         function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const d = parseDate(dateKey);
                     if (isWeekend(d)) return true;
                 }
@@ -1589,8 +1589,8 @@
                 });
 
                 const assigned = available[0];
-                currentRoster[block.satKey] = { staffCode: assigned.code };
-                currentRoster[block.sunKey] = { staffCode: assigned.code };
+                currentRoster[block.satKey] = { first: assigned.code, second: null };
+                currentRoster[block.sunKey] = { first: assigned.code, second: null };
                 monthWeekends[assigned.code]++;
             });
 
@@ -1615,7 +1615,7 @@
                     });
 
                     const assigned = available[0];
-                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Non-work day' };
+                    currentRoster[dateKey] = { first: assigned.code, second: null, warning: 'Non-work day' };
                     monthWeekNights[assigned.code]++;
                     return;
                 }
@@ -1628,7 +1628,7 @@
                 });
 
                 const assigned = available[0];
-                currentRoster[dateKey] = { staffCode: assigned.code };
+                currentRoster[dateKey] = { first: assigned.code, second: null };
                 monthWeekNights[assigned.code]++;
             });
 
@@ -1714,7 +1714,7 @@
                         opt.style.color = '#dc2626';
                     }
 
-                    if (assignment && assignment.staffCode === s.code) {
+                    if (assignment && assignment.first === s.code) {
                         opt.selected = true;
                     }
                     select.appendChild(opt);
@@ -1749,11 +1749,11 @@
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && counts[assignment.staffCode]) {
+                if (assignment && counts[assignment.first]) {
                     if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
-                        counts[assignment.staffCode].weekends++;
+                        counts[assignment.first].weekends++;
                     } else if (!isWeekend(date)) {
-                        counts[assignment.staffCode].weeknights++;
+                        counts[assignment.first].weeknights++;
                     }
                 }
             });
@@ -1886,8 +1886,8 @@
                 if (assignment) {
                     const staffDiv = document.createElement('div');
                     staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
-                    staffDiv.textContent = getStaffName(assignment.staffCode);
-                    if (assignment.staffCode === 'Locum') {
+                    staffDiv.textContent = getStaffName(assignment.first);
+                    if (assignment.first === 'Locum') {
                         staffDiv.style.background = '#e5e7eb';
                         staffDiv.style.color = '#374151';
                     }
@@ -1932,7 +1932,8 @@
 
         function updateAssignment(dateKey, staffCode) {
             if (staffCode) {
-                currentRoster[dateKey] = { staffCode };
+                const existing = currentRoster[dateKey] || {};
+                currentRoster[dateKey] = { first: staffCode, second: existing.second ?? null, warning: existing.warning };
             } else {
                 delete currentRoster[dateKey];
             }
@@ -2101,7 +2102,7 @@
             // Convert current roster to oncallData format
             const oncallEntries = Object.entries(currentRoster)
                 .sort(([a], [b]) => a.localeCompare(b))
-                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.staffCode}', second: null }`)
+                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.first}', second: ${data.second ? `'${data.second}'` : 'null'} }`)
                 .join(',\n');
 
             const jsContent = `// On-Call Roster Data
@@ -2158,7 +2159,16 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 try {
                     const data = JSON.parse(e.target.result);
 
-                    if (data.currentRoster) currentRoster = data.currentRoster;
+                    if (data.currentRoster) {
+                        // Backwards-compat: old backups used { staffCode } shape; normalise to { first, second }
+                        for (const k of Object.keys(data.currentRoster)) {
+                            const v = data.currentRoster[k];
+                            if (v.staffCode !== undefined && v.first === undefined) {
+                                data.currentRoster[k] = { first: v.staffCode, second: null, warning: v.warning };
+                            }
+                        }
+                        currentRoster = data.currentRoster;
+                    }
                     if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
                     if (data.currentYear !== undefined) currentYear = data.currentYear;
                     if (data.savedDrafts) savedDrafts = data.savedDrafts;
@@ -2324,7 +2334,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
 
             // Merge current roster in, formatted as { first, second }
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
-                base.oncallRoster[dateKey] = { first: rec.staffCode, second: null };
+                base.oncallRoster[dateKey] = { first: rec.first, second: rec.second };
             }
 
             base.generatedAt = new Date().toISOString().slice(0, 10);
