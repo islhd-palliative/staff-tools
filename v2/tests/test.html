@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>v2 tests</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; padding: 20px; max-width: 900px; }
+        pre { background: #f5f5f5; padding: 8px; font-size: 12px; }
+        h1 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <h1>v2 tests</h1>
+    <div id="results"></div>
+    <script type="module">
+        import { run } from './test-runner.js';
+        await import('./trainee-logic.test.js');
+        await import('./directory.test.js');
+        run();
+    </script>
+</body>
+</html>
