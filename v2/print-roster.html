@@ -205,10 +205,172 @@
     </script>
 
     <script>
-        // (Tasks 19-21 fill this in)
-        function downloadPdf() {
-            document.getElementById('status').textContent = 'PDF download not yet implemented';
+        const params = new URLSearchParams(location.search);
+        const monthParam = params.get('month'); // YYYY-MM
+        const source = params.get('source') || 'published';
+
+        if (!monthParam) {
+            document.getElementById('status').textContent = 'Missing ?month=YYYY-MM parameter';
+            document.getElementById('status').className = 'error';
+            throw new Error('No month');
         }
+        const [year, monthIdx] = monthParam.split('-').map(Number);
+        const month = monthIdx - 1; // 0-indexed
+
+        const MONTH_NAMES = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+        const MONTH_TITLECASE = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('monthLabel').textContent = `${MONTH_NAMES[month]} ${year}`;
+        document.title = `Palliative Care After Hours Roster - ${MONTH_TITLECASE[month]} ${year}`;
+
+        let dataset = null;
+
+        async function loadData() {
+            if (source === 'draft') {
+                // Read draft from generator's localStorage
+                const draft = localStorage.getItem('oncall_generator_test');
+                if (!draft) throw new Error('No draft found in localStorage');
+                const parsed = JSON.parse(draft);
+
+                // Pull static data from data.json
+                const res = await fetch('data.json', { cache: 'no-store' });
+                const baseData = res.ok ? await res.json() : {};
+
+                // Build oncallRoster from draft for this month only
+                const monthKey = monthParam;
+                const draftRoster = {};
+                for (const [k, v] of Object.entries(parsed.currentRoster || {})) {
+                    if (k.startsWith(monthKey + '-')) {
+                        // Handle both old {staffCode} and new {first, second} shapes
+                        if (v.first !== undefined) {
+                            draftRoster[k] = { first: v.first, second: v.second ?? null };
+                        } else if (v.staffCode !== undefined) {
+                            draftRoster[k] = { first: v.staffCode, second: null };
+                        }
+                    }
+                }
+                return {
+                    ...baseData,
+                    staff: baseData.staff || [],
+                    trainees: baseData.trainees || [],
+                    locum: baseData.locum || null,
+                    leave: baseData.leave || [],
+                    publicHolidays: baseData.publicHolidays || {},
+                    oncallRoster: { ...(baseData.oncallRoster || {}), ...draftRoster }
+                };
+            } else {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
+                return await res.json();
+            }
+        }
+
+        function surnameUpper(name) {
+            if (!name) return '';
+            const parts = name.trim().split(/\s+/);
+            return parts[parts.length - 1].toUpperCase();
+        }
+
+        function nameForCell(code, ds) {
+            if (!code) return '';
+            const t = (ds.trainees || []).find(x => x.code === code);
+            if (t) return surnameUpper(t.name);
+            if (ds.locum && ds.locum.code === code) return surnameUpper(ds.locum.name);
+            const s = (ds.staff || []).find(x => x.code === code);
+            if (s) return surnameUpper(s.name);
+            return code; // fallback to raw code if no name found
+        }
+
+        function pad2(n) {
+            return String(n).padStart(2, '0');
+        }
+
+        function renderCalendar(ds) {
+            const head = document.getElementById('calendarHead');
+            ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].forEach((d, i) => {
+                const th = document.createElement('th');
+                th.textContent = d;
+                if (i >= 5) th.className = 'weekend-head';
+                head.appendChild(th);
+            });
+
+            const firstOfMonth = new Date(year, month, 1);
+            const lastOfMonth = new Date(year, month + 1, 0);
+            // Find Monday on or before first of month
+            const startDow = firstOfMonth.getDay(); // 0=Sun, 1=Mon
+            const offsetToMonday = startDow === 0 ? -6 : 1 - startDow;
+            const gridStart = new Date(year, month, 1 + offsetToMonday);
+
+            const body = document.getElementById('calendarBody');
+            const cur = new Date(gridStart);
+            let row = null;
+            for (let i = 0; i < 42; i++) {
+                if (i % 7 === 0) {
+                    row = document.createElement('tr');
+                    body.appendChild(row);
+                }
+                const td = document.createElement('td');
+                const inMonth = cur.getMonth() === month;
+                if (inMonth) {
+                    const key = `${cur.getFullYear()}-${pad2(cur.getMonth()+1)}-${pad2(cur.getDate())}`;
+                    const holiday = ds.publicHolidays && ds.publicHolidays[key];
+                    if (holiday) td.classList.add('holiday');
+                    const dateNum = document.createElement('span');
+                    dateNum.className = 'date-num';
+                    dateNum.textContent = cur.getDate();
+                    td.appendChild(dateNum);
+                    if (holiday) {
+                        const hn = document.createElement('span');
+                        hn.className = 'holiday-name';
+                        hn.textContent = holiday.toUpperCase();
+                        td.appendChild(hn);
+                    }
+                    const entry = ds.oncallRoster && ds.oncallRoster[key];
+                    if (entry) {
+                        if (entry.second) {
+                            const l1 = document.createElement('div');
+                            l1.className = 'doc-line';
+                            l1.innerHTML = `<span class="prefix">1st</span> Dr ${nameForCell(entry.first, ds)}`;
+                            td.appendChild(l1);
+                            const l2 = document.createElement('div');
+                            l2.className = 'doc-line';
+                            l2.innerHTML = `<span class="prefix">2nd</span> Dr ${nameForCell(entry.second, ds)}`;
+                            td.appendChild(l2);
+                        } else if (entry.first) {
+                            const l = document.createElement('div');
+                            l.className = 'doc-line';
+                            l.textContent = `Dr ${nameForCell(entry.first, ds)}`;
+                            td.appendChild(l);
+                        }
+                    }
+                }
+                row.appendChild(td);
+                cur.setDate(cur.getDate() + 1);
+                // Stop after we pass last-of-month at week boundary
+                if (i % 7 === 6 && cur > lastOfMonth) break;
+            }
+        }
+
+        function renderDirectory(ds) {
+            // Filled in Task 20
+        }
+
+        function downloadPdf() {
+            // Filled in Task 21
+            document.getElementById('status').textContent = 'PDF download coming in next task';
+        }
+
+        (async function init() {
+            try {
+                dataset = await loadData();
+                renderCalendar(dataset);
+                renderDirectory(dataset);
+                document.getElementById('status').textContent = 'Ready';
+            } catch (e) {
+                document.getElementById('status').textContent = 'Error: ' + e.message;
+                document.getElementById('status').className = 'error';
+                console.error(e);
+            }
+        })();
     </script>
 </body>
 </html>
