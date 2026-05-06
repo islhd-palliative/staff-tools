@@ -351,7 +351,58 @@
         }
 
         function renderDirectory(ds) {
-            // Filled in Task 20
+            if (!window.__directory) {
+                console.warn('Directory module not loaded yet');
+                return;
+            }
+            const dir = window.__directory.buildDirectoryForMonth(
+                ds.staff || [],
+                ds.trainees || [],
+                ds.locum || null,
+                ds.leave || [],
+                ds.oncallRoster || {},
+                year,
+                month
+            );
+            const tbody = document.getElementById('directoryBody');
+            tbody.innerHTML = '';
+            dir.forEach(row => {
+                const tr = document.createElement('tr');
+                const workDays = workDaysDisplay(row.code) || deriveWorkDays(row);
+                const leaveStr = window.__directory.formatLeaveDates(row.leaveDates);
+                const suffix = row.role === 'Trainee' ? ' (AT) Clinical on Call' : (row.role === 'Locum' ? ' (Locum)' : '');
+                tr.innerHTML = `
+                    <td>Dr ${row.name}${suffix}</td>
+                    <td>${workDays}</td>
+                    <td>${leaveStr}</td>
+                    <td>${row.phone || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        const WORK_DAYS_DISPLAY = {
+            BT: 'Mon – Fri',
+            AL: '4 days flexible',
+            GB: 'Tue & Fri',
+            HY: 'Wed-Fri',
+            MK: 'Tue - Thu',
+            RW: 'Mon & Tue',
+            SR: 'Mon-Thu',
+            Fadz: 'Not Tues',
+            LOC: 'Mon - Fri'
+        };
+
+        function workDaysDisplay(code) {
+            return WORK_DAYS_DISPLAY[code] || null;
+        }
+
+        const DAY_LETTERS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+        function deriveWorkDays(row) {
+            if (!row.workDays) return 'Mon - Fri';
+            if (row.workDays.length === 5 && row.workDays.every((d, i) => d === i + 1)) return 'Mon - Fri';
+            return row.workDays.map(d => DAY_LETTERS[d]).join(', ');
         }
 
         function downloadPdf() {
@@ -361,6 +412,13 @@
 
         (async function init() {
             try {
+                // Wait for the module-loaded directory helpers
+                let waited = 0;
+                while (!window.__directory && waited < 5000) {
+                    await new Promise(r => setTimeout(r, 50));
+                    waited += 50;
+                }
+                if (!window.__directory) throw new Error('Directory module failed to load');
                 dataset = await loadData();
                 renderCalendar(dataset);
                 renderDirectory(dataset);
