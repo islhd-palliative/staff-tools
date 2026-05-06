@@ -825,6 +825,10 @@
                 <div class="action-desc">Downloads a backup to your computer.</div>
             </div>
             <div class="action-btn-card">
+                <button class="btn-preview-pdf" onclick="previewPdf()" style="background:#7c3aed; color:white; border:none; border-radius:6px; padding:8px 14px; font-size:0.95rem; cursor:pointer;">📄 Preview PDF</button>
+                <div class="action-desc">Opens a printable preview to download as PDF for emailing.</div>
+            </div>
+            <div class="action-btn-card">
                 <button class="btn-open" onclick="openFile()">📂 Open file</button>
                 <div class="action-desc">Loads a roster you previously saved.</div>
             </div>
@@ -2194,6 +2198,17 @@
 
             saveToLocalStorage();
             alert(`Draft saved for ${monthKey}`);
+        }
+
+        function previewPdf() {
+            if (currentMonth === null) {
+                alert('Generate a roster first.');
+                return;
+            }
+            // Persist current state so print-roster.html can read it from localStorage
+            saveToLocalStorage();
+            const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            window.open(`print-roster.html?month=${monthStr}&source=draft`, '_blank');
         }
 
         function loadSavedDraft() {
