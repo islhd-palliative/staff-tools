@@ -17,12 +17,18 @@ export function countWeeknightsInRange(start, end) {
     return count;
 }
 
-// Counts Sat-Sun pairs whose Saturday falls within [start, end].
+// Counts complete Sat-Sun pairs whose Saturday falls within [start, end] AND
+// whose Sunday also falls within [start, end]. A dangling Saturday at end-of-range
+// is not counted, since trainee weekend targets assume both days are coverable.
 export function countWeekendsInRange(start, end) {
     let count = 0;
     const cur = new Date(start);
     while (cur <= end) {
-        if (cur.getDay() === 6) count++;
+        if (cur.getDay() === 6) {
+            const sun = new Date(cur);
+            sun.setDate(sun.getDate() + 1);
+            if (sun <= end) count++;
+        }
         cur.setDate(cur.getDate() + 1);
     }
     return count;
