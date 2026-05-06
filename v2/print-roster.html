@@ -406,8 +406,28 @@
         }
 
         function downloadPdf() {
-            // Filled in Task 21
-            document.getElementById('status').textContent = 'PDF download coming in next task';
+            if (typeof html2pdf === 'undefined') {
+                document.getElementById('status').textContent = 'html2pdf library not loaded — check network';
+                document.getElementById('status').className = 'error';
+                return;
+            }
+            document.getElementById('status').textContent = 'Generating PDF…';
+            const node = document.getElementById('rosterRoot');
+            const opt = {
+                margin: 5,
+                filename: document.title + '.pdf',
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
+            };
+            html2pdf().set(opt).from(node).save()
+                .then(() => {
+                    document.getElementById('status').textContent = 'Saved.';
+                })
+                .catch(err => {
+                    document.getElementById('status').textContent = 'Error: ' + err.message;
+                    document.getElementById('status').className = 'error';
+                    console.error(err);
+                });
         }
 
         (async function init() {
