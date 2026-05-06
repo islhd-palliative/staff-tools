@@ -427,6 +427,24 @@
       "startDate": "2026-05-31",
       "endDate": "2026-07-04",
       "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "MP",
+      "startDate": "2026-04-17",
+      "endDate": "2026-04-17",
+      "leaveType": "Unavailable"
+    },
+    {
+      "staffCode": "MP",
+      "startDate": "2026-04-23",
+      "endDate": "2026-04-23",
+      "leaveType": "Unavailable"
+    },
+    {
+      "staffCode": "MP",
+      "startDate": "2026-04-28",
+      "endDate": "2026-04-28",
+      "leaveType": "Unavailable"
     }
   ],
   "publicHolidays": {
