@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Palliative Care After Hours Roster</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @page { size: A4 landscape; margin: 10mm; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: Calibri, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #f5f5f5;
+            color: #000;
+        }
+        .download-bar {
+            position: sticky;
+            top: 0;
+            background: #fafafa;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ccc;
+            margin: -16px -16px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+        .download-bar button {
+            padding: 6px 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .download-bar button:hover {
+            background: #1d4ed8;
+        }
+        #status {
+            color: #666;
+        }
+        #status.error {
+            color: #c00;
+        }
+        .roster-page {
+            width: 277mm;
+            min-height: 190mm;
+            padding: 4mm 6mm;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            page-break-inside: avoid;
+        }
+        .official {
+            color: #c00;
+            text-align: center;
+            font-weight: 600;
+            font-size: 11pt;
+            padding: 2mm 0;
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
+        }
+        h1.title {
+            font-size: 14pt;
+            margin: 6mm 0 1mm;
+            color: #1a365d;
+        }
+        h1.title u { text-decoration: underline; }
+        h1.title .month {
+            color: #2563eb;
+            margin-left: 6mm;
+        }
+        .subtitle {
+            font-size: 10pt;
+            margin: 0 0 4mm 4mm;
+            font-weight: 600;
+        }
+        table.calendar {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        table.calendar th {
+            background: #2563eb;
+            color: white;
+            padding: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            border: 1px solid #999;
+            text-align: center;
+        }
+        table.calendar th.weekend-head {
+            background: #6b7280;
+        }
+        table.calendar td {
+            border: 1px solid #999;
+            vertical-align: top;
+            padding: 4px;
+            height: 22mm;
+            font-size: 10pt;
+        }
+        td .date-num {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 2px;
+        }
+        td.holiday .date-num,
+        td.holiday .holiday-name {
+            color: #c00;
+            font-weight: bold;
+        }
+        td.holiday .holiday-name {
+            font-size: 9pt;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .doc-line {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 9.5pt;
+        }
+        .doc-line .prefix {
+            font-weight: 400;
+            text-transform: lowercase;
+            font-size: 9pt;
+            color: #444;
+        }
+        .footer-row {
+            display: flex;
+            margin-top: 4mm;
+            gap: 8mm;
+            font-size: 9pt;
+            align-items: flex-start;
+        }
+        .warning-box {
+            flex: 0 0 60mm;
+            color: #c00;
+        }
+        .warning-box .strong {
+            font-weight: 700;
+            margin-bottom: 4mm;
+            font-size: 9pt;
+        }
+        .warning-box .italic {
+            font-style: italic;
+            font-size: 8.5pt;
+        }
+        table.directory {
+            flex: 1;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        table.directory th, table.directory td {
+            border: 1px solid #999;
+            padding: 2px 6px;
+            text-align: left;
+        }
+        table.directory th {
+            background: #f0f0f0;
+        }
+        @media print {
+            .download-bar { display: none; }
+            body { padding: 0; background: white; }
+            .roster-page { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-bar">
+        <button type="button" onclick="downloadPdf()">📥 Download PDF</button>
+        <span id="status">Loading…</span>
+    </div>
+    <div id="rosterRoot" class="roster-page">
+        <div class="official">OFFICIAL: Sensitive – Personal</div>
+        <h1 class="title">Palliative Care <u>After Hours</u> Roster <span class="month" id="monthLabel"></span></h1>
+        <p class="subtitle">Mon-Fri: 4.30pm-8am next day. Sat; Sun &amp; Public Hols 8am-8am next day</p>
+        <table class="calendar">
+            <thead>
+                <tr id="calendarHead"></tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+        </table>
+        <div class="footer-row">
+            <div class="warning-box">
+                <div class="strong">DO NOT SHARE DOCTOR'S PERSONAL MOBILE NUMBERS TO NON ISLHD CLINICAL STAFF</div>
+                <div class="italic">If one Doctor is not available, Try the next</div>
+            </div>
+            <table class="directory" id="directoryTable">
+                <thead>
+                    <tr><th>NAME</th><th>working days</th><th>LEAVE</th><th>CONTACT</th></tr>
+                </thead>
+                <tbody id="directoryBody"></tbody>
+            </table>
+        </div>
+        <div class="official" style="margin-top:4mm;">OFFICIAL: Sensitive – Personal</div>
+    </div>
+
+    <script type="module">
+        import { buildDirectoryForMonth, formatLeaveDates } from './lib/directory.js';
+        window.__directory = { buildDirectoryForMonth, formatLeaveDates };
+    </script>
+
+    <script>
+        // (Tasks 19-21 fill this in)
+        function downloadPdf() {
+            document.getElementById('status').textContent = 'PDF download not yet implemented';
+        }
+    </script>
+</body>
+</html>
