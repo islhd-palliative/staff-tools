@@ -1933,7 +1933,9 @@
         function updateAssignment(dateKey, staffCode) {
             if (staffCode) {
                 const existing = currentRoster[dateKey] || {};
-                currentRoster[dateKey] = { first: staffCode, second: existing.second ?? null, warning: existing.warning };
+                const updated = { first: staffCode, second: existing.second ?? null };
+                if (existing.warning) updated.warning = existing.warning;
+                currentRoster[dateKey] = updated;
             } else {
                 delete currentRoster[dateKey];
             }
@@ -2037,6 +2039,15 @@
                 adHocUnavailability = data.adHocUnavailability || [];
                 savedDrafts = data.savedDrafts || data.historicalData || {}; // backwards compat
                 currentRoster = data.currentRoster || {};
+                // Backwards-compat: normalise pre-refactor { staffCode } entries to { first, second }
+                for (const k of Object.keys(currentRoster)) {
+                    const v = currentRoster[k];
+                    if (v.staffCode !== undefined && v.first === undefined) {
+                        const upgraded = { first: v.staffCode, second: null };
+                        if (v.warning) upgraded.warning = v.warning;
+                        currentRoster[k] = upgraded;
+                    }
+                }
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
 
