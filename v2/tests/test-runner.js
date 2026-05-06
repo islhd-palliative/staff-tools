@@ -32,8 +32,9 @@ export function assertFalse(cond, msg = '') {
     if (cond) throw new Error(`${msg}: expected falsy, got ${cond}`);
 }
 
-export function run() {
-    const out = document.getElementById('results');
+export function run(containerId = 'results') {
+    const out = document.getElementById(containerId);
+    if (!out) throw new Error(`test-runner: no element with id "${containerId}"`);
     let pass = 0, fail = 0;
     for (const t of tests) {
         try {
