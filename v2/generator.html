@@ -822,11 +822,20 @@
             { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
 
-        const locumStaff = { code: 'Locum', name: 'Ratnayake (L)', fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        // Trainees and locum populated from data.json (loadDataAndInit IIFE at bottom of script)
+        let traineeData = [];
+        let locumData = null; // { code, name, phone }
+
+        function getLocumStaffRecord() {
+            const base = locumData || { code: 'Locum', name: 'Ratnayake' };
+            const displayName = base.name.includes('(L)') ? base.name : `${base.name} (L)`;
+            return { code: base.code, name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        }
+
         let locumEnabled = false;
 
         function getActiveStaff() {
-            return locumEnabled ? [...staffData, locumStaff] : [...staffData];
+            return locumEnabled ? [...staffData, getLocumStaffRecord()] : [...staffData];
         }
 
         function getMonthlyWeekNightTarget(staffCode) {
@@ -2655,6 +2664,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     const d = await res.json();
                     originalDataJson = d; // keep raw for publish merges
                     if (d.staff) staffData = d.staff;
+                    if (d.trainees) traineeData = d.trainees;
+                    if (d.locum) locumData = d.locum;
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.leave) {
                         leaveData = d.leave.map(l => ({
@@ -2671,7 +2682,9 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     console.log('[v2 generator] Loaded data.json (',
                         Object.keys(historicalOnCall).length, 'historical days,',
                         leaveData.length, 'leave entries,',
-                        staffData.length, 'staff)');
+                        staffData.length, 'staff,',
+                        traineeData.length, 'trainees,',
+                        'locum=', !!locumData, ')');
                 }
             } catch (e) {
                 console.warn('[v2 generator] data.json fetch failed, using embedded fallback:', e);
