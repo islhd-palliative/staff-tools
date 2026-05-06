@@ -134,7 +134,8 @@ export function buildDirectoryForMonth(staff, trainees, locum, leave, oncallRost
             role: 'Trainee',
             workDays: null,
             leaveDates: leaveDaysInMonth(t.code, leave, year, month)
-        }));
+        }))
+        .sort((a, b) => surnameOf(a.name).localeCompare(surnameOf(b.name)));
 
     rows.push(...traineeRows);
 
