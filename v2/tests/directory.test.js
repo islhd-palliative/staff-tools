@@ -42,3 +42,33 @@ test('isFullyOnLeave: only other staff leave → false', () => {
     const leave = [{ staffCode: 'AL', startDate: '2026-04-01', endDate: '2026-04-30' }];
     assertFalse(isFullyOnLeave('BT', leave, APR_2026.year, APR_2026.month));
 });
+
+import { formatLeaveDates } from '../lib/directory.js';
+
+test('formatLeaveDates: empty → empty string', () => {
+    assertEq(formatLeaveDates([]), '');
+});
+
+test('formatLeaveDates: single date → "7"', () => {
+    assertEq(formatLeaveDates([7]), '7');
+});
+
+test('formatLeaveDates: contiguous range → "7-13"', () => {
+    assertEq(formatLeaveDates([7, 8, 9, 10, 11, 12, 13]), '7-13');
+});
+
+test('formatLeaveDates: discrete dates → "17, 23, 28"', () => {
+    assertEq(formatLeaveDates([17, 23, 28]), '17, 23, 28');
+});
+
+test('formatLeaveDates: mix of range and discrete → "7-13, 17, 23"', () => {
+    assertEq(formatLeaveDates([7, 8, 9, 10, 11, 12, 13, 17, 23]), '7-13, 17, 23');
+});
+
+test('formatLeaveDates: unsorted input is sorted', () => {
+    assertEq(formatLeaveDates([23, 7, 17, 8, 9, 10, 11, 12, 13]), '7-13, 17, 23');
+});
+
+test('formatLeaveDates: two-date range → "7-8"', () => {
+    assertEq(formatLeaveDates([7, 8]), '7-8');
+});
