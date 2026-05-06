@@ -808,6 +808,11 @@
 
     <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
 
+    <script type="module">
+        import { calculateTraineeTargets, pickTraineeForDay } from './lib/trainee-logic.js';
+        window.__traineeLogic = { calculateTraineeTargets, pickTraineeForDay };
+    </script>
+
     <script>
         // ==================== STAFF DATA ====================
         // Embedded fallback data — overridden by data.json fetch (see init)
@@ -1462,6 +1467,23 @@
                 monthWeekNights[s.code] = 0;
             });
 
+            // Trainee state: per-trainee monthly targets and counters
+            const traineeState = {};
+            const activeTraineesThisMonth = (traineeData || []).filter(t => {
+                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                return targets.weeknightTarget > 0 || targets.weekendTarget > 0;
+            });
+
+            for (const t of activeTraineesThisMonth) {
+                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                traineeState[t.code] = {
+                    weeknightAssigned: 0,
+                    weeknightTarget: targets.weeknightTarget,
+                    weekendAssigned: 0,
+                    weekendTarget: targets.weekendTarget
+                };
+            }
+
             // Weekend priority: prioritize those who didn't have a weekend last month
             // v2: also factor in historical weekend surplus (leave-aware, alpha=0.3 blend)
             function getWeekendPriority(staffCode) {
@@ -1584,52 +1606,86 @@
                 });
             }
 
-            // Assign weekends first (Sat-Sun as a block)
+            // Assign weekends first (Sat-Sun as a block); trainee as 1st when eligible, SS as 2nd
             weekendBlocks.forEach(block => {
+                const onLeaveFn = (code, d) => isOnLeave(code, d);
+
+                let firstCode = null, secondCode = null;
+
+                // Try trainee as 1st (must be available BOTH Saturday and Sunday)
+                const traineeCode = window.__traineeLogic.pickTraineeForDay(
+                    block.sat, activeTraineesThisMonth, traineeState, onLeaveFn, true
+                );
+                if (traineeCode) {
+                    const sunDate = new Date(block.sat);
+                    sunDate.setDate(sunDate.getDate() + 1);
+                    if (!isOnLeave(traineeCode, sunDate)) {
+                        firstCode = traineeCode;
+                        traineeState[traineeCode].weekendAssigned++;
+                    }
+                }
+
+                // Pick SS to fill the remaining slot (1st if no trainee, 2nd if trainee took 1st)
                 const available = getAvailableForWeekend(block.sat);
                 if (available.length === 0) {
+                    if (firstCode) {
+                        // Trainee covers solo (no SS available — log a warning but assign)
+                        warnings.push(`No SS available as 2nd for trainee ${firstCode} on weekend ${block.satKey}`);
+                        currentRoster[block.satKey] = { first: firstCode, second: null };
+                        currentRoster[block.sunKey] = { first: firstCode, second: null };
+                        return;
+                    }
                     warnings.push(`No staff available for weekend ${block.satKey}`);
                     return;
                 }
 
-                // Sort by priority (those who didn't have weekend last month first)
-                available.sort((a, b) => {
-                    return getWeekendPriority(a.code) - getWeekendPriority(b.code);
-                });
-
+                available.sort((a, b) => getWeekendPriority(a.code) - getWeekendPriority(b.code));
                 const assigned = available[0];
-                currentRoster[block.satKey] = { first: assigned.code, second: null };
-                currentRoster[block.sunKey] = { first: assigned.code, second: null };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                currentRoster[block.satKey] = { first: firstCode, second: secondCode };
+                currentRoster[block.sunKey] = { first: firstCode, second: secondCode };
                 monthWeekends[assigned.code]++;
             });
 
-            // Assign weeknights
+            // Assign weeknights; trainee as 1st when eligible, SS as 2nd
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
-                let available = getAvailableForWeeknight(night);
+                const onLeaveFn = (code, d) => isOnLeave(code, d);
 
+                const traineeCode = window.__traineeLogic.pickTraineeForDay(
+                    night, activeTraineesThisMonth, traineeState, onLeaveFn, false
+                );
+
+                let firstCode = null;
+                let secondCode = null;
+                let warning = null;
+
+                if (traineeCode) {
+                    firstCode = traineeCode;
+                    traineeState[traineeCode].weeknightAssigned++;
+                }
+
+                let available = getAvailableForWeeknight(night);
                 if (available.length === 0) {
-                    // Fallback: relax work day constraint
                     available = getFallbackForWeeknight(night);
                     if (available.length === 0) {
+                        if (firstCode) {
+                            // Trainee covers solo
+                            currentRoster[dateKey] = { first: firstCode, second: null };
+                            return;
+                        }
                         warnings.push(`No staff available for ${dateKey} - check leave coverage`);
                         return;
                     }
-
-                    // Sort by priority
-                    available.sort((a, b) => {
-                        const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
-                        if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
-                        return diff;
-                    });
-
-                    const assigned = available[0];
-                    currentRoster[dateKey] = { first: assigned.code, second: null, warning: 'Non-work day' };
-                    monthWeekNights[assigned.code]++;
-                    return;
+                    warning = 'Non-work day';
                 }
 
-                // Sort by priority with random tie-breaker
                 available.sort((a, b) => {
                     const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
                     if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
@@ -1637,7 +1693,16 @@
                 });
 
                 const assigned = available[0];
-                currentRoster[dateKey] = { first: assigned.code, second: null };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                const rec = { first: firstCode, second: secondCode };
+                if (warning) rec.warning = warning;
+                currentRoster[dateKey] = rec;
                 monthWeekNights[assigned.code]++;
             });
 
