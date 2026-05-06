@@ -387,6 +387,7 @@
             <button class="btn-outline" onclick="prevMonth()">&larr;</button>
             <span id="monthLabel" style="min-width: 140px; text-align: center; font-weight: 500;">This Month</span>
             <button class="btn-outline" onclick="nextMonth()">&rarr;</button>
+            <button type="button" onclick="openPrintPdf()" style="padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 8px;">&#128196; Print PDF</button>
         </div>
         <div class="control-group">
             <label for="staffFilter">Show:</label>
@@ -480,7 +481,8 @@
 
     <script>
         // Staff data
-        const staff = {
+        // Hardcoded fallback — overridden by buildStaffInfo(data) from data.json fetch
+        let staff = {
             // Staff Specialists
             'AL': { name: 'Angela Lo', initials: 'AL', isTrainee: false },
             'BT': { name: 'Benjamin Thomas', initials: 'BT', isTrainee: false },
@@ -496,6 +498,27 @@
             'MP': { name: 'Michelle Petersen', initials: 'MP', isTrainee: true },
             'Locum': { name: 'Ratnayake (L)', initials: 'Rat', isTrainee: false, isLocum: true }
         };
+
+        // Build a staff lookup object from data.json. Merges into the hardcoded fallback
+        // so legacy codes not yet in data.json continue to resolve correctly.
+        function buildStaffInfo(data) {
+            const out = {};
+            (data.staff || []).forEach(s => {
+                out[s.code] = { name: s.name, initials: s.code, isTrainee: false };
+            });
+            (data.trainees || []).forEach(t => {
+                out[t.code] = { name: t.name, initials: t.code, isTrainee: true };
+            });
+            if (data.locum) {
+                out[data.locum.code] = {
+                    name: data.locum.name + (data.locum.name.includes('(L)') ? '' : ' (L)'),
+                    initials: 'Loc',
+                    isTrainee: false,
+                    isLocum: true
+                };
+            }
+            return out;
+        }
 
         // NSW Public Holidays (embedded fallback; overridden by data.json fetch)
         let publicHolidays = {
@@ -1075,6 +1098,12 @@
             return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
+        function openPrintPdf() {
+            const sel = getSelectedMonth();
+            const monthStr = `${sel.year}-${String(sel.month + 1).padStart(2, '0')}`;
+            window.open(`print-roster.html?month=${monthStr}&source=published`, '_blank');
+        }
+
         // Initial load — fetch data.json then render (falls back to embedded on error)
         (async function loadAndRender() {
             try {
@@ -1083,6 +1112,9 @@
                     const d = await res.json();
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.oncallRoster) oncallData = d.oncallRoster;
+                    if (d.staff || d.trainees) {
+                        staff = { ...staff, ...buildStaffInfo(d) };
+                    }
                     const lastUpdatedEl = document.getElementById('lastUpdatedDate');
                     if (lastUpdatedEl) lastUpdatedEl.textContent = formatLastUpdated(d.generatedAt);
                     console.log('[v2] Loaded data.json, generatedAt:', d.generatedAt);
