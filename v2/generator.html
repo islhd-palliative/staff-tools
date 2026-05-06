@@ -698,6 +698,19 @@
         <div id="unavailabilityList" class="unavailability-list"></div>
     </div>
 
+    <!-- Trainees Panel -->
+    <div class="trainee-panel controls-section" id="traineePanel" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleTraineePanel()">
+            <span id="traineePanelArrow">▶</span>
+            Trainees this rotation
+            <span id="traineeCount" class="badge" style="background:#7c3aed; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="traineePanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="traineeRows"></div>
+            <button type="button" onclick="addTrainee()" style="margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer;">+ Add trainee</button>
+        </div>
+    </div>
+
     <!-- Leave This Month Preview -->
     <div class="leave-preview">
         <h2>Leave This Month - <span id="leavePreviewMonth">Select Month</span></h2>
@@ -2620,6 +2633,55 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             }).join('');
         }
 
+        // ==================== TRAINEE PANEL ====================
+        function toggleTraineePanel() {
+            const body = document.getElementById('traineePanelBody');
+            const arrow = document.getElementById('traineePanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderTrainees() {
+            const container = document.getElementById('traineeRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('traineeCount').textContent = traineeData.length;
+
+            traineeData.forEach((t, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px 130px 130px 30px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <input type="text" value="${t.code || ''}" data-i="${i}" data-f="code" placeholder="Code" style="padding:4px;">
+                    <input type="text" value="${t.name || ''}" data-i="${i}" data-f="name" placeholder="Name" style="padding:4px;">
+                    <input type="text" value="${t.phone || ''}" data-i="${i}" data-f="phone" placeholder="Phone" style="padding:4px;">
+                    <input type="date" value="${t.rotationStart || ''}" data-i="${i}" data-f="rotationStart" style="padding:4px;">
+                    <input type="date" value="${t.rotationEnd || ''}" data-i="${i}" data-f="rotationEnd" style="padding:4px;">
+                    <button type="button" onclick="removeTrainee(${i})" style="background:#dc2626;color:white;border:none;border-radius:3px;cursor:pointer; padding: 4px 8px;">×</button>
+                `;
+                row.querySelectorAll('input').forEach(inp => {
+                    inp.addEventListener('change', e => {
+                        const idx = +e.target.dataset.i;
+                        const field = e.target.dataset.f;
+                        traineeData[idx][field] = e.target.value;
+                    });
+                });
+                container.appendChild(row);
+            });
+        }
+
+        function addTrainee() {
+            const today = new Date().toISOString().slice(0, 10);
+            traineeData.push({ code: '', name: '', phone: '', rotationStart: today, rotationEnd: today });
+            renderTrainees();
+        }
+
+        function removeTrainee(i) {
+            if (!confirm(`Remove trainee ${traineeData[i].name || '?'}`)) return;
+            traineeData.splice(i, 1);
+            renderTrainees();
+        }
+
         // ==================== LOCUM TOGGLE ====================
         function toggleLocum(enabled) {
             locumEnabled = enabled;
@@ -2771,6 +2833,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 }
             }
             init();
+            renderTrainees();
         })();
     </script>
 </body>
