@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-06",
+  "generatedAt": "2026-05-19",
   "schemaVersion": 1,
   "staff": [
     {
@@ -411,6 +411,14 @@
       "region": "North",
       "startDate": "2027-01-18",
       "endDate": "2027-01-31",
+      "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "HY",
+      "staffName": "Helen Yourlo",
+      "region": "North",
+      "startDate": "2026-07-15",
+      "endDate": "2026-07-19",
       "leaveType": "Annual Leave"
     }
   ],
