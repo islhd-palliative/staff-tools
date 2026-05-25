@@ -56,16 +56,50 @@
     }
     .ctrl-btn:hover { background: rgba(255,255,255,0.28); }
 
-    .bags-grid {
-      max-width: 1100px;
-      margin: 22px auto 40px;
+    /* Featured row: on-call (+ optional locum) */
+    .featured-row {
+      max-width: 720px;
+      margin: 22px auto 24px;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-    @media (max-width: 900px) { .bags-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .bags-grid { grid-template-columns: 1fr; } }
+    .featured-row.solo {
+      grid-template-columns: 1fr;
+      max-width: 380px;
+    }
+
+    /* Service stacks: 3 vertical columns */
+    .stacks {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .service-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .stack-header {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #475569;
+      margin: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    @media (max-width: 900px) {
+      .stacks { grid-template-columns: 1fr; }
+      .featured-row { grid-template-columns: 1fr; max-width: 380px; }
+    }
 
     .bag-card {
       background: white;
@@ -75,10 +109,26 @@
       text-align: center;
       box-shadow: 0 2px 8px rgba(30, 58, 95, 0.06);
     }
-    .bag-card.featured {
+    /* Region tinting (pale green = North, pale purple = South) */
+    .bag-card.region-north {
+      background: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 100%);
+      border-color: #a7f3d0;
+    }
+    .bag-card.region-south {
+      background: linear-gradient(180deg, #faf5ff 0%, #fdf4ff 100%);
+      border-color: #d8b4fe;
+    }
+    /* Featured on-call (purple) */
+    .bag-card.featured:not(.is-locum) {
       background: linear-gradient(180deg, #f5f3ff 0%, white 100%);
       border: 2px solid #c4b5fd;
       box-shadow: 0 6px 20px rgba(91, 33, 182, 0.15);
+    }
+    /* Featured locum (amber) */
+    .bag-card.is-locum.featured {
+      background: linear-gradient(180deg, #fffbeb 0%, white 100%);
+      border: 2px solid #fcd34d;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.15);
     }
     .role-label {
       font-size: 13px; font-weight: 700;
@@ -87,15 +137,39 @@
       letter-spacing: 0.5px;
       margin-top: 4px;
     }
-    .featured .role-label {
+    .featured:not(.is-locum) .role-label {
       color: #5b21b6;
       font-size: 14px;
     }
+    .is-locum .role-label {
+      color: #b45309;
+      font-size: 14px;
+    }
+    .region-north .role-label { color: #047857; }
+    .region-south .role-label { color: #7e22ce; }
     .name-empty .name-card {
       background: #f3f4f6 !important;
       color: #6b7280 !important;
       font-style: italic;
       font-size: 14px !important;
+    }
+
+    /* Locum bag — tan/honey leather (overrides standard brown bag) */
+    .is-locum .bag-body {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 14%),
+        linear-gradient(180deg, #d4a574 0%, #b5895a 35%, #8c6a44 75%, #6b5132 100%) !important;
+    }
+    .is-locum .bag-flap {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.24) 0%, transparent 20%),
+        linear-gradient(180deg, #e4ba88 0%, #b5895a 55%, #8c6a44 100%) !important;
+    }
+    .is-locum .bag-handle {
+      border-image: linear-gradient(180deg, #a07a4d 0%, #6b5132 100%) 1 !important;
+    }
+    .is-locum .bag-handle::before {
+      background: repeating-linear-gradient(90deg, #5a4327 0px, #5a4327 2px, #7a5d39 2px, #7a5d39 4px) !important;
     }
 
     .bag-stage-wrapper {
@@ -479,7 +553,7 @@
   </div>
 </div>
 
-<div class="bags-grid" id="bagsGrid"></div>
+<div id="content"></div>
 
 <template id="phoneTemplate">
   <div class="bag-card is-phone featured">
@@ -639,6 +713,8 @@
   }
 
   // ==================== COMPUTE TODAY'S ROSTER ====================
+  let locumData = null;  // populated from data.json.locum
+
   function computeToday(date) {
     const dow = date.getDay();
     const dateKey = formatDateKey(date);
@@ -663,10 +739,11 @@
       if (location === 'Community' && ['SR', 'Fadz'].includes(code)) sites['south-community'].push(code);
     });
 
-    // On-call entry
-    const oncall = oncallData[dateKey] || null;
-
-    return { date, dow, dateKey, sites, oncall, northActive };
+    return {
+      date, dow, dateKey, sites, northActive,
+      oncall: oncallData[dateKey] || null,
+      locum: locumData
+    };
   }
 
   // ==================== RENDER NAMES ====================
@@ -704,49 +781,118 @@
     return { primary: `Dr ${nameFor(siteValue)}` };
   }
 
-  // ==================== BUILD GRID ====================
-  function buildGrid(today) {
-    const grid = document.getElementById('bagsGrid');
-    const phoneTpl = document.getElementById('phoneTemplate');
-    const bagTpl = document.getElementById('bagTemplate');
-    grid.innerHTML = '';
+  // ==================== BUILD CONTENT ====================
+  // Stack layout: 3 vertical columns grouped by service type.
+  // Region tinting: each card in a stack carries its own region class.
+  const STACK_DEFS = [
+    {
+      header: 'Consults',
+      cards: [
+        { role: 'Consults (TWH)',  region: 'north', site: 'twh' },
+        { role: 'Consults (SHH)',  region: 'north', site: 'shh' },
+        { role: 'Consults (SDMH)', region: 'south', site: 'sdmh' }
+      ]
+    },
+    {
+      header: 'Community',
+      cards: [
+        { role: 'Community (North)', region: 'north', site: 'community' },
+        { role: 'Community (South)', region: 'south', site: 'south-community' }
+      ]
+    },
+    {
+      header: 'PCU & Clinic',
+      cards: [
+        { role: 'PCU (Bulli)',    region: 'north', site: 'pcu' },
+        { role: 'Symptom Clinic', region: 'north', site: 'clinic' }
+      ]
+    }
+  ];
 
-    const cards = [
-      { role: "Tonight's On-Call", type: 'phone', display: oncallDisplay(today.oncall) },
-      { role: 'PCU (Bulli)',       type: 'bag',   display: today.northActive ? siteDisplay(today.sites.pcu) : { primary: 'See leave roster', isEmpty: true } },
-      { role: 'Community (North)', type: 'bag',   display: today.northActive ? siteDisplay(today.sites.community) : { primary: 'See leave roster', isEmpty: true } },
-      { role: 'Consults (TWH)',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.twh) : { primary: 'See leave roster', isEmpty: true } },
-      { role: 'Consults (SHH)',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.shh) : { primary: 'See leave roster', isEmpty: true } },
-      { role: 'Symptom Clinic',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.clinic) : { primary: 'See leave roster', isEmpty: true } },
-      { role: 'Consults (SDMH)',   type: 'bag',   display: siteDisplay(today.sites.sdmh) },
-      { role: 'Community (South)', type: 'bag',   display: siteDisplay(today.sites['south-community']) }
-    ];
-
-    cards.forEach((entry, i) => {
-      const tpl = entry.type === 'phone' ? phoneTpl : bagTpl;
-      const node = tpl.content.firstElementChild.cloneNode(true);
-      node.querySelector('.role-label').textContent = entry.role;
-      const nameEl = node.querySelector('.name-card');
-      if (entry.display.sub) {
-        nameEl.innerHTML = `${entry.display.primary}<span class="name-sub">${entry.display.sub}</span>`;
-      } else {
-        nameEl.textContent = entry.display.primary;
+  function makeCard(entry, i) {
+    const tpl = document.getElementById(entry.type === 'phone' ? 'phoneTemplate' : 'bagTemplate');
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    (entry.classes || []).forEach(c => node.classList.add(c));
+    node.querySelector('.role-label').textContent = entry.role;
+    const nameEl = node.querySelector('.name-card');
+    if (entry.display.sub) {
+      nameEl.innerHTML = `${entry.display.primary}<span class="name-sub">${entry.display.sub}</span>`;
+    } else {
+      nameEl.textContent = entry.display.primary;
+    }
+    if (entry.display.isEmpty) node.classList.add('name-empty');
+    // Unique SVG gradient IDs per card so they don't collide
+    node.querySelectorAll('radialGradient').forEach((grad, gi) => {
+      const cls = grad.getAttribute('class') || `g${gi}`;
+      const newId = `${cls}-${i}-${gi}`;
+      grad.id = newId;
+      if (cls === 'chestGrad') {
+        node.querySelectorAll('circle.chest').forEach(c => c.setAttribute('fill', `url(#${newId})`));
       }
-      if (entry.display.isEmpty) node.classList.add('name-empty');
-      // Unique SVG gradient IDs to avoid cross-card collisions
-      node.querySelectorAll('radialGradient').forEach((grad, gi) => {
-        const cls = grad.getAttribute('class') || `g${gi}`;
-        const newId = `${cls}-${i}-${gi}`;
-        grad.id = newId;
-        if (cls === 'chestGrad') {
-          node.querySelectorAll('circle.chest').forEach(c => c.setAttribute('fill', `url(#${newId})`));
-        }
-        if (cls === 'dialGrad') {
-          node.querySelectorAll('circle.dialFace').forEach(c => c.setAttribute('fill', `url(#${newId})`));
-        }
-      });
-      grid.appendChild(node);
+      if (cls === 'dialGrad') {
+        node.querySelectorAll('circle.dialFace').forEach(c => c.setAttribute('fill', `url(#${newId})`));
+      }
     });
+    return node;
+  }
+
+  function buildContent(today) {
+    const root = document.getElementById('content');
+    root.innerHTML = '';
+    let i = 0;
+
+    // ----- Featured row: on-call (+ locum if present) -----
+    const featured = document.createElement('div');
+    featured.className = 'featured-row';
+
+    featured.appendChild(makeCard({
+      type: 'phone',
+      role: "Tonight's On-Call",
+      display: oncallDisplay(today.oncall),
+      classes: ['featured']
+    }, i++));
+
+    if (today.locum) {
+      featured.appendChild(makeCard({
+        type: 'bag',
+        role: 'Locum on Today',
+        display: { primary: `Dr ${today.locum.name.replace(/\s*\(L\)\s*$/, '')}` },
+        classes: ['featured', 'is-locum']
+      }, i++));
+    } else {
+      featured.classList.add('solo');
+    }
+    root.appendChild(featured);
+
+    // ----- Service stacks -----
+    const stacksEl = document.createElement('div');
+    stacksEl.className = 'stacks';
+
+    STACK_DEFS.forEach(stack => {
+      const stackEl = document.createElement('div');
+      stackEl.className = 'service-stack';
+
+      const header = document.createElement('h3');
+      header.className = 'stack-header';
+      header.textContent = stack.header;
+      stackEl.appendChild(header);
+
+      stack.cards.forEach(c => {
+        // North sites get masked when North roster isn't active yet
+        const display = (today.northActive || c.region === 'south')
+          ? siteDisplay(today.sites[c.site])
+          : { primary: 'See leave roster', isEmpty: true };
+        stackEl.appendChild(makeCard({
+          type: 'bag',
+          role: c.role,
+          display,
+          classes: [`region-${c.region}`]
+        }, i++));
+      });
+
+      stacksEl.appendChild(stackEl);
+    });
+    root.appendChild(stacksEl);
   }
 
   // ==================== ANIMATION ORCHESTRATION ====================
@@ -797,7 +943,7 @@
     const now = new Date();
     document.getElementById('dateLine').textContent = formatLongDate(now);
     const today = computeToday(now);
-    buildGrid(today);
+    buildContent(today);
     startSequence();
   }
 
@@ -818,6 +964,7 @@
       if (res.ok) {
         const d = await res.json();
         if (d.oncallRoster) oncallData = d.oncallRoster;
+        if (d.locum) locumData = d.locum;
         if (d.staff || d.trainees) {
           const info = buildStaffInfo(d);
           staffNames = { ...staffNames, ...info.names };
