@@ -112,6 +112,13 @@
       "excessBalanceWeeks": 25
     }
   ],
+  "locum": {
+    "code": "JK",
+    "name": "Jeyanthi Kathiresan",
+    "from": "2026-05-25",
+    "until": "2026-05-31",
+    "siteCovering": "community-north"
+  },
   "leave": [
     {
       "staffCode": "AL",

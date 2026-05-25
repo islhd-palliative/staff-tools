@@ -147,11 +147,12 @@
     }
     .region-north .role-label { color: #047857; }
     .region-south .role-label { color: #7e22ce; }
-    .name-empty .name-card {
+    .name-empty .name-pill {
       background: #f3f4f6 !important;
       color: #6b7280 !important;
       font-style: italic;
       font-size: 14px !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04) !important;
     }
 
     /* Locum bag — tan/honey leather (overrides standard brown bag) */
@@ -419,17 +420,37 @@
     /* ============================================
        NAME CARD (shared)
        ============================================ */
+    /* name-card is the animated container; .name-pill is the visible pill.
+       Multiple pills stack vertically when a site has more than one person. */
     .name-card {
       position: absolute; left: 50%; bottom: 165px;
       transform: translateX(-50%) translateY(60px) scale(0.3);
-      opacity: 0; background: white; padding: 11px 22px; border-radius: 999px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.06);
-      font-weight: 800; font-size: 19px; color: #1f2937; white-space: nowrap;
+      opacity: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
       z-index: 10;
     }
-    .name-card .name-sub {
-      display: block; font-weight: 600; font-size: 13px;
-      color: #6b7280; margin-top: 2px;
+    .name-pill {
+      background: white;
+      padding: 11px 22px;
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.06);
+      font-weight: 800; font-size: 19px; color: #1f2937;
+      white-space: nowrap;
+    }
+    .name-card.multi .name-pill {
+      font-size: 16px;
+      padding: 8px 18px;
+    }
+    .name-pill.is-locum-pill {
+      background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1px solid #fcd34d;
+      color: #78350f;
+    }
+    .name-pill.is-backup {
+      background: #f9fafb;
+      font-weight: 700;
+      font-size: 14px;
+      color: #475569;
     }
     .puff {
       position: absolute; left: 50%; bottom: 160px;
@@ -715,34 +736,70 @@
   // ==================== COMPUTE TODAY'S ROSTER ====================
   let locumData = null;  // populated from data.json.locum
 
+  // Map siteCovering values (data.json) to internal site keys
+  const SITE_COVERING_MAP = {
+    'pcu': 'pcu',
+    'community-north': 'community',
+    'twh': 'twh',
+    'shh': 'shh',
+    'clinic': 'clinic',
+    'sdmh': 'sdmh',
+    'community-south': 'south-community'
+  };
+  const SITE_COVERING_LABEL = {
+    'pcu': 'PCU (Bulli)',
+    'community-north': 'Community (North)',
+    'twh': 'Consults (TWH)',
+    'shh': 'Consults (SHH)',
+    'clinic': 'Symptom Clinic',
+    'sdmh': 'Consults (SDMH)',
+    'community-south': 'Community (South)'
+  };
+
+  // Active = (no from set OR date >= from) AND (no until set OR date <= until)
+  function isLocumActiveToday(date) {
+    if (!locumData) return null;
+    if (locumData.from && date < parseISODate(locumData.from)) return null;
+    if (locumData.until && date > parseISODate(locumData.until)) return null;
+    return locumData;
+  }
+
   function computeToday(date) {
     const dow = date.getDay();
     const dateKey = formatDateKey(date);
     const northActive = isNorthRosterActive(date);
+    const activeLocum = isLocumActiveToday(date);
 
-    // Site assignments (mirrors today.html renderSites)
-    const sites = { pcu: null, community: null, twh: null, shh: null, clinic: null,
+    // All sites are arrays — multiple people per site supported.
+    const sites = { pcu: [], community: [], twh: [], shh: [], clinic: [],
                     sdmh: [], 'south-community': [] };
+
     Object.entries(consultantSchedule).forEach(([code, schedule]) => {
       if (isOnLeave(code, date)) return;
       if (code === 'SR' && isStephFridayOff(date)) return;
       const location = schedule[dow];
       if (!location) return;
       if (northActive) {
-        if (location === 'PCU') sites.pcu = code;
-        if (location === 'Community' && !['SR', 'Fadz'].includes(code)) sites.community = code;
-        if (location === 'TWH') sites.twh = code;
-        if (location === 'SHH') sites.shh = code;
-        if (location === 'Clinic') sites.clinic = code;
+        if (location === 'PCU') sites.pcu.push(code);
+        if (location === 'Community' && !['SR', 'Fadz'].includes(code)) sites.community.push(code);
+        if (location === 'TWH') sites.twh.push(code);
+        if (location === 'SHH') sites.shh.push(code);
+        if (location === 'Clinic') sites.clinic.push(code);
       }
       if (location === 'SDMH') sites.sdmh.push(code);
       if (location === 'Community' && ['SR', 'Fadz'].includes(code)) sites['south-community'].push(code);
     });
 
+    // Locum drops in at their covering site (special marker)
+    if (activeLocum && activeLocum.siteCovering) {
+      const key = SITE_COVERING_MAP[activeLocum.siteCovering];
+      if (key && sites[key]) sites[key].push('__LOCUM__');
+    }
+
     return {
       date, dow, dateKey, sites, northActive,
       oncall: oncallData[dateKey] || null,
-      locum: locumData
+      locum: activeLocum
     };
   }
 
@@ -750,35 +807,37 @@
   function nameFor(code) {
     return code ? (staffNames[code] || code) : null;
   }
-  function fullDocName(code) {
-    const n = nameFor(code);
-    return n ? `Dr ${n}` : null;
+  function stripLocumSuffix(name) {
+    return name.replace(/\s*\(L\)\s*$/, '');
   }
 
   function oncallDisplay(entry) {
-    if (!entry) return { primary: 'Not rostered', isEmpty: true };
+    if (!entry) return { names: [{ text: 'Not rostered' }], isEmpty: true };
     const isTraineeFirst = traineeCodes.includes(entry.first);
     const firstName = nameFor(entry.first) || entry.first;
+    const firstText = isTraineeFirst ? `${firstName} (Trainee)` : `Dr ${firstName}`;
     if (entry.second) {
       const secondName = nameFor(entry.second) || entry.second;
-      // Trainee 1st with consultant backup
-      if (isTraineeFirst) {
-        return { primary: `${firstName} (T)`, sub: `+ Dr ${secondName}` };
-      }
-      return { primary: `Dr ${firstName}`, sub: `+ Dr ${secondName}` };
+      return { names: [
+        { text: firstText },
+        { text: `Backup: Dr ${secondName}`, classes: ['is-backup'] }
+      ]};
     }
-    return {
-      primary: isTraineeFirst ? `${firstName} (Trainee)` : `Dr ${firstName}`
-    };
+    return { names: [{ text: firstText }] };
   }
 
-  function siteDisplay(siteValue) {
-    if (Array.isArray(siteValue)) {
-      if (siteValue.length === 0) return { primary: '— No consultant —', isEmpty: true };
-      return { primary: siteValue.map(c => `Dr ${nameFor(c)}`).join(', ') };
-    }
-    if (!siteValue) return { primary: '— No consultant —', isEmpty: true };
-    return { primary: `Dr ${nameFor(siteValue)}` };
+  function siteDisplay(siteCodes) {
+    const arr = Array.isArray(siteCodes) ? siteCodes : (siteCodes ? [siteCodes] : []);
+    if (arr.length === 0) return { names: [{ text: '— No consultant —' }], isEmpty: true };
+    return { names: arr.map(c => {
+      if (c === '__LOCUM__') {
+        return {
+          text: `Dr ${stripLocumSuffix(locumData.name)} (Locum)`,
+          classes: ['is-locum-pill']
+        };
+      }
+      return { text: `Dr ${nameFor(c)}` };
+    })};
   }
 
   // ==================== BUILD CONTENT ====================
@@ -809,17 +868,24 @@
     }
   ];
 
+  function renderPills(nameEl, names) {
+    nameEl.innerHTML = '';
+    if (names.length > 1) nameEl.classList.add('multi');
+    names.forEach(n => {
+      const pill = document.createElement('div');
+      pill.className = 'name-pill';
+      (n.classes || []).forEach(c => pill.classList.add(c));
+      pill.textContent = n.text;
+      nameEl.appendChild(pill);
+    });
+  }
+
   function makeCard(entry, i) {
     const tpl = document.getElementById(entry.type === 'phone' ? 'phoneTemplate' : 'bagTemplate');
     const node = tpl.content.firstElementChild.cloneNode(true);
     (entry.classes || []).forEach(c => node.classList.add(c));
     node.querySelector('.role-label').textContent = entry.role;
-    const nameEl = node.querySelector('.name-card');
-    if (entry.display.sub) {
-      nameEl.innerHTML = `${entry.display.primary}<span class="name-sub">${entry.display.sub}</span>`;
-    } else {
-      nameEl.textContent = entry.display.primary;
-    }
+    renderPills(node.querySelector('.name-card'), entry.display.names);
     if (entry.display.isEmpty) node.classList.add('name-empty');
     // Unique SVG gradient IDs per card so they don't collide
     node.querySelectorAll('radialGradient').forEach((grad, gi) => {
@@ -853,10 +919,16 @@
     }, i++));
 
     if (today.locum) {
+      const locumName = `Dr ${stripLocumSuffix(today.locum.name)}`;
+      const sub = today.locum.siteCovering
+        ? `Covering ${SITE_COVERING_LABEL[today.locum.siteCovering] || today.locum.siteCovering}`
+        : null;
+      const names = [{ text: locumName }];
+      if (sub) names.push({ text: sub, classes: ['is-backup'] });
       featured.appendChild(makeCard({
         type: 'bag',
         role: 'Locum on Today',
-        display: { primary: `Dr ${today.locum.name.replace(/\s*\(L\)\s*$/, '')}` },
+        display: { names },
         classes: ['featured', 'is-locum']
       }, i++));
     } else {
