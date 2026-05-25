@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Who's On Today? — ISLHD Palliative Care</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      color: #1f2937;
+    }
+    .lab-banner {
+      background: #fef3c7; border-bottom: 2px solid #f59e0b;
+      padding: 0.6rem 1rem; text-align: center; font-size: 0.85rem; color: #78350f;
+    }
+    .lab-banner a { color: #78350f; font-weight: 600; }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      color: white;
+      padding: 26px 20px 20px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(30, 58, 95, 0.18);
+    }
+    .hero-banner h1 {
+      font-size: 36px; font-weight: 900; margin: 0 0 4px;
+      letter-spacing: -0.5px;
+    }
+    .hero-banner .date {
+      font-size: 15px; font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      margin: 0;
+    }
+    .hero-banner .subtitle {
+      font-size: 13px; font-style: italic;
+      color: rgba(255,255,255,0.7);
+      margin: 4px 0 0;
+      min-height: 18px;
+    }
+    .controls {
+      display: flex; justify-content: center; gap: 8px;
+      margin-top: 12px; flex-wrap: wrap;
+    }
+    .ctrl-btn {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px; border-radius: 999px;
+      font-weight: 600; cursor: pointer; font-size: 12px;
+      text-decoration: none; display: inline-block;
+      transition: background 0.2s;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,0.28); }
+
+    .bags-grid {
+      max-width: 1100px;
+      margin: 22px auto 40px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .bags-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .bags-grid { grid-template-columns: 1fr; } }
+
+    .bag-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 12px 8px 14px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(30, 58, 95, 0.06);
+    }
+    .bag-card.featured {
+      background: linear-gradient(180deg, #f5f3ff 0%, white 100%);
+      border: 2px solid #c4b5fd;
+      box-shadow: 0 6px 20px rgba(91, 33, 182, 0.15);
+    }
+    .role-label {
+      font-size: 13px; font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+    .featured .role-label {
+      color: #5b21b6;
+      font-size: 14px;
+    }
+    .name-empty .name-card {
+      background: #f3f4f6 !important;
+      color: #6b7280 !important;
+      font-style: italic;
+      font-size: 14px !important;
+    }
+
+    .bag-stage-wrapper {
+      width: 100%;
+      height: 200px;
+      position: relative;
+      overflow: visible;
+    }
+    .bag-scale {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 200px; height: 280px;
+      transform: translate(-50%, -50%) scale(0.62);
+      transform-origin: center center;
+    }
+    .featured .bag-stage-wrapper { height: 240px; }
+    .featured .bag-scale { transform: translate(-50%, -50%) scale(0.8); }
+
+    /* ============================================
+       BAG (used for service cards)
+       ============================================ */
+    .bag-wrap {
+      position: absolute;
+      left: 50%; bottom: 20px;
+      transform: translateX(-50%);
+      width: 200px; height: 260px;
+    }
+    .bag {
+      position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+      width: 170px; height: 145px;
+      transform-origin: center bottom;
+    }
+    .bag-body {
+      position: absolute; bottom: 0; left: 0; width: 170px; height: 115px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 12%),
+        linear-gradient(180deg, #92400e 0%, #7c2d12 35%, #582006 75%, #3f1503 100%);
+      border-radius: 6px 6px 14px 14px;
+      box-shadow:
+        inset 0 -10px 18px rgba(0,0,0,0.45),
+        inset 0 2px 4px rgba(255,200,160,0.15),
+        0 4px 12px rgba(0,0,0,0.25);
+    }
+    .bag-body::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(95deg, transparent 0, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px),
+        repeating-linear-gradient(175deg, transparent 0, transparent 5px, rgba(255,220,180,0.03) 5px, rgba(255,220,180,0.03) 6px);
+      border-radius: 6px 6px 14px 14px; pointer-events: none;
+    }
+    .bag-body::after {
+      content: ''; position: absolute;
+      top: 6px; left: 8px; right: 8px; bottom: 10px;
+      border: 1.5px dashed rgba(254, 215, 170, 0.5);
+      border-radius: 4px 4px 10px 10px; pointer-events: none;
+    }
+    .bag-hinge {
+      position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 9px;
+      background: linear-gradient(180deg, #fde68a 0%, #f59e0b 35%, #b45309 100%);
+      border-radius: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 -1px 2px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.5);
+      z-index: 2;
+    }
+    .bag-hinge::before, .bag-hinge::after {
+      content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+      width: 5px; height: 5px;
+      background: radial-gradient(circle at 30% 30%, #fef3c7, #92400e);
+      border-radius: 50%; box-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    }
+    .bag-hinge::before { left: 8px; }
+    .bag-hinge::after { right: 8px; }
+    .bag-flap {
+      position: absolute; top: 0; left: 0; width: 170px; height: 56px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 18%),
+        linear-gradient(180deg, #a04a16 0%, #7c2d12 50%, #582006 100%);
+      border-radius: 90px 90px 4px 4px;
+      transform-origin: top center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.25), inset 0 -3px 6px rgba(0,0,0,0.3);
+      z-index: 3;
+    }
+    .bag-flap::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(95deg, transparent 0, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+      border-radius: 90px 90px 4px 4px; pointer-events: none;
+    }
+    .bag-flap::after {
+      content: ''; position: absolute;
+      top: 6px; left: 10px; right: 10px; bottom: 6px;
+      border: 1.5px dashed rgba(254, 215, 170, 0.55);
+      border-radius: 70px 70px 0 0; pointer-events: none;
+    }
+    .bag-medallion {
+      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+      width: 56px; height: 56px;
+      background: radial-gradient(circle at 32% 30%, #fef3c7 0%, #fbbf24 35%, #d97706 70%, #92400e 100%);
+      border-radius: 50%;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 -3px 5px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.6);
+      z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bag-medallion::after {
+      content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border: 1px solid rgba(120, 53, 15, 0.4); border-radius: 50%; pointer-events: none;
+    }
+    .stethoscope { width: 46px; height: 46px; position: relative; z-index: 3; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
+    .bag-corner {
+      position: absolute; bottom: 4px; width: 22px; height: 22px;
+      background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 30%, #d97706 70%, #92400e 100%);
+      z-index: 2;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset -1px -1px 2px rgba(0,0,0,0.3), inset 1px 1px 1px rgba(255,255,255,0.4);
+    }
+    .bc-left { left: 4px; border-radius: 0 0 0 10px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+    .bc-right { right: 4px; border-radius: 0 0 10px 0; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+    .bag-clasp {
+      position: absolute; top: 48px; left: 50%; transform: translateX(-50%);
+      width: 16px; height: 14px;
+      background: linear-gradient(180deg, #fef3c7 0%, #fbbf24 50%, #b45309 100%);
+      border-radius: 2px 2px 4px 4px;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 -1px 2px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.6);
+      z-index: 4;
+    }
+    .bag-clasp::after {
+      content: ''; position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+      width: 8px; height: 4px; background: #582006; border-radius: 1px;
+    }
+    .bag-handle {
+      position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 42px;
+      border: 7px solid; border-image: linear-gradient(180deg, #7c2d12 0%, #582006 100%) 1;
+      border-bottom: none; border-radius: 40px 40px 0 0; z-index: 1;
+    }
+    .bag-handle::before {
+      content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+      width: 36px; height: 14px;
+      background: repeating-linear-gradient(90deg, #3f1503 0px, #3f1503 2px, #582006 2px, #582006 4px);
+      border-radius: 3px;
+    }
+    .ring-left-handle, .ring-right-handle {
+      position: absolute; width: 12px; height: 12px;
+      background: radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 40%, #b45309 80%);
+      border-radius: 50%;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 -1px 2px rgba(0,0,0,0.4);
+      top: -34px; z-index: 4;
+    }
+    .ring-left-handle { left: calc(50% - 50px); }
+    .ring-right-handle { right: calc(50% - 50px); }
+
+    /* ============================================
+       PHONE (used for on-call card)
+       ============================================ */
+    .phone-wrap {
+      position: absolute;
+      left: 50%; bottom: 20px;
+      transform: translateX(-50%);
+      width: 200px; height: 260px;
+    }
+    .phone {
+      position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+      width: 170px; height: 170px;
+      transform-origin: center bottom;
+    }
+    .phone-body {
+      position: absolute; bottom: 0;
+      width: 170px; height: 120px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 12%),
+        linear-gradient(180deg, #1f2937 0%, #0f172a 100%);
+      border-radius: 14px 14px 22px 22px;
+      box-shadow:
+        inset 0 -8px 16px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.15),
+        0 4px 14px rgba(0,0,0,0.35);
+    }
+    .phone-body::before, .phone-body::after {
+      content: ''; position: absolute; bottom: -3px;
+      width: 18px; height: 6px;
+      background: #0f172a;
+      border-radius: 0 0 4px 4px;
+    }
+    .phone-body::before { left: 14px; }
+    .phone-body::after { right: 14px; }
+    .phone-dial-svg {
+      position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 92px; height: 92px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    }
+    .phone-handset {
+      position: absolute;
+      bottom: 108px; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 36px;
+      transform-origin: 22% center;
+      z-index: 4;
+    }
+    .handset-tube {
+      position: absolute; left: 28px; right: 28px;
+      top: 50%; transform: translateY(-50%);
+      height: 16px;
+      background: linear-gradient(180deg, #374151 0%, #1f2937 60%, #0f172a 100%);
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 -1px 2px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.12);
+    }
+    .handset-ear, .handset-mouth {
+      position: absolute;
+      top: 0;
+      width: 38px; height: 36px;
+      background:
+        radial-gradient(circle at 30% 25%, #4b5563 0%, #1f2937 55%, #0f172a 100%);
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 -2px 3px rgba(0,0,0,0.4), inset 0 2px 2px rgba(255,255,255,0.15);
+    }
+    .handset-ear { left: 0; }
+    .handset-mouth { right: 0; }
+    .handset-ear::after, .handset-mouth::after {
+      content: ''; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 18px; height: 18px;
+      background: radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.7) 55%, transparent 65%);
+      border-radius: 50%;
+    }
+    .phone-cord {
+      position: absolute;
+      bottom: 90px; right: 30px;
+      width: 4px; height: 22px;
+      background: repeating-linear-gradient(180deg, #1f2937 0px, #1f2937 3px, #4b5563 3px, #4b5563 6px);
+      border-radius: 2px;
+      z-index: 3;
+    }
+    .ring-wave {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 2;
+    }
+    .ring-wave.left, .ring-wave.right {
+      top: 100px; width: 22px; height: 40px;
+      border: 4px solid #facc15;
+      border-radius: 50%;
+    }
+    .ring-wave.left { left: -22px; border-right-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+    .ring-wave.right { right: -22px; border-left-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+    .ring-wave.left.outer { left: -42px; width: 30px; height: 56px; }
+    .ring-wave.right.outer { right: -42px; width: 30px; height: 56px; }
+
+    /* ============================================
+       NAME CARD (shared)
+       ============================================ */
+    .name-card {
+      position: absolute; left: 50%; bottom: 165px;
+      transform: translateX(-50%) translateY(60px) scale(0.3);
+      opacity: 0; background: white; padding: 11px 22px; border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.06);
+      font-weight: 800; font-size: 19px; color: #1f2937; white-space: nowrap;
+      z-index: 10;
+    }
+    .name-card .name-sub {
+      display: block; font-weight: 600; font-size: 13px;
+      color: #6b7280; margin-top: 2px;
+    }
+    .puff {
+      position: absolute; left: 50%; bottom: 160px;
+      width: 14px; height: 14px; background: white; border-radius: 50%;
+      opacity: 0; box-shadow: 0 0 24px white; z-index: 6;
+    }
+    .puff.p1 { --tx: -55px; }
+    .puff.p2 { --tx: 0; }
+    .puff.p3 { --tx: 55px; }
+    .puff.p4 { --tx: -28px; }
+    .puff.p5 { --tx: 28px; }
+
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+    .bag-card.shimmying .bag {
+      animation: shimmy var(--shimmy-dur, 0.45s) ease-in-out infinite;
+    }
+    .bag-card:nth-child(odd).shimmying .bag { animation-direction: alternate; }
+    .bag-card:nth-child(3n).shimmying .bag { animation-duration: 0.55s; }
+    .bag-card:nth-child(5n).shimmying .bag { animation-duration: 0.4s; }
+    @keyframes shimmy {
+      0%, 100% { transform: translateX(-50%) rotate(0); }
+      25% { transform: translateX(-50%) rotate(-1.8deg); }
+      50% { transform: translateX(-50%) rotate(0); }
+      75% { transform: translateX(-50%) rotate(1.8deg); }
+    }
+
+    .bag-card.shimmying.is-phone .phone {
+      animation: phoneRing 0.6s ease-in-out infinite;
+    }
+    .bag-card.shimmying.is-phone .ring-wave {
+      animation: ringPulse 0.6s ease-out infinite;
+    }
+    .bag-card.shimmying.is-phone .ring-wave.outer {
+      animation-delay: 0.18s;
+    }
+    @keyframes phoneRing {
+      0%, 60%, 100% { transform: translateX(-50%) rotate(0); }
+      10% { transform: translateX(-50%) translateX(-3px) rotate(-4deg); }
+      20% { transform: translateX(-50%) translateX(3px) rotate(4deg); }
+      30% { transform: translateX(-50%) translateX(-3px) rotate(-4deg); }
+      40% { transform: translateX(-50%) translateX(3px) rotate(4deg); }
+      50% { transform: translateX(-50%) translateX(0) rotate(0); }
+    }
+    @keyframes ringPulse {
+      0%, 60%, 100% { opacity: 0; transform: scale(0.6); }
+      30% { opacity: 0.85; transform: scale(1.1); }
+    }
+
+    /* Bag reveal */
+    .bag-card.revealing:not(.is-phone) .bag { animation: bigWobble 0.5s ease-in-out; }
+    .bag-card.revealing:not(.is-phone) .bag-clasp { animation: claspPop 0.3s ease-out 0.5s both; }
+    .bag-card.revealing:not(.is-phone) .bag-flap { animation: flapOpen 0.4s cubic-bezier(.34,1.56,.64,1) 0.55s both; }
+    .bag-card.revealing:not(.is-phone) .name-card { animation: nameBurst 0.7s cubic-bezier(.34,1.8,.5,1) 0.75s both; }
+    .bag-card.revealing:not(.is-phone) .puff { animation: puffOut 0.8s ease-out 0.72s both; }
+    .bag-card.revealing:not(.is-phone) .puff.p2 { animation-delay: 0.78s; }
+    .bag-card.revealing:not(.is-phone) .puff.p3 { animation-delay: 0.84s; }
+    .bag-card.revealing:not(.is-phone) .puff.p4 { animation-delay: 0.76s; }
+    .bag-card.revealing:not(.is-phone) .puff.p5 { animation-delay: 0.82s; }
+
+    /* Phone reveal */
+    .bag-card.revealing.is-phone .phone-handset { animation: handsetLift 0.6s cubic-bezier(.34,1.56,.64,1) 0.15s both; }
+    .bag-card.revealing.is-phone .name-card { animation: nameBurst 0.7s cubic-bezier(.34,1.8,.5,1) 0.4s both; }
+
+    /* Resting state */
+    .bag-card.revealed:not(.is-phone) .name-card { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    .bag-card.revealed:not(.is-phone) .bag-flap { transform: rotateX(-115deg); }
+    .bag-card.revealed:not(.is-phone) .bag-clasp { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0); }
+    .bag-card.revealed.is-phone .phone-handset { transform: translateX(-50%) translateY(-35px) rotate(-28deg); }
+    .bag-card.revealed.is-phone .name-card { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+
+    @keyframes bigWobble {
+      0%, 100% { transform: translateX(-50%) rotate(0); }
+      25% { transform: translateX(-50%) rotate(-6deg); }
+      50% { transform: translateX(-50%) rotate(0); }
+      75% { transform: translateX(-50%) rotate(6deg); }
+    }
+    @keyframes claspPop {
+      0% { transform: translateX(-50%) scale(1); opacity: 1; }
+      50% { transform: translateX(-50%) translateY(-12px) scale(1.4); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(-30px) scale(0); opacity: 0; }
+    }
+    @keyframes flapOpen {
+      0% { transform: rotateX(0); }
+      70% { transform: rotateX(-130deg); }
+      100% { transform: rotateX(-115deg); }
+    }
+    @keyframes handsetLift {
+      0% { transform: translateX(-50%) translateY(0) rotate(0); }
+      60% { transform: translateX(-50%) translateY(-42px) rotate(-34deg); }
+      100% { transform: translateX(-50%) translateY(-35px) rotate(-28deg); }
+    }
+    @keyframes nameBurst {
+      0% { transform: translateX(-50%) translateY(60px) scale(0.3); opacity: 0; }
+      50% { transform: translateX(-50%) translateY(-10px) scale(1.15); opacity: 1; }
+      75% { transform: translateX(-50%) translateY(5px) scale(0.97); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes puffOut {
+      0% { opacity: 0.9; transform: translateX(calc(-50% + 0px)) translateY(0) scale(0.5); }
+      100% { opacity: 0; transform: translateX(calc(-50% + var(--tx))) translateY(-90px) scale(2.5); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="lab-banner">
+  <strong>🧪 LAB / v2</strong> — experimental build. <a href="../index.html">← back to production</a>
+</div>
+
+<div class="hero-banner">
+  <h1>Who's On Today?</h1>
+  <p class="date" id="dateLine">—</p>
+  <p class="subtitle" id="statusLine">Hold on, the bags are restless…</p>
+  <div class="controls">
+    <button class="ctrl-btn" onclick="replay()">▶ Replay</button>
+    <button class="ctrl-btn" onclick="skipToReveal()">⏭ Skip</button>
+    <a class="ctrl-btn" href="today.html">📊 Compact view</a>
+    <a class="ctrl-btn" href="index.html">← Home</a>
+  </div>
+</div>
+
+<div class="bags-grid" id="bagsGrid"></div>
+
+<template id="phoneTemplate">
+  <div class="bag-card is-phone featured">
+    <div class="bag-stage-wrapper">
+      <div class="bag-scale">
+        <div class="phone-wrap">
+          <div class="name-card"></div>
+          <div class="phone">
+            <span class="ring-wave left"></span>
+            <span class="ring-wave left outer"></span>
+            <span class="ring-wave right"></span>
+            <span class="ring-wave right outer"></span>
+            <div class="phone-body"></div>
+            <svg class="phone-dial-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient class="dialGrad" cx="35%" cy="30%">
+                  <stop offset="0%" stop-color="#fafafa"/>
+                  <stop offset="60%" stop-color="#d4d4d8"/>
+                  <stop offset="100%" stop-color="#71717a"/>
+                </radialGradient>
+              </defs>
+              <circle class="dialFace" cx="40" cy="40" r="36" stroke="#27272a" stroke-width="1.2"/>
+              <circle cx="40" cy="12" r="4" fill="#18181b"/>
+              <circle cx="56.4" cy="17.3" r="4" fill="#18181b"/>
+              <circle cx="66.6" cy="31.3" r="4" fill="#18181b"/>
+              <circle cx="66.6" cy="48.7" r="4" fill="#18181b"/>
+              <circle cx="56.4" cy="62.7" r="4" fill="#18181b"/>
+              <circle cx="40" cy="68" r="4" fill="#18181b"/>
+              <circle cx="23.6" cy="62.7" r="4" fill="#18181b"/>
+              <circle cx="13.4" cy="48.7" r="4" fill="#18181b"/>
+              <circle cx="13.4" cy="31.3" r="4" fill="#18181b"/>
+              <circle cx="23.6" cy="17.3" r="4" fill="#18181b"/>
+              <circle cx="40" cy="40" r="9" fill="#18181b"/>
+              <circle cx="40" cy="40" r="5" fill="#374151"/>
+            </svg>
+            <div class="phone-cord"></div>
+            <div class="phone-handset">
+              <div class="handset-tube"></div>
+              <div class="handset-ear"></div>
+              <div class="handset-mouth"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="role-label"></div>
+  </div>
+</template>
+
+<template id="bagTemplate">
+  <div class="bag-card">
+    <div class="bag-stage-wrapper">
+      <div class="bag-scale">
+        <div class="bag-wrap">
+          <div class="puff p1"></div>
+          <div class="puff p2"></div>
+          <div class="puff p3"></div>
+          <div class="puff p4"></div>
+          <div class="puff p5"></div>
+          <div class="name-card"></div>
+          <div class="bag">
+            <div class="ring-left-handle"></div>
+            <div class="ring-right-handle"></div>
+            <div class="bag-handle"></div>
+            <div class="bag-body"></div>
+            <div class="bag-medallion">
+              <svg class="stethoscope" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient class="chestGrad" cx="35%" cy="30%">
+                    <stop offset="0%" stop-color="#57534e"/>
+                    <stop offset="55%" stop-color="#1c1917"/>
+                    <stop offset="100%" stop-color="#000"/>
+                  </radialGradient>
+                </defs>
+                <path d="M 12 11 C 2 18, 4 36, 25 35" stroke="#1c1917" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 38 11 C 48 18, 46 36, 25 35" stroke="#1c1917" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 25 35 L 25 38" stroke="#1c1917" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <circle cx="12" cy="11" r="3" fill="#1c1917"/>
+                <circle cx="38" cy="11" r="3" fill="#1c1917"/>
+                <circle class="chest" cx="25" cy="43" r="6.5"/>
+                <circle cx="25" cy="43" r="6.5" fill="none" stroke="#000" stroke-width="0.6" opacity="0.6"/>
+                <circle cx="25" cy="43" r="3.6" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="bag-corner bc-left"></div>
+            <div class="bag-corner bc-right"></div>
+            <div class="bag-flap"></div>
+            <div class="bag-hinge"></div>
+            <div class="bag-clasp"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="role-label"></div>
+  </div>
+</template>
+
+<script>
+  // ====================================================================
+  // DATA — same shape as today.html. Embedded fallback; data.json
+  // overrides leave + oncall live, so changes propagate automatically.
+  // ====================================================================
+  const consultantSchedule = {
+    'BT':   { 1: 'PCU', 2: 'Community', 3: 'Community', 4: 'PCU', 5: 'Community' },
+    'GB':   { 2: 'PCU', 5: 'PCU' },
+    'AL':   { 1: 'Community', 2: 'Non-clinical', 3: 'Non-clinical', 4: 'Community' },
+    'RW':   { 1: 'TWH', 2: 'Clinic' },
+    'MK':   { 2: 'SHH', 3: 'TWH', 4: 'TWH' },
+    'HY':   { 3: 'Clinic', 4: 'SHH', 5: 'TWH' },
+    'SR':   { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' },
+    'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' }
+  };
+
+  let staffNames = {
+    'BT': 'Benjamin Thomas',  'GB': 'Greg Barclay',  'AL': 'Angela Lo',
+    'RW': 'Ron Wai',          'MK': 'Muoi Khou',     'HY': 'Helen Yourlo',
+    'SR': 'Stephanie Robinson','Fadz': 'Fadz wan Bahrum',
+    'PL': 'Patrick Loui',     'DS': 'Dominic Sellers','MP': 'Michelle Petersen',
+    'Locum': 'Ratnayake (L)'
+  };
+  let traineeCodes = ['PL', 'DS', 'MP'];
+  let oncallData = {};
+  let leaveData = [];
+
+  // ==================== DATE HELPERS ====================
+  function formatDateKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  function parseISODate(s) {
+    const [y, m, d] = s.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  function formatLongDate(d) {
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  // North roster active from 9 Feb 2026
+  function isNorthRosterActive(date) {
+    return date >= new Date(2026, 1, 9);
+  }
+  function isOnLeave(code, date) {
+    return leaveData.some(l =>
+      l.staffCode === code && date >= l.startDate && date <= l.endDate
+    );
+  }
+  // Steph alternates: 23 Jan 2026 OFF (reference), then every 2nd Friday
+  function isStephFridayOff(date) {
+    if (date.getDay() !== 5) return false;
+    const ref = new Date(2026, 0, 23);
+    const diffWeeks = Math.round((date - ref) / (7 * 86400000));
+    return diffWeeks % 2 === 0;
+  }
+
+  // ==================== COMPUTE TODAY'S ROSTER ====================
+  function computeToday(date) {
+    const dow = date.getDay();
+    const dateKey = formatDateKey(date);
+    const northActive = isNorthRosterActive(date);
+
+    // Site assignments (mirrors today.html renderSites)
+    const sites = { pcu: null, community: null, twh: null, shh: null, clinic: null,
+                    sdmh: [], 'south-community': [] };
+    Object.entries(consultantSchedule).forEach(([code, schedule]) => {
+      if (isOnLeave(code, date)) return;
+      if (code === 'SR' && isStephFridayOff(date)) return;
+      const location = schedule[dow];
+      if (!location) return;
+      if (northActive) {
+        if (location === 'PCU') sites.pcu = code;
+        if (location === 'Community' && !['SR', 'Fadz'].includes(code)) sites.community = code;
+        if (location === 'TWH') sites.twh = code;
+        if (location === 'SHH') sites.shh = code;
+        if (location === 'Clinic') sites.clinic = code;
+      }
+      if (location === 'SDMH') sites.sdmh.push(code);
+      if (location === 'Community' && ['SR', 'Fadz'].includes(code)) sites['south-community'].push(code);
+    });
+
+    // On-call entry
+    const oncall = oncallData[dateKey] || null;
+
+    return { date, dow, dateKey, sites, oncall, northActive };
+  }
+
+  // ==================== RENDER NAMES ====================
+  function nameFor(code) {
+    return code ? (staffNames[code] || code) : null;
+  }
+  function fullDocName(code) {
+    const n = nameFor(code);
+    return n ? `Dr ${n}` : null;
+  }
+
+  function oncallDisplay(entry) {
+    if (!entry) return { primary: 'Not rostered', isEmpty: true };
+    const isTraineeFirst = traineeCodes.includes(entry.first);
+    const firstName = nameFor(entry.first) || entry.first;
+    if (entry.second) {
+      const secondName = nameFor(entry.second) || entry.second;
+      // Trainee 1st with consultant backup
+      if (isTraineeFirst) {
+        return { primary: `${firstName} (T)`, sub: `+ Dr ${secondName}` };
+      }
+      return { primary: `Dr ${firstName}`, sub: `+ Dr ${secondName}` };
+    }
+    return {
+      primary: isTraineeFirst ? `${firstName} (Trainee)` : `Dr ${firstName}`
+    };
+  }
+
+  function siteDisplay(siteValue) {
+    if (Array.isArray(siteValue)) {
+      if (siteValue.length === 0) return { primary: '— No consultant —', isEmpty: true };
+      return { primary: siteValue.map(c => `Dr ${nameFor(c)}`).join(', ') };
+    }
+    if (!siteValue) return { primary: '— No consultant —', isEmpty: true };
+    return { primary: `Dr ${nameFor(siteValue)}` };
+  }
+
+  // ==================== BUILD GRID ====================
+  function buildGrid(today) {
+    const grid = document.getElementById('bagsGrid');
+    const phoneTpl = document.getElementById('phoneTemplate');
+    const bagTpl = document.getElementById('bagTemplate');
+    grid.innerHTML = '';
+
+    const cards = [
+      { role: "Tonight's On-Call", type: 'phone', display: oncallDisplay(today.oncall) },
+      { role: 'PCU (Bulli)',       type: 'bag',   display: today.northActive ? siteDisplay(today.sites.pcu) : { primary: 'See leave roster', isEmpty: true } },
+      { role: 'Community (North)', type: 'bag',   display: today.northActive ? siteDisplay(today.sites.community) : { primary: 'See leave roster', isEmpty: true } },
+      { role: 'Consults (TWH)',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.twh) : { primary: 'See leave roster', isEmpty: true } },
+      { role: 'Consults (SHH)',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.shh) : { primary: 'See leave roster', isEmpty: true } },
+      { role: 'Symptom Clinic',    type: 'bag',   display: today.northActive ? siteDisplay(today.sites.clinic) : { primary: 'See leave roster', isEmpty: true } },
+      { role: 'Consults (SDMH)',   type: 'bag',   display: siteDisplay(today.sites.sdmh) },
+      { role: 'Community (South)', type: 'bag',   display: siteDisplay(today.sites['south-community']) }
+    ];
+
+    cards.forEach((entry, i) => {
+      const tpl = entry.type === 'phone' ? phoneTpl : bagTpl;
+      const node = tpl.content.firstElementChild.cloneNode(true);
+      node.querySelector('.role-label').textContent = entry.role;
+      const nameEl = node.querySelector('.name-card');
+      if (entry.display.sub) {
+        nameEl.innerHTML = `${entry.display.primary}<span class="name-sub">${entry.display.sub}</span>`;
+      } else {
+        nameEl.textContent = entry.display.primary;
+      }
+      if (entry.display.isEmpty) node.classList.add('name-empty');
+      // Unique SVG gradient IDs to avoid cross-card collisions
+      node.querySelectorAll('radialGradient').forEach((grad, gi) => {
+        const cls = grad.getAttribute('class') || `g${gi}`;
+        const newId = `${cls}-${i}-${gi}`;
+        grad.id = newId;
+        if (cls === 'chestGrad') {
+          node.querySelectorAll('circle.chest').forEach(c => c.setAttribute('fill', `url(#${newId})`));
+        }
+        if (cls === 'dialGrad') {
+          node.querySelectorAll('circle.dialFace').forEach(c => c.setAttribute('fill', `url(#${newId})`));
+        }
+      });
+      grid.appendChild(node);
+    });
+  }
+
+  // ==================== ANIMATION ORCHESTRATION ====================
+  const SHIMMY_MS = 2500;       // shimmy / ring duration (sped up from 3.5s)
+  const REVEAL_GAP_MS = 380;    // gap between each card reveal
+  let revealTimers = [];
+
+  function clearTimers() { revealTimers.forEach(clearTimeout); revealTimers = []; }
+  function setStatus(msg) { document.getElementById('statusLine').textContent = msg; }
+
+  function startSequence() {
+    clearTimers();
+    const cards = document.querySelectorAll('.bag-card');
+    cards.forEach(c => {
+      c.classList.remove('revealing', 'revealed');
+      c.classList.add('shimmying');
+      void c.offsetWidth;
+    });
+    setStatus('Hold on, the bags are restless…');
+    revealTimers.push(setTimeout(() => {
+      setStatus('And the doctors today are…');
+      cards.forEach((card, i) => {
+        revealTimers.push(setTimeout(() => {
+          card.classList.remove('shimmying');
+          card.classList.add('revealing');
+          revealTimers.push(setTimeout(() => card.classList.add('revealed'), 1500));
+        }, i * REVEAL_GAP_MS));
+      });
+    }, SHIMMY_MS));
+  }
+  function replay() { startSequence(); }
+  function skipToReveal() {
+    clearTimers();
+    setStatus('And the doctors today are…');
+    const cards = document.querySelectorAll('.bag-card');
+    cards.forEach((card, i) => {
+      card.classList.remove('shimmying', 'revealed');
+      revealTimers.push(setTimeout(() => {
+        card.classList.remove('shimmying');
+        card.classList.add('revealing');
+        revealTimers.push(setTimeout(() => card.classList.add('revealed'), 1500));
+      }, i * REVEAL_GAP_MS));
+    });
+  }
+
+  // ==================== INIT ====================
+  function init() {
+    const now = new Date();
+    document.getElementById('dateLine').textContent = formatLongDate(now);
+    const today = computeToday(now);
+    buildGrid(today);
+    startSequence();
+  }
+
+  function buildStaffInfo(data) {
+    const names = {};
+    (data.staff || []).forEach(s => { names[s.code] = s.name; });
+    (data.trainees || []).forEach(t => { names[t.code] = t.name; });
+    if (data.locum) {
+      const locName = data.locum.name;
+      names[data.locum.code] = locName.includes('(L)') ? locName : locName + ' (L)';
+    }
+    return { names, trainees: (data.trainees || []).map(t => t.code) };
+  }
+
+  (async function loadAndInit() {
+    try {
+      const res = await fetch('data.json', { cache: 'no-store' });
+      if (res.ok) {
+        const d = await res.json();
+        if (d.oncallRoster) oncallData = d.oncallRoster;
+        if (d.staff || d.trainees) {
+          const info = buildStaffInfo(d);
+          staffNames = { ...staffNames, ...info.names };
+          if (info.trainees.length > 0) traineeCodes = info.trainees;
+        }
+        if (d.leave) {
+          leaveData = d.leave.map(l => ({
+            staffCode: l.staffCode,
+            startDate: parseISODate(l.startDate),
+            endDate: parseISODate(l.endDate),
+            leaveType: l.leaveType
+          }));
+        }
+        console.log('[v2] Loaded data.json — Who\'s On Today');
+      }
+    } catch (e) {
+      console.warn('[v2] data.json fetch failed:', e);
+    }
+    init();
+  })();
+</script>
+</body>
+</html>
