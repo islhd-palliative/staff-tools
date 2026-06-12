@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Palliative Care After Hours Roster</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @page { size: A4 landscape; margin: 10mm; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: Calibri, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #f5f5f5;
+            color: #000;
+        }
+        .download-bar {
+            position: sticky;
+            top: 0;
+            background: #fafafa;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ccc;
+            margin: -16px -16px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+        .download-bar button {
+            padding: 6px 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .download-bar button:hover {
+            background: #1d4ed8;
+        }
+        #status {
+            color: #666;
+        }
+        #status.error {
+            color: #c00;
+        }
+        .roster-page {
+            width: 277mm;
+            min-height: 190mm;
+            padding: 4mm 6mm;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            page-break-inside: avoid;
+        }
+        .official {
+            color: #c00;
+            text-align: center;
+            font-weight: 600;
+            font-size: 11pt;
+            padding: 2mm 0;
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
+        }
+        h1.title {
+            font-size: 14pt;
+            margin: 6mm 0 1mm;
+            color: #1a365d;
+        }
+        h1.title u { text-decoration: underline; }
+        h1.title .month {
+            color: #2563eb;
+            margin-left: 6mm;
+        }
+        .subtitle {
+            font-size: 10pt;
+            margin: 0 0 4mm 4mm;
+            font-weight: 600;
+        }
+        table.calendar {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        table.calendar th {
+            background: #2563eb;
+            color: white;
+            padding: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            border: 1px solid #999;
+            text-align: center;
+        }
+        table.calendar th.weekend-head {
+            background: #6b7280;
+        }
+        table.calendar td {
+            border: 1px solid #999;
+            vertical-align: top;
+            padding: 4px;
+            height: 22mm;
+            font-size: 10pt;
+        }
+        td .date-num {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 2px;
+        }
+        td.holiday .date-num,
+        td.holiday .holiday-name {
+            color: #c00;
+            font-weight: bold;
+        }
+        td.holiday .holiday-name {
+            font-size: 9pt;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .doc-line {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 9.5pt;
+        }
+        .doc-line .prefix {
+            font-weight: 400;
+            text-transform: lowercase;
+            font-size: 9pt;
+            color: #444;
+        }
+        .footer-row {
+            display: flex;
+            margin-top: 4mm;
+            gap: 8mm;
+            font-size: 9pt;
+            align-items: flex-start;
+        }
+        .warning-box {
+            flex: 0 0 60mm;
+            color: #c00;
+        }
+        .warning-box .strong {
+            font-weight: 700;
+            margin-bottom: 4mm;
+            font-size: 9pt;
+        }
+        .warning-box .italic {
+            font-style: italic;
+            font-size: 8.5pt;
+        }
+        table.directory {
+            flex: 1;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        table.directory th, table.directory td {
+            border: 1px solid #999;
+            padding: 2px 6px;
+            text-align: left;
+        }
+        table.directory th {
+            background: #f0f0f0;
+        }
+        @media print {
+            .download-bar { display: none; }
+            body { padding: 0; background: white; }
+            .roster-page { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-bar">
+        <button type="button" onclick="downloadPdf()">📥 Download PDF</button>
+        <span id="status">Loading…</span>
+    </div>
+    <div id="rosterRoot" class="roster-page">
+        <div class="official">OFFICIAL: Sensitive – Personal</div>
+        <h1 class="title">Palliative Care <u>After Hours</u> Roster <span class="month" id="monthLabel"></span></h1>
+        <p class="subtitle">Mon-Fri: 4.30pm-8am next day. Sat; Sun &amp; Public Hols 8am-8am next day</p>
+        <table class="calendar">
+            <thead>
+                <tr id="calendarHead"></tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+        </table>
+        <div class="footer-row">
+            <div class="warning-box">
+                <div class="strong">DO NOT SHARE DOCTOR'S PERSONAL MOBILE NUMBERS TO NON ISLHD CLINICAL STAFF</div>
+                <div class="italic">If one Doctor is not available, Try the next</div>
+            </div>
+            <table class="directory" id="directoryTable">
+                <thead>
+                    <tr><th>NAME</th><th>working days</th><th>LEAVE</th><th>CONTACT</th></tr>
+                </thead>
+                <tbody id="directoryBody"></tbody>
+            </table>
+        </div>
+        <div class="official" style="margin-top:4mm;">OFFICIAL: Sensitive – Personal</div>
+    </div>
+
+    <script type="module">
+        import { buildDirectoryForMonth, formatLeaveDates } from './lib/directory.js';
+        window.__directory = { buildDirectoryForMonth, formatLeaveDates };
+    </script>
+
+    <script>
+        const params = new URLSearchParams(location.search);
+        const monthParam = params.get('month'); // YYYY-MM
+        const source = params.get('source') || 'published';
+
+        if (!monthParam) {
+            document.getElementById('status').textContent = 'Missing ?month=YYYY-MM parameter';
+            document.getElementById('status').className = 'error';
+            throw new Error('No month');
+        }
+        const [year, monthIdx] = monthParam.split('-').map(Number);
+        const month = monthIdx - 1; // 0-indexed
+
+        const MONTH_NAMES = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+        const MONTH_TITLECASE = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('monthLabel').textContent = `${MONTH_NAMES[month]} ${year}`;
+        document.title = `Palliative Care After Hours Roster - ${MONTH_TITLECASE[month]} ${year}`;
+
+        let dataset = null;
+
+        async function loadData() {
+            if (source === 'draft') {
+                // Read draft from generator's localStorage
+                const draft = localStorage.getItem('oncall_generator_test');
+                if (!draft) throw new Error('No draft found in localStorage');
+                const parsed = JSON.parse(draft);
+
+                // Pull static data from data.json
+                const res = await fetch('data.json', { cache: 'no-store' });
+                const baseData = res.ok ? await res.json() : {};
+
+                // Build oncallRoster from draft for this month only
+                const monthKey = monthParam;
+                const draftRoster = {};
+                for (const [k, v] of Object.entries(parsed.currentRoster || {})) {
+                    if (k.startsWith(monthKey + '-')) {
+                        // Handle both old {staffCode} and new {first, second} shapes
+                        if (v.first !== undefined) {
+                            draftRoster[k] = { first: v.first, second: v.second ?? null };
+                        } else if (v.staffCode !== undefined) {
+                            draftRoster[k] = { first: v.staffCode, second: null };
+                        }
+                    }
+                }
+                return {
+                    ...baseData,
+                    staff: baseData.staff || [],
+                    trainees: baseData.trainees || [],
+                    locum: baseData.locum || null,
+                    leave: baseData.leave || [],
+                    publicHolidays: baseData.publicHolidays || {},
+                    oncallRoster: { ...(baseData.oncallRoster || {}), ...draftRoster }
+                };
+            } else {
+                const res = await fetch('data.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
+                return await res.json();
+            }
+        }
+
+        function surnameUpper(name) {
+            if (!name) return '';
+            const parts = name.trim().split(/\s+/);
+            return parts[parts.length - 1].toUpperCase();
+        }
+
+        function nameForCell(code, ds) {
+            if (!code) return '';
+            const t = (ds.trainees || []).find(x => x.code === code);
+            if (t) return surnameUpper(t.name);
+            if (ds.locum && ds.locum.code === code) return surnameUpper(ds.locum.name);
+            const s = (ds.staff || []).find(x => x.code === code);
+            if (s) return surnameUpper(s.name);
+            return code; // fallback to raw code if no name found
+        }
+
+        function pad2(n) {
+            return String(n).padStart(2, '0');
+        }
+
+        function renderCalendar(ds) {
+            const head = document.getElementById('calendarHead');
+            ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].forEach((d, i) => {
+                const th = document.createElement('th');
+                th.textContent = d;
+                if (i >= 5) th.className = 'weekend-head';
+                head.appendChild(th);
+            });
+
+            const firstOfMonth = new Date(year, month, 1);
+            const lastOfMonth = new Date(year, month + 1, 0);
+            // Find Monday on or before first of month
+            const startDow = firstOfMonth.getDay(); // 0=Sun, 1=Mon
+            const offsetToMonday = startDow === 0 ? -6 : 1 - startDow;
+            const gridStart = new Date(year, month, 1 + offsetToMonday);
+
+            const body = document.getElementById('calendarBody');
+            const cur = new Date(gridStart);
+            let row = null;
+            for (let i = 0; i < 42; i++) {
+                if (i % 7 === 0) {
+                    row = document.createElement('tr');
+                    body.appendChild(row);
+                }
+                const td = document.createElement('td');
+                const inMonth = cur.getMonth() === month;
+                if (inMonth) {
+                    const key = `${cur.getFullYear()}-${pad2(cur.getMonth()+1)}-${pad2(cur.getDate())}`;
+                    const holiday = ds.publicHolidays && ds.publicHolidays[key];
+                    if (holiday) td.classList.add('holiday');
+                    const dateNum = document.createElement('span');
+                    dateNum.className = 'date-num';
+                    dateNum.textContent = cur.getDate();
+                    td.appendChild(dateNum);
+                    if (holiday) {
+                        const hn = document.createElement('span');
+                        hn.className = 'holiday-name';
+                        hn.textContent = holiday.toUpperCase();
+                        td.appendChild(hn);
+                    }
+                    const entry = ds.oncallRoster && ds.oncallRoster[key];
+                    if (entry) {
+                        if (entry.second) {
+                            const l1 = document.createElement('div');
+                            l1.className = 'doc-line';
+                            l1.innerHTML = `<span class="prefix">1st</span> Dr ${nameForCell(entry.first, ds)}`;
+                            td.appendChild(l1);
+                            const l2 = document.createElement('div');
+                            l2.className = 'doc-line';
+                            l2.innerHTML = `<span class="prefix">2nd</span> Dr ${nameForCell(entry.second, ds)}`;
+                            td.appendChild(l2);
+                        } else if (entry.first) {
+                            const l = document.createElement('div');
+                            l.className = 'doc-line';
+                            l.textContent = `Dr ${nameForCell(entry.first, ds)}`;
+                            td.appendChild(l);
+                        }
+                    }
+                }
+                row.appendChild(td);
+                cur.setDate(cur.getDate() + 1);
+                // Stop after we pass last-of-month at week boundary
+                if (i % 7 === 6 && cur > lastOfMonth) break;
+            }
+        }
+
+        function renderDirectory(ds) {
+            if (!window.__directory) {
+                console.warn('Directory module not loaded yet');
+                return;
+            }
+            const dir = window.__directory.buildDirectoryForMonth(
+                ds.staff || [],
+                ds.trainees || [],
+                ds.locum || null,
+                ds.leave || [],
+                ds.oncallRoster || {},
+                year,
+                month
+            );
+            const tbody = document.getElementById('directoryBody');
+            tbody.innerHTML = '';
+            dir.forEach(row => {
+                const tr = document.createElement('tr');
+                const workDays = workDaysDisplay(row.code) || deriveWorkDays(row);
+                const leaveStr = window.__directory.formatLeaveDates(row.leaveDates);
+                const suffix = row.role === 'Trainee' ? ' (AT) Clinical on Call' : (row.role === 'Locum' ? ' (Locum)' : '');
+                tr.innerHTML = `
+                    <td>Dr ${row.name}${suffix}</td>
+                    <td>${workDays}</td>
+                    <td>${leaveStr}</td>
+                    <td>${row.phone || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        const WORK_DAYS_DISPLAY = {
+            BT: 'Mon – Fri',
+            AL: '4 days flexible',
+            GB: 'Tue & Fri',
+            HY: 'Wed-Fri',
+            MK: 'Tue - Thu',
+            RW: 'Mon & Tue',
+            SR: 'Mon-Thu',
+            Fadz: 'Not Tues',
+            LOC: 'Mon - Fri'
+        };
+
+        function workDaysDisplay(code) {
+            return WORK_DAYS_DISPLAY[code] || null;
+        }
+
+        const DAY_LETTERS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+        function deriveWorkDays(row) {
+            if (!row.workDays) return 'Mon - Fri';
+            if (row.workDays.length === 5 && row.workDays.every((d, i) => d === i + 1)) return 'Mon - Fri';
+            return row.workDays.map(d => DAY_LETTERS[d]).join(', ');
+        }
+
+        function downloadPdf() {
+            if (typeof html2pdf === 'undefined') {
+                document.getElementById('status').textContent = 'html2pdf library not loaded — check network';
+                document.getElementById('status').className = 'error';
+                return;
+            }
+            document.getElementById('status').textContent = 'Generating PDF…';
+            const node = document.getElementById('rosterRoot');
+            const opt = {
+                margin: 5,
+                filename: document.title + '.pdf',
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
+            };
+            html2pdf().set(opt).from(node).save()
+                .then(() => {
+                    document.getElementById('status').textContent = 'Saved.';
+                })
+                .catch(err => {
+                    document.getElementById('status').textContent = 'Error: ' + err.message;
+                    document.getElementById('status').className = 'error';
+                    console.error(err);
+                });
+        }
+
+        (async function init() {
+            try {
+                // Wait for the module-loaded directory helpers
+                let waited = 0;
+                while (!window.__directory && waited < 5000) {
+                    await new Promise(r => setTimeout(r, 50));
+                    waited += 50;
+                }
+                if (!window.__directory) throw new Error('Directory module failed to load');
+                dataset = await loadData();
+                renderCalendar(dataset);
+                renderDirectory(dataset);
+                document.getElementById('status').textContent = 'Ready';
+            } catch (e) {
+                document.getElementById('status').textContent = 'Error: ' + e.message;
+                document.getElementById('status').className = 'error';
+                console.error(e);
+            }
+        })();
+    </script>
+</body>
+</html>

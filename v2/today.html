@@ -708,7 +708,8 @@
             'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off
         };
 
-        const staffNames = {
+        // Hardcoded fallback — merged with data.json at fetch time via buildStaffInfo()
+        let staffNames = {
             'BT': 'Benjamin Thomas',
             'GB': 'Greg Barclay',
             'AL': 'Angela Lo',
@@ -722,6 +723,20 @@
             'MP': 'Michelle Petersen',
             'Locum': 'Ratnayake (L)'
         };
+
+        // Build name lookup and trainee code list from data.json.
+        // Returns { names: {code: name}, trainees: [code, ...] }
+        function buildStaffInfo(data) {
+            const names = {};
+            (data.staff || []).forEach(s => { names[s.code] = s.name; });
+            (data.trainees || []).forEach(t => { names[t.code] = t.name; });
+            if (data.locum) {
+                const locName = data.locum.name;
+                names[data.locum.code] = locName.includes('(L)') ? locName : locName + ' (L)';
+            }
+            const trainees = (data.trainees || []).map(t => t.code);
+            return { names, trainees };
+        }
 
         // On-call data (from oncall_roster.html)
         let oncallData = {
@@ -883,8 +898,8 @@
             '2026-05-31': { first: 'HY', second: null }
         };
 
-        // Trainee codes for identification
-        const traineeCodes = ['PL', 'DS', 'MP'];
+        // Trainee codes for identification — overridden by buildStaffInfo() from data.json
+        let traineeCodes = ['PL', 'DS', 'MP'];
 
         // Leave data (from leave_calendar.html)
         let leaveData = [
@@ -1162,30 +1177,35 @@
             });
         }
 
+        // Render the tonight on-call hero text for a given roster entry.
+        // Shows "1st: Name" and "2nd: Name" when second is present;
+        // falls back to just the name when solo. Returns { primary, backup }.
+        function renderTonightHero(entry) {
+            if (!entry) return { primary: 'Not rostered', backup: null };
+            const isTraineeFirst = traineeCodes.includes(entry.first);
+            const firstName = staffNames[entry.first] || entry.first;
+            if (entry.second) {
+                const secondName = staffNames[entry.second] || entry.second;
+                const firstLabel = isTraineeFirst ? `${firstName} (Trainee)` : firstName;
+                return { primary: `1st: ${firstLabel}`, backup: `2nd: ${secondName}` };
+            }
+            return {
+                primary: isTraineeFirst ? `${firstName} (Trainee)` : firstName,
+                backup: null
+            };
+        }
+
         function renderOncall(dateKey) {
             const oncall = oncallData[dateKey];
             const primaryEl = document.getElementById('oncallPrimary');
             const backupEl = document.getElementById('oncallBackup');
 
-            if (oncall) {
-                const isTraineeFirst = traineeCodes.includes(oncall.first);
-
-                if (isTraineeFirst && oncall.second) {
-                    // Trainee is 1st on-call, staff specialist is backup (2nd)
-                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
-                    backupEl.textContent = `Backup: ${staffNames[oncall.second]}`;
-                    backupEl.style.display = 'block';
-                } else if (isTraineeFirst) {
-                    // Trainee alone (shouldn't happen but handle it)
-                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
-                    backupEl.style.display = 'none';
-                } else {
-                    // Staff specialist is primary
-                    primaryEl.textContent = staffNames[oncall.first] || oncall.first;
-                    backupEl.style.display = 'none';
-                }
+            const hero = renderTonightHero(oncall);
+            primaryEl.textContent = hero.primary;
+            if (hero.backup) {
+                backupEl.textContent = hero.backup;
+                backupEl.style.display = 'block';
             } else {
-                primaryEl.textContent = 'Not rostered';
                 backupEl.style.display = 'none';
             }
 
@@ -1408,6 +1428,11 @@
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.oncallRoster) oncallData = d.oncallRoster;
                     if (d.numOncallRoster) numOncallData = d.numOncallRoster;
+                    if (d.staff || d.trainees) {
+                        const info = buildStaffInfo(d);
+                        staffNames = { ...staffNames, ...info.names };
+                        if (info.trainees.length > 0) traineeCodes = info.trainees;
+                    }
                     if (d.leave) {
                         leaveData = d.leave.map(l => ({
                             staffCode: l.staffCode,

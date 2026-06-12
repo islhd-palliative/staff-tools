@@ -677,6 +677,10 @@
                 Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
                 Everyone else's targets adjusted proportionally.
             </p>
+            <div id="locumDetails" style="display:none; margin: 6px 0 0 28px; font-size: 0.85rem;">
+                <label>Locum name: <input type="text" id="locumName" style="padding:3px;"></label>
+                <label style="margin-left:8px;">Phone: <input type="text" id="locumPhone" style="padding:3px;"></label>
+            </div>
         </div>
 
         <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
@@ -696,6 +700,31 @@
             <button class="btn-outline" onclick="addUnavailability()">Add</button>
         </div>
         <div id="unavailabilityList" class="unavailability-list"></div>
+    </div>
+
+    <!-- Trainees Panel -->
+    <div class="trainee-panel controls-section" id="traineePanel" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleTraineePanel()">
+            <span id="traineePanelArrow">▶</span>
+            Trainees this rotation
+            <span id="traineeCount" class="badge" style="background:#7c3aed; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="traineePanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="traineeRows"></div>
+            <button type="button" onclick="addTrainee()" style="margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer;">+ Add trainee</button>
+        </div>
+    </div>
+
+    <!-- Staff Specialists Panel -->
+    <div class="ss-panel controls-section" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleSSPanel()">
+            <span id="ssPanelArrow">▶</span>
+            Staff specialists
+            <span id="ssCount" class="badge" style="background:#2563eb; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="ssPanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="ssRows"></div>
+        </div>
     </div>
 
     <!-- Leave This Month Preview -->
@@ -796,6 +825,10 @@
                 <div class="action-desc">Downloads a backup to your computer.</div>
             </div>
             <div class="action-btn-card">
+                <button class="btn-preview-pdf" onclick="previewPdf()" style="background:#7c3aed; color:white; border:none; border-radius:6px; padding:8px 14px; font-size:0.95rem; cursor:pointer;">📄 Preview PDF</button>
+                <div class="action-desc">Opens a printable preview to download as PDF for emailing.</div>
+            </div>
+            <div class="action-btn-card">
                 <button class="btn-open" onclick="openFile()">📂 Open file</button>
                 <div class="action-desc">Loads a roster you previously saved.</div>
             </div>
@@ -807,6 +840,11 @@
     </div>
 
     <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
+
+    <script type="module">
+        import { calculateTraineeTargets, pickTraineeForDay } from './lib/trainee-logic.js';
+        window.__traineeLogic = { calculateTraineeTargets, pickTraineeForDay };
+    </script>
 
     <script>
         // ==================== STAFF DATA ====================
@@ -822,11 +860,20 @@
             { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
 
-        const locumStaff = { code: 'Locum', name: 'Ratnayake (L)', fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        // Trainees and locum populated from data.json (loadDataAndInit IIFE at bottom of script)
+        let traineeData = [];
+        let locumData = null; // { code, name, phone }
+
+        function getLocumStaffRecord() {
+            const base = locumData || { code: 'Locum', name: 'Ratnayake' };
+            const displayName = base.name.includes('(L)') ? base.name : `${base.name} (L)`;
+            return { code: base.code, name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        }
+
         let locumEnabled = false;
 
         function getActiveStaff() {
-            return locumEnabled ? [...staffData, locumStaff] : [...staffData];
+            return locumEnabled ? [...staffData, getLocumStaffRecord()] : [...staffData];
         }
 
         function getMonthlyWeekNightTarget(staffCode) {
@@ -893,7 +940,7 @@
         };
 
         // ==================== STATE ====================
-        let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
+        let currentRoster = {}; // { 'YYYY-MM-DD': { first: 'XX', second: 'YY'|null, warning?: '...' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
         let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
         let historicalWeekendBalance = {}; // Set at generation time by getHistoricalWeekendBalance()
@@ -1181,7 +1228,7 @@
             const currentYear = currentDate.getFullYear();
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) &&
                         getWeekNumber(assignDate) === currentWeek &&
@@ -1202,7 +1249,7 @@
             saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
-            return assignment && assignment.staffCode === staffCode;
+            return assignment && assignment.first === staffCode;
         }
 
         // Check if person had the previous weekend (for Mon/Tue exclusion)
@@ -1214,7 +1261,7 @@
             sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
-            return assignment && assignment.staffCode === staffCode;
+            return assignment && assignment.first === staffCode;
         }
 
         // Check 2-day buffer around weekends
@@ -1249,7 +1296,7 @@
         function dayOfWeekCount(staffCode, dow, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
                         count++;
@@ -1263,7 +1310,7 @@
         function weeknightsThisMonth(staffCode, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate)) count++;
                 }
@@ -1280,7 +1327,7 @@
         // Check if person has a weekend this month already (in current roster)
         function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
-                if (assignment.staffCode === staffCode) {
+                if (assignment.first === staffCode) {
                     const d = parseDate(dateKey);
                     if (isWeekend(d)) return true;
                 }
@@ -1428,6 +1475,13 @@
         }
 
         function generateRoster() {
+            // Guard: trainee-logic ES module is loaded asynchronously; if user clicks Generate
+            // before it resolves, fail loudly rather than throwing an unhandled TypeError.
+            if (!window.__traineeLogic) {
+                alert('Page is still loading — please wait a moment and try again.');
+                return;
+            }
+
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
 
@@ -1452,6 +1506,23 @@
                 monthWeekends[s.code] = 0;
                 monthWeekNights[s.code] = 0;
             });
+
+            // Trainee state: per-trainee monthly targets and counters
+            const traineeState = {};
+            const activeTraineesThisMonth = (traineeData || []).filter(t => {
+                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                return targets.weeknightTarget > 0 || targets.weekendTarget > 0;
+            });
+
+            for (const t of activeTraineesThisMonth) {
+                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                traineeState[t.code] = {
+                    weeknightAssigned: 0,
+                    weeknightTarget: targets.weeknightTarget,
+                    weekendAssigned: 0,
+                    weekendTarget: targets.weekendTarget
+                };
+            }
 
             // Weekend priority: prioritize those who didn't have a weekend last month
             // v2: also factor in historical weekend surplus (leave-aware, alpha=0.3 blend)
@@ -1575,52 +1646,89 @@
                 });
             }
 
-            // Assign weekends first (Sat-Sun as a block)
+            // Combined leave + ad-hoc unavailability check — applied to trainees same as SS
+            const isUnavailable = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+
+            // Assign weekends first (Sat-Sun as a block); trainee as 1st when eligible, SS as 2nd
             weekendBlocks.forEach(block => {
+                let firstCode = null, secondCode = null;
+
+                // Try trainee as 1st (must be available BOTH Saturday and Sunday).
+                // If trainee is picked but unavailable on Sunday, leave the counter unincremented;
+                // they'll be retried on subsequent weekends (correct under-target catch-up behaviour).
+                const traineeCode = window.__traineeLogic.pickTraineeForDay(
+                    block.sat, activeTraineesThisMonth, traineeState, isUnavailable, true
+                );
+                if (traineeCode) {
+                    const sunDate = new Date(block.sat);
+                    sunDate.setDate(sunDate.getDate() + 1);
+                    if (!isUnavailable(traineeCode, sunDate)) {
+                        firstCode = traineeCode;
+                        traineeState[traineeCode].weekendAssigned++;
+                    }
+                }
+
+                // Pick SS to fill the remaining slot (1st if no trainee, 2nd if trainee took 1st)
                 const available = getAvailableForWeekend(block.sat);
                 if (available.length === 0) {
+                    if (firstCode) {
+                        // Trainee covers solo (no SS available — log a warning but assign)
+                        warnings.push(`No SS available as 2nd for trainee ${firstCode} on weekend ${block.satKey}`);
+                        currentRoster[block.satKey] = { first: firstCode, second: null };
+                        currentRoster[block.sunKey] = { first: firstCode, second: null };
+                        return;
+                    }
                     warnings.push(`No staff available for weekend ${block.satKey}`);
                     return;
                 }
 
-                // Sort by priority (those who didn't have weekend last month first)
-                available.sort((a, b) => {
-                    return getWeekendPriority(a.code) - getWeekendPriority(b.code);
-                });
-
+                available.sort((a, b) => getWeekendPriority(a.code) - getWeekendPriority(b.code));
                 const assigned = available[0];
-                currentRoster[block.satKey] = { staffCode: assigned.code };
-                currentRoster[block.sunKey] = { staffCode: assigned.code };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                currentRoster[block.satKey] = { first: firstCode, second: secondCode };
+                currentRoster[block.sunKey] = { first: firstCode, second: secondCode };
                 monthWeekends[assigned.code]++;
             });
 
-            // Assign weeknights
+            // Assign weeknights; trainee as 1st when eligible, SS as 2nd
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
-                let available = getAvailableForWeeknight(night);
 
+                const traineeCode = window.__traineeLogic.pickTraineeForDay(
+                    night, activeTraineesThisMonth, traineeState, isUnavailable, false
+                );
+
+                let firstCode = null;
+                let secondCode = null;
+                let warning = null;
+
+                if (traineeCode) {
+                    firstCode = traineeCode;
+                    traineeState[traineeCode].weeknightAssigned++;
+                }
+
+                let available = getAvailableForWeeknight(night);
                 if (available.length === 0) {
-                    // Fallback: relax work day constraint
                     available = getFallbackForWeeknight(night);
                     if (available.length === 0) {
+                        if (firstCode) {
+                            // Trainee covers solo
+                            currentRoster[dateKey] = { first: firstCode, second: null };
+                            return;
+                        }
                         warnings.push(`No staff available for ${dateKey} - check leave coverage`);
                         return;
                     }
-
-                    // Sort by priority
-                    available.sort((a, b) => {
-                        const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
-                        if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
-                        return diff;
-                    });
-
-                    const assigned = available[0];
-                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Non-work day' };
-                    monthWeekNights[assigned.code]++;
-                    return;
+                    warning = 'Non-work day';
                 }
 
-                // Sort by priority with random tie-breaker
                 available.sort((a, b) => {
                     const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
                     if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
@@ -1628,7 +1736,16 @@
                 });
 
                 const assigned = available[0];
-                currentRoster[dateKey] = { staffCode: assigned.code };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                const rec = { first: firstCode, second: secondCode };
+                if (warning) rec.warning = warning;
+                currentRoster[dateKey] = rec;
                 monthWeekNights[assigned.code]++;
             });
 
@@ -1714,7 +1831,7 @@
                         opt.style.color = '#dc2626';
                     }
 
-                    if (assignment && assignment.staffCode === s.code) {
+                    if (assignment && assignment.first === s.code) {
                         opt.selected = true;
                     }
                     select.appendChild(opt);
@@ -1749,11 +1866,11 @@
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && counts[assignment.staffCode]) {
+                if (assignment && counts[assignment.first]) {
                     if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
-                        counts[assignment.staffCode].weekends++;
+                        counts[assignment.first].weekends++;
                     } else if (!isWeekend(date)) {
-                        counts[assignment.staffCode].weeknights++;
+                        counts[assignment.first].weeknights++;
                     }
                 }
             });
@@ -1886,8 +2003,8 @@
                 if (assignment) {
                     const staffDiv = document.createElement('div');
                     staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
-                    staffDiv.textContent = getStaffName(assignment.staffCode);
-                    if (assignment.staffCode === 'Locum') {
+                    staffDiv.textContent = getStaffName(assignment.first);
+                    if (assignment.first === 'Locum') {
                         staffDiv.style.background = '#e5e7eb';
                         staffDiv.style.color = '#374151';
                     }
@@ -1932,7 +2049,10 @@
 
         function updateAssignment(dateKey, staffCode) {
             if (staffCode) {
-                currentRoster[dateKey] = { staffCode };
+                const existing = currentRoster[dateKey] || {};
+                const updated = { first: staffCode, second: existing.second ?? null };
+                if (existing.warning) updated.warning = existing.warning;
+                currentRoster[dateKey] = updated;
             } else {
                 delete currentRoster[dateKey];
             }
@@ -2036,6 +2156,15 @@
                 adHocUnavailability = data.adHocUnavailability || [];
                 savedDrafts = data.savedDrafts || data.historicalData || {}; // backwards compat
                 currentRoster = data.currentRoster || {};
+                // Backwards-compat: normalise pre-refactor { staffCode } entries to { first, second }
+                for (const k of Object.keys(currentRoster)) {
+                    const v = currentRoster[k];
+                    if (v.staffCode !== undefined && v.first === undefined) {
+                        const upgraded = { first: v.staffCode, second: null };
+                        if (v.warning) upgraded.warning = v.warning;
+                        currentRoster[k] = upgraded;
+                    }
+                }
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
 
@@ -2071,6 +2200,17 @@
             alert(`Draft saved for ${monthKey}`);
         }
 
+        function previewPdf() {
+            if (currentMonth === null) {
+                alert('Generate a roster first.');
+                return;
+            }
+            // Persist current state so print-roster.html can read it from localStorage
+            saveToLocalStorage();
+            const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            window.open(`print-roster.html?month=${monthStr}&source=draft`, '_blank');
+        }
+
         function loadSavedDraft() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -2101,7 +2241,7 @@
             // Convert current roster to oncallData format
             const oncallEntries = Object.entries(currentRoster)
                 .sort(([a], [b]) => a.localeCompare(b))
-                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.staffCode}', second: null }`)
+                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.first}', second: ${data.second ? `'${data.second}'` : 'null'} }`)
                 .join(',\n');
 
             const jsContent = `// On-Call Roster Data
@@ -2158,7 +2298,16 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 try {
                     const data = JSON.parse(e.target.result);
 
-                    if (data.currentRoster) currentRoster = data.currentRoster;
+                    if (data.currentRoster) {
+                        // Backwards-compat: old backups used { staffCode } shape; normalise to { first, second }
+                        for (const k of Object.keys(data.currentRoster)) {
+                            const v = data.currentRoster[k];
+                            if (v.staffCode !== undefined && v.first === undefined) {
+                                data.currentRoster[k] = { first: v.staffCode, second: null, warning: v.warning };
+                            }
+                        }
+                        currentRoster = data.currentRoster;
+                    }
                     if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
                     if (data.currentYear !== undefined) currentYear = data.currentYear;
                     if (data.savedDrafts) savedDrafts = data.savedDrafts;
@@ -2324,9 +2473,12 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
 
             // Merge current roster in, formatted as { first, second }
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
-                base.oncallRoster[dateKey] = { first: rec.staffCode, second: null };
+                base.oncallRoster[dateKey] = { first: rec.first, second: rec.second };
             }
 
+            base.staff = staffData; // includes phone edits
+            base.trainees = traineeData;
+            base.locum = locumData;
             base.generatedAt = new Date().toISOString().slice(0, 10);
 
             const btn = document.querySelector('.btn-publish');
@@ -2515,13 +2667,104 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             }).join('');
         }
 
+        // ==================== TRAINEE PANEL ====================
+        function toggleTraineePanel() {
+            const body = document.getElementById('traineePanelBody');
+            const arrow = document.getElementById('traineePanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderTrainees() {
+            const container = document.getElementById('traineeRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('traineeCount').textContent = traineeData.length;
+
+            traineeData.forEach((t, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px 130px 130px 30px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <input type="text" value="${t.code || ''}" data-i="${i}" data-f="code" placeholder="Code" style="padding:4px;">
+                    <input type="text" value="${t.name || ''}" data-i="${i}" data-f="name" placeholder="Name" style="padding:4px;">
+                    <input type="text" value="${t.phone || ''}" data-i="${i}" data-f="phone" placeholder="Phone" style="padding:4px;">
+                    <input type="date" value="${t.rotationStart || ''}" data-i="${i}" data-f="rotationStart" style="padding:4px;">
+                    <input type="date" value="${t.rotationEnd || ''}" data-i="${i}" data-f="rotationEnd" style="padding:4px;">
+                    <button type="button" onclick="removeTrainee(${i})" style="background:#dc2626;color:white;border:none;border-radius:3px;cursor:pointer; padding: 4px 8px;">×</button>
+                `;
+                row.querySelectorAll('input').forEach(inp => {
+                    inp.addEventListener('change', e => {
+                        const idx = +e.target.dataset.i;
+                        const field = e.target.dataset.f;
+                        traineeData[idx][field] = e.target.value;
+                    });
+                });
+                container.appendChild(row);
+            });
+        }
+
+        function addTrainee() {
+            const today = new Date().toISOString().slice(0, 10);
+            traineeData.push({ code: '', name: '', phone: '', rotationStart: today, rotationEnd: today });
+            renderTrainees();
+        }
+
+        function removeTrainee(i) {
+            if (!confirm(`Remove trainee ${traineeData[i].name || '?'}`)) return;
+            traineeData.splice(i, 1);
+            renderTrainees();
+        }
+
+        // ==================== STAFF SPECIALISTS PANEL ====================
+        function toggleSSPanel() {
+            const body = document.getElementById('ssPanelBody');
+            const arrow = document.getElementById('ssPanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderSSPool() {
+            const container = document.getElementById('ssRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('ssCount').textContent = staffData.length;
+
+            staffData.forEach((s, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <span style="font-weight:600;">${s.code}</span>
+                    <span>${s.name}</span>
+                    <input type="text" value="${s.phone || ''}" data-i="${i}" placeholder="Phone" style="padding:4px;">
+                `;
+                row.querySelector('input').addEventListener('change', e => {
+                    staffData[+e.target.dataset.i].phone = e.target.value;
+                });
+                container.appendChild(row);
+            });
+        }
+
         // ==================== LOCUM TOGGLE ====================
         function toggleLocum(enabled) {
             locumEnabled = enabled;
             const info = document.getElementById('locumTargetInfo');
-            info.style.display = enabled ? 'block' : 'none';
+            const details = document.getElementById('locumDetails');
             if (enabled) {
-                document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
+                if (info) info.style.display = 'block';
+                if (details) details.style.display = 'block';
+                const wnTarget = document.getElementById('locumWeekNightTarget');
+                if (wnTarget) wnTarget.textContent = getMonthlyWeekNightTarget(getLocumStaffRecord().code);
+                if (locumData) {
+                    const nameInput = document.getElementById('locumName');
+                    const phoneInput = document.getElementById('locumPhone');
+                    if (nameInput) nameInput.value = locumData.name || '';
+                    if (phoneInput) phoneInput.value = locumData.phone || '';
+                }
+            } else {
+                if (info) info.style.display = 'none';
+                if (details) details.style.display = 'none';
             }
             renderLastMonthWeekends();
             renderUnavailabilityDropdown();
@@ -2593,6 +2836,22 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             monthSelect.addEventListener('change', renderLeavePreview);
             document.getElementById('yearSelect').addEventListener('change', renderLeavePreview);
 
+            // Locum name/phone input handlers
+            const locumNameEl = document.getElementById('locumName');
+            const locumPhoneEl = document.getElementById('locumPhone');
+            if (locumNameEl) {
+                locumNameEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    locumData.name = e.target.value;
+                });
+            }
+            if (locumPhoneEl) {
+                locumPhoneEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    locumData.phone = e.target.value;
+                });
+            }
+
             // Initial render
             renderRoster();
             renderLeavePreview();
@@ -2634,6 +2893,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     const d = await res.json();
                     originalDataJson = d; // keep raw for publish merges
                     if (d.staff) staffData = d.staff;
+                    if (d.trainees) traineeData = d.trainees;
+                    if (d.locum) locumData = d.locum;
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.leave) {
                         leaveData = d.leave.map(l => ({
@@ -2650,7 +2911,9 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     console.log('[v2 generator] Loaded data.json (',
                         Object.keys(historicalOnCall).length, 'historical days,',
                         leaveData.length, 'leave entries,',
-                        staffData.length, 'staff)');
+                        staffData.length, 'staff,',
+                        traineeData.length, 'trainees,',
+                        'locum=', !!locumData, ')');
                 }
             } catch (e) {
                 console.warn('[v2 generator] data.json fetch failed, using embedded fallback:', e);
@@ -2662,6 +2925,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 }
             }
             init();
+            renderTrainees();
+            renderSSPool();
         })();
     </script>
 </body>

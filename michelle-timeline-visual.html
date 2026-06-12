@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michelle Petersen — Training Concerns Timeline</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --surface-2: #f6f8fa;
+    --border: #e1e4e8;
+    --border-soft: #eaedf0;
+    --text: #1a1f2e;
+    --text-muted: #6b7383;
+    --text-soft: #424857;
+    --accent: #4338ca;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow: 0 2px 8px rgba(15,23,42,0.06);
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px 16px;
+  }
+  header .title-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  header .meta { font-size: 12px; color: var(--text-muted); }
+  header .stats { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; color: var(--text-muted); flex-wrap: wrap; }
+  header .stats strong { color: var(--text); font-weight: 600; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 20px 32px 80px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 8px 14px; background: transparent; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Current position summary — compact */
+  .position-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .position-bar .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .pos-pill {
+    font-size: 12px; padding: 3px 9px; border-radius: 12px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pos-fail { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+  .pos-reluctant { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+  .pos-cns { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+  .pos-historic { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+  /* Filters — compact */
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .filter-group { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); min-width: 64px;
+  }
+  .chip {
+    padding: 3px 9px; border-radius: 12px; font-size: 11.5px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-soft); transition: all 0.12s;
+    display: inline-flex; align-items: center; gap: 4px; user-select: none;
+  }
+  .chip:hover { border-color: var(--text-muted); background: var(--surface-2); }
+  .chip.active { background: var(--text); color: white; border-color: var(--text); }
+  .chip .count { background: rgba(0,0,0,0.08); padding: 0 5px; border-radius: 8px; font-size: 10px; margin-left: 2px; }
+  .chip.active .count { background: rgba(255,255,255,0.18); }
+  .chip-reset { margin-left: auto; border-color: var(--accent); color: var(--accent); }
+  .global-toggle {
+    margin-left: 10px;
+    font-size: 11px; padding: 2px 9px; border-radius: 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-soft); cursor: pointer;
+  }
+  .global-toggle:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* Month cards — the new compact default view */
+  .month-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .month-card:hover { box-shadow: var(--shadow); }
+  .month-card.expanded { box-shadow: var(--shadow); }
+
+  .month-header {
+    display: grid;
+    grid-template-columns: 96px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s;
+  }
+  .month-header:hover { background: var(--surface-2); }
+
+  .month-name {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .month-name .year { color: var(--text-muted); font-weight: 500; }
+
+  .month-headline {
+    font-size: 13.5px; color: var(--text-soft); line-height: 1.4;
+  }
+  .month-headline strong { color: var(--text); }
+
+  .month-themes {
+    display: flex; gap: 3px; flex-wrap: nowrap; align-items: center;
+  }
+  .theme-pip {
+    width: 18px; height: 18px; border-radius: 4px;
+    font-size: 11px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: help;
+  }
+
+  .month-meta {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 11px; color: var(--text-muted);
+  }
+  .severity-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--text-muted);
+  }
+  .sev-incident-dot { background: #dc2626; }
+  .sev-milestone-dot { background: #4338ca; }
+  .sev-concern-dot { background: #f59e0b; }
+  .sev-context-dot { background: #94a3b8; }
+
+  .chevron {
+    width: 16px; height: 16px; color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+  .month-card.expanded .chevron { transform: rotate(90deg); }
+
+  .month-detail {
+    display: none;
+    padding: 4px 16px 14px;
+    border-top: 1px solid var(--border-soft);
+    background: var(--surface-2);
+  }
+  .month-card.expanded .month-detail { display: block; }
+
+  /* Compact event rows within expanded month */
+  .event-row {
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    margin-top: 8px;
+    border-left: 3px solid var(--text-muted);
+  }
+  .event-row[data-severity="milestone"] { border-left-color: #4338ca; }
+  .event-row[data-severity="incident"] { border-left-color: #dc2626; }
+  .event-row[data-severity="concern"] { border-left-color: #f59e0b; }
+  .event-row[data-severity="context"] { border-left-color: #cbd5e1; opacity: 0.92; }
+
+  .event-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+  .event-date { font-size: 11px; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .source-tag {
+    font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .source-wa { background: #d1fae5; color: #065f46; }
+  .source-im { background: #dbeafe; color: #1e40af; }
+  .source-context { background: #f1f5f9; color: #475569; }
+  .event-thread { font-size: 11px; color: var(--text-muted); }
+  .speakers-mini { display: flex; gap: 3px; margin-left: auto; }
+  .avatar-mini {
+    width: 18px; height: 18px; border-radius: 50%; color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; cursor: help;
+  }
+  .event-title { font-size: 13px; font-weight: 600; margin: 3px 0 5px 0; }
+  .event-quote {
+    font-size: 12.5px; color: var(--text-soft);
+    background: var(--surface-2); border-left: 2px solid var(--border);
+    padding: 7px 10px; border-radius: 0 4px 4px 0;
+    font-style: italic; line-height: 1.5;
+  }
+  .event-themes { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 6px; }
+  .theme-tag-mini {
+    font-size: 10px; padding: 1px 6px; border-radius: 3px;
+    color: white; font-weight: 500;
+  }
+
+  /* Quarterly wordcloud */
+  .cloud-controls {
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .cloud-controls .label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-muted); margin-right: 8px;
+  }
+  .q-btn {
+    padding: 4px 11px; border-radius: 12px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-soft); cursor: pointer; transition: all 0.15s;
+    font-variant-numeric: tabular-nums;
+  }
+  .q-btn:hover { border-color: var(--text-muted); background: var(--surface-2); }
+  .q-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .q-btn .q-count { background: rgba(0,0,0,0.06); padding: 0 5px; border-radius: 8px; margin-left: 4px; font-size: 10px; }
+  .q-btn.active .q-count { background: rgba(255,255,255,0.2); }
+
+  .cloud {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px 32px;
+    min-height: 320px;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-wrap: wrap; gap: 12px 16px;
+    align-items: center; justify-content: center;
+  }
+  .cloud-word {
+    color: white; padding: 6px 14px; border-radius: 20px;
+    font-weight: 600; line-height: 1.2;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform 0.15s;
+  }
+  .cloud-word:hover { transform: scale(1.06); }
+  .cloud-word .cw-count { font-size: 0.65em; opacity: 0.85; font-weight: 700; background: rgba(0,0,0,0.18); padding: 1px 7px; border-radius: 10px; }
+
+  .cloud-foot {
+    margin-top: 10px;
+    font-size: 11.5px; color: var(--text-muted); text-align: center;
+    line-height: 1.6;
+  }
+
+  /* Term escalation table */
+  .termtable-info {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+    font-size: 12px; color: var(--text-soft); box-shadow: var(--shadow-sm);
+    line-height: 1.5;
+  }
+  .termtable-info strong { color: var(--text); }
+  .termtable-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow-x: auto; box-shadow: var(--shadow-sm);
+  }
+  .termtable { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .termtable th, .termtable td {
+    padding: 7px 10px; text-align: right; font-size: 12px;
+    border-bottom: 1px solid var(--border-soft); vertical-align: middle;
+    font-variant-numeric: tabular-nums;
+  }
+  .termtable th {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 600; color: var(--text-muted); background: var(--surface-2);
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 0;
+  }
+  .termtable th.sortable { cursor: pointer; user-select: none; }
+  .termtable th.sortable:hover { color: var(--text); }
+  .termtable th.sorted { color: var(--accent); }
+  .termtable td.term-cell {
+    text-align: left; font-weight: 600; color: var(--text);
+    border-right: 1px solid var(--border-soft);
+  }
+  .termtable td.total-cell { font-weight: 600; color: var(--text); }
+  .termtable td.q-cell {
+    color: var(--text-soft);
+    background-clip: padding-box;
+  }
+  .termtable td.q-cell.zero { color: #cbd5e1; }
+  .termtable .trend-tag {
+    display: inline-block; padding: 1px 7px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .trend-up { background: #fef2f2; color: #b91c1c; }
+  .trend-new { background: #fef2f2; color: #b91c1c; }
+  .trend-flat { background: #f1f5f9; color: #64748b; }
+  .trend-down { background: #f0fdf4; color: #166534; }
+  .termtable tr:hover td { background: var(--surface-2); }
+  .heat-cell { transition: background 0.15s; }
+
+  /* Themes matrix */
+  .matrix {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+  }
+  .matrix table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  .matrix th, .matrix td {
+    padding: 6px 8px; text-align: left; font-size: 12px; vertical-align: middle;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .matrix th {
+    font-weight: 600; font-size: 10px; text-transform: uppercase;
+    color: var(--text-muted); letter-spacing: 0.05em; border-bottom-width: 2px;
+  }
+  .matrix td.theme-cell {
+    font-weight: 500; color: var(--text); white-space: nowrap;
+    border-right: 1px solid var(--border-soft);
+  }
+  .quarter-dot {
+    display: inline-block; width: 24px; height: 18px; border-radius: 3px;
+    margin: 1px; font-size: 10px; font-weight: 700; color: white;
+    text-align: center; line-height: 18px;
+  }
+
+  /* Supervisor cards */
+  .sup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 12px;
+  }
+  .sup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .sup-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .avatar-lg {
+    width: 32px; height: 32px; border-radius: 50%; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .sup-name { font-size: 14px; font-weight: 700; }
+  .sup-role { font-size: 11px; color: var(--text-muted); line-height: 1.35; }
+  .sup-body { font-size: 12px; line-height: 1.5; color: var(--text-soft); }
+  .sup-body strong { color: var(--text); }
+  .sup-quote {
+    font-style: italic; background: var(--surface-2);
+    padding: 7px 10px; border-left: 2px solid var(--border);
+    border-radius: 0 4px 4px 0; margin: 5px 0; font-size: 11.5px;
+  }
+  .sup-pos {
+    margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text);
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  @media print {
+    .tabs, .filters, .global-toggle, .chevron { display: none; }
+    .view { display: block !important; page-break-before: always; }
+    .month-card { break-inside: avoid; }
+    .month-detail { display: block !important; }
+    body { background: white; }
+  }
+  @media (max-width: 720px) {
+    header { padding: 14px 16px; }
+    .container { padding: 14px 16px 60px; }
+    .month-header { grid-template-columns: 84px 1fr auto; gap: 10px; padding: 10px 12px; }
+    .month-themes { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-row">
+    <h1>Michelle Petersen — Training Concerns</h1>
+    <span class="meta">WhatsApp + iMessage/SMS · 2020-09 → 2026-06 · Compiled 2026-06-12 22:05</span>
+  </div>
+  <div class="stats">
+    <span><strong>71</strong> curated events</span>
+    <span><strong>6</strong> supervisors</span>
+    <span><strong>12</strong> patient-impact incidents</span>
+    <span><strong>35</strong> milestones</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="tabs">
+    <button class="tab active" data-view="timeline">📅 Monthly timeline</button>
+    <button class="tab" data-view="cloud">☁️ Quarterly themes</button>
+    <button class="tab" data-view="terms">📈 Term escalation</button>
+    <button class="tab" data-view="themes">🎨 Themes matrix</button>
+    <button class="tab" data-view="supervisors">👥 Supervisor positions</button>
+  </div>
+
+  <div class="view active" id="view-timeline">
+
+    <div class="position-bar">
+      <span class="label">Now</span>
+      <span class="pos-pill pos-fail">BT — fail</span>
+      <span class="pos-pill pos-fail">AL — fail</span>
+      <span class="pos-pill pos-reluctant">HY — reaching fail</span>
+      <span class="pos-pill pos-fail">RW — "finished product"</span>
+      <span class="pos-pill pos-reluctant">MK — in process</span>
+      <span class="pos-pill pos-cns">CNS team — aligned</span>
+      <span class="pos-pill pos-historic">CC (historical)</span>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label">Severity</span>
+        <div id="f-sev"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Theme</span>
+        <div id="f-theme"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Speaker</span>
+        <div id="f-spk"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Source</span>
+        <div id="f-src"></div>
+        <button class="chip chip-reset" id="reset">↻ Reset</button>
+        <button class="global-toggle" id="expand-all">Expand all</button>
+        <button class="global-toggle" id="collapse-all">Collapse all</button>
+      </div>
+    </div>
+
+    <div id="months"></div>
+  </div>
+
+  <div class="view" id="view-cloud">
+    <div class="cloud-controls" id="cloud-controls"></div>
+    <div class="cloud" id="cloud"></div>
+    <div class="cloud-foot" id="cloud-foot"></div>
+  </div>
+
+  <div class="view" id="view-terms">
+    <div class="termtable-info" id="termtable-info"></div>
+    <div class="termtable-wrap"><table class="termtable" id="termtable"></table></div>
+  </div>
+
+  <div class="view" id="view-themes">
+    <div class="matrix" id="matrix"></div>
+  </div>
+
+  <div class="view" id="view-supervisors">
+    <div class="sup-grid" id="sup-grid"></div>
+  </div>
+
+</div>
+
+<script>
+const DATA = {"events": [{"date": "2020-09-18", "time": "16:43", "source": "im", "thread": "DM: CC", "speakers": ["CC", "BT"], "themes": ["handover", "insight"], "severity": "milestone", "title": "6-year-old shared shorthand: \"Michelle?\"", "quote": "BT: \"Getting a very long handover from port at the moment.\" CC (instant guess): \"Michelle?\" BT: \"Haha maybe.\" \u2014 shows the long-handover pattern was already informally known and joked about between supervisors in September 2020."}, {"date": "2022-01-19", "time": null, "source": "context", "thread": "Historic", "speakers": ["CC"], "themes": ["ipap-history", "insight"], "severity": "context", "title": "CC later supervised Michelle in Sydney", "quote": "CC supervised Michelle after she left Wollongong. Called AL \"not long after Michelle went there\" raising concerns. Did Michelle's first IPAP. Reported Michelle had \"personal belief she was above standard\" with limited proactive reflection. Confirmed by AL 12 Jun 2026: \"CC was first to identify Michell's issues in Syd.\""}, {"date": "2022-01-21", "time": "18:03", "source": "im", "thread": "DM: CC", "speakers": ["CC", "BT"], "themes": ["handover", "clinical-reasoning", "plan-rigidity"], "severity": "milestone", "title": "\u2b50 CC's contemporaneous concern \u2014 4 years before current cycle", "quote": "CC: \"CONFIDENTIALLY - why after all this time am I still confused as to what Michelle wants when she calls? I feel like shouting 'get to the point!'\" BT: \"one more week man. I have one more week.\" CC: \"So, not just me?\" BT: \"oh no. it's maddening.\" Documents the same communication pattern (long, social-history-laden, no clear ask) that AL describes on call in March 2026 \u2014 4 years earlier, from a different supervisor."}, {"date": "2025-08-21", "time": "17:35", "source": "wa", "thread": "DM: AL", "speakers": ["AL"], "themes": ["clinical-reasoning"], "severity": "context", "title": "First explicit concern", "quote": "Just checked in with muoi re Michelle. Sounds like she's running every plan still and slow ish still."}, {"date": "2025-08-22", "time": "17:49", "source": "wa", "thread": "DM: AL", "speakers": ["BT"], "themes": ["insight"], "severity": "concern", "title": "\"Above standard\" self-perception", "quote": "BT re CC IPAP: \"Michelle was not at expected standard but had the personal belief that she was above standard.\""}, {"date": "2025-08-22", "time": "17:56", "source": "wa", "thread": "DM: AL", "speakers": ["AL", "BT"], "themes": ["supervisor-strategy", "insight"], "severity": "milestone", "title": "\"We need to start making notes\"", "quote": "AL: \"we need to start making notes of any concerns... either not pass but have very good records or do what most others do \u2014 just let her pass.\" BT confirms Michelle \"would pretty much just do things ways she'd always done them unless specifically directed.\""}, {"date": "2025-09-01", "time": "09:46", "source": "wa", "thread": "DM: AL", "speakers": ["BT"], "themes": ["clinical-reasoning"], "severity": "concern", "title": "BT's direct supervisory assessment", "quote": "She's okay BTW. Not amazing but okay. Asks a little bit too much for things I thought she should be okay for at level but for other things very comfortable."}, {"date": "2025-11-13", "time": "21:38", "source": "wa", "thread": "DM: AL", "speakers": ["AL"], "themes": ["ipap-history", "supervisor-strategy"], "severity": "milestone", "title": "IPAP status confirmed", "quote": "Michelle is still in the performance path. [MK is going to have catchup supervisory meeting with Michelle soon]"}, {"date": "2025-11-14", "time": "09:52", "source": "wa", "thread": "DM: HY", "speakers": ["BT"], "themes": ["handover", "patient-safety"], "severity": "incident", "title": "R Francis: failed handover to on-call", "quote": "Patient died. BT (on-call) only found out when called about the patient: \"Michelle didn't hand him over to me which was unfortunate.\""}, {"date": "2025-11-17", "time": "08:22", "source": "wa", "thread": "DM: AL", "speakers": ["AL"], "themes": ["handover"], "severity": "concern", "title": "Handover quality complaint", "quote": "\u2026 I do not like the way Michelle hands over lol"}, {"date": "2025-11-19", "time": "20:21", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["plan-rigidity", "clinical-reasoning"], "severity": "incident", "title": "Deborah Chisholm case \u2014 documented escalation pattern", "quote": "Michelle's documented plan: IM Midazolam 10mg, special, planned dexmed/midaz/clonidine/valproate. BT sharing verbatim to AL. AL: \"there's a skill gap. It didn't click for both num and don.\""}, {"date": "2025-11-24", "time": "20:02", "source": "wa", "thread": "DM: AL", "speakers": ["AL"], "themes": ["leadership"], "severity": "concern", "title": "Lack of senior-reg initiative", "quote": "Again it's not much initiative from Michelle to run the unit at a senior reg level huh"}, {"date": "2025-11-26", "time": "17:47", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["plan-rigidity", "clinical-reasoning"], "severity": "concern", "title": "\"Fixated\" \u2014 coronial discussion", "quote": "i spent five minutes yesterday re michelle trying to tell her (not sure if compliant?) not to bring up coronial with CM family, no need to discuss with them or talk about it as it has been done. she just was fixated on the need to let them know it would be coronial. Despite me saying you, me, greg, muoi had all had input and the family was well aware, and we have already spoken *to coroner*"}, {"date": "2025-11-29", "time": "12:58", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["clinical-reasoning"], "severity": "concern", "title": "\"Can't work out how she's progressing\"", "quote": "Just can't work out how she's progressing. Her final year with us next year."}, {"date": "2025-11-29", "time": "13:04", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-strategy"], "severity": "milestone", "title": "Supervisor variance mapped", "quote": "as a supervisor group we seem to be very polar extremes when gauging performance: GB, HY = everyone performs satisfactorily; MK = efficiency is key, just have to be efficient\u2026. RW = can't assess as he is over controlling and plus only 2 days"}, {"date": "2025-12-16", "time": "18:33", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["hiring"], "severity": "milestone", "title": "Hiring confidence statement", "quote": "I want to be able to hire her. I can't say I feel confident about it right now. Given last time she spoke to me about a patient when on call."}, {"date": "2025-12-17", "time": "17:03", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["supervisor-strategy"], "severity": "milestone", "title": "Three-supervisor status check", "quote": "Sandy worried about Michelle at consults. MK worried about Michelle at consults. HY on the fence."}, {"date": "2025-12-22", "time": "14:43", "source": "wa", "thread": "Group: BHR", "speakers": ["RW"], "themes": ["formal-event"], "severity": "milestone", "title": "RW's Mini-CEX: 6/10", "quote": "I think she's safe and I gave her a 6. [BT: \"Safe is good. Is she ready to be final year?\"]"}, {"date": "2026-01-05", "time": "12:36", "source": "wa", "thread": "DM: RW", "speakers": ["RW"], "themes": ["formal-event", "leadership"], "severity": "concern", "title": "RW's directive to step up", "quote": "I told michelle that my expectation is that she will need to step up and take ownership more. I've advised her to make contact with Gemma and Young before the term starts and touch base with MK and HY also."}, {"date": "2026-01-13", "time": "19:25", "source": "im", "thread": "DM: AL", "speakers": ["AL", "BT"], "themes": ["hiring"], "severity": "milestone", "title": "\"No one will hire her\"", "quote": "AL: \"Oh Michelle is a nightmare... No matter where she goes.\" BT: \"No one will hire her. They'll make her sever.\""}, {"date": "2026-01-16", "time": "08:01", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["knowledge-gap"], "severity": "concern", "title": "Methadone formula unaware", "quote": "Hey B, did you teach Michelle methadone conversion? She seemed unaware of the formula, although had seen it on a post it note that Pat left."}, {"date": "2026-01-16", "time": "08:07", "source": "wa", "thread": "Group: BHR", "speakers": ["BT"], "themes": ["knowledge-gap", "plan-rigidity"], "severity": "milestone", "title": "\"Frozen in time\" framing", "quote": "so the thing about michelle, having been an on off supervisor for her for 1.5 years historically, is I don't believe she changes her practice at all... So the constant feedback for michelle from a lot of consultants over the years has been that the social/communication is good. But that the medical/planning/pharmacology is frozen in time and doesn't change and isn't."}, {"date": "2026-01-16", "time": "08:15", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["clinical-reasoning", "list-mgmt"], "severity": "incident", "title": "Post-stroke recovering patient: assumed EOLC", "quote": "We've got a pt post-stroke who has recovered very well. But michelle had assumed the status quo of eolc in pcu to be the ongoing plan even though the pt is eating, walking, conversing (albeit with some language and recall deficits). The pt will need NDIS. She can live a life outside of PCU!"}, {"date": "2026-01-16", "time": "09:52", "source": "wa", "thread": "Group: BHR", "speakers": ["BT"], "themes": ["supervisor-strategy", "leadership"], "severity": "milestone", "title": "BT sets explicit expectations for 3rd-year AT", "quote": "functionally a third year AT should be running the team as the lead / boss designate on behalf of, with you acting as support. (Full 7-point framework for how HY and team should let Michelle drive.)"}, {"date": "2026-01-19", "time": "14:45", "source": "wa", "thread": "Group: BHR", "speakers": ["RW"], "themes": ["leadership"], "severity": "concern", "title": "RW observes leadership gap", "quote": "I allowed Michelle to lead the majority of the round today. I've noticed that she needs to take more leadership and instruct the JMO more clearly. She's got a good bedside manner. She does know the BJR equation, we went through it again."}, {"date": "2026-02-05", "time": "14:34", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["handover"], "severity": "concern", "title": "HY: handovers slow", "quote": "Michelle needs to get faster with her handovers"}, {"date": "2026-02-05", "time": "19:09", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["supervisor-strategy"], "severity": "milestone", "title": "\u2b50 BT's first fail statement", "quote": "TBH we had a lot of chats that i shared with you about expectations and working with michelle. She sorta might have to fail."}, {"date": "2026-02-05", "time": "19:10", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-concern"], "severity": "concern", "title": "External Liverpool corroboration", "quote": "Ye another consultant email me the other day re seeing how Michelle is doing. He's a very supportive consultant and for him to be concerned about performance... This is Liverpool whom was extremely excited to have her on board in first year at recruitment to now they all expressed concern is pretty significant... But it was a pattern I observed prior to passing exam."}, {"date": "2026-02-05", "time": "19:13", "source": "im", "thread": "DM: AL", "speakers": ["BT", "AL"], "themes": ["insight"], "severity": "concern", "title": "\"Underconfident overconfidence\"", "quote": "BT: \"she has an odd kind of underconfidewnt overconfidence.\" AL: \"one of the points raised was she knows the and recognise what needs to improve but frustratingly doesn't do anything about it.\""}, {"date": "2026-02-06", "time": "19:47", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["clinical-reasoning", "patient-safety"], "severity": "incident", "title": "Family asked for \"another doctor\"", "quote": "some family asked her if there's another doctor as Michelle spent too much time talking but not making decision regarding a ketamine infusion when concerned from family was pt is very drowsy or something like that (Young's report)"}, {"date": "2026-02-06", "time": "19:49", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["professionalism"], "severity": "concern", "title": "Doesn't know own supervisor", "quote": "I am surprised to hear Michelle doesn't know who her supervisor is? [BT: She emailed me to ask. I haven't replied as I'm trying to avoid answering silly questions]"}, {"date": "2026-02-17", "time": "16:37", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["leadership"], "severity": "concern", "title": "Can't be left alone for a day", "quote": "I asked HY specifically if she felt michelle couldn't be left alone for a day. And she was\u2026 not positive."}, {"date": "2026-02-19", "time": "20:11", "source": "im", "thread": "DM: MK", "speakers": ["MK"], "themes": ["supervisor-concern"], "severity": "milestone", "title": "\u2b50 MK's documented view", "quote": "It will be different when we dont have the luxury of a locum. Michelle is being over supported and will de-skill in time efficieny. Roger's presence has been good to calm the CNSs and Michelle."}, {"date": "2026-02-19", "time": "20:14", "source": "im", "thread": "DM: MK", "speakers": ["BT"], "themes": ["supervisor-strategy"], "severity": "milestone", "title": "BT to MK: prior junior regs more capable", "quote": "the message being sent is that our prior 2 registrars, in their first year, are more capable than our final year registrar. so need to be balanced."}, {"date": "2026-02-20", "time": "08:45", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["patient-safety", "handover"], "severity": "incident", "title": "SHH transfer patient died 6h post-arrival", "quote": "Patient on QID midazolam transferred to Bulli AH, died 6h later. Michelle got called for handover to start driver at 9pm. \"She documented that he was having short apnoeas and intermittently responsive.\""}, {"date": "2026-02-25", "time": "17:57", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-strategy", "formal-event"], "severity": "milestone", "title": "\"Start making notes\" decision", "quote": "Just chatted to MK a bit re step wise firmer and clearer goal setting with Michelle... she prob need to spend more 1:1 time with Michelle to do perf management stuff and start making notes."}, {"date": "2026-02-26", "time": "17:49", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["ipap-history"], "severity": "milestone", "title": "IPAP outcome clarified", "quote": "Oh ok so Michelle passed the performance pathway last term. I thought she didn't pass\u2026 [BT: I had no idea]"}, {"date": "2026-02-27", "time": "18:05", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["supervisor-concern"], "severity": "milestone", "title": "HY flags formal meeting", "quote": "Unfortunately more issues emerging with Michelle in consults role plus inexperienced CNS. MK and I are meeting to talk with Michelle next tues."}, {"date": "2026-02-28", "time": "12:19", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["clinical-reasoning", "patient-safety"], "severity": "incident", "title": "PRN dose vs frequency \u2014 moaning terminal patient", "quote": "Community terminal pt needed over the course of 1.5 hrs this am, 2.5mg + 2.5mg + 5mg of sc morphine to manage pain (moaning), but Michelle changed Jacquie's order from 2.5-5mg PRN q1h to 2.5-5mg PRN q2h. [BT: Mmhmm. Keep notes hey]"}, {"date": "2026-03-03", "time": "17:06", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["list-mgmt"], "severity": "concern", "title": "Doesn't keep overview of consult list", "quote": "A bit concerning that Michelle had done consults before but it wasn't til MK told her today specifically that as consults AT she needs to have an overview of all of the pts on the list that she understood that was the case."}, {"date": "2026-03-03", "time": "18:24", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["plan-rigidity"], "severity": "milestone", "title": "Sandy: \"no different from years ago\"", "quote": "Sandy's assessment today is that she has not seen any diff with Michelle today compared with Michelle a few years ago"}, {"date": "2026-03-05", "time": "12:49", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["supervisor-concern"], "severity": "concern", "title": "Young (CNS) independently raises concerns", "quote": "Young too said to me today Michelle has not changed at all compared with how she was working before. And Young, with no prompting or any input from me at all, mentioned to me that was concerned with Michelle returning to PCU for her final term."}, {"date": "2026-03-11", "time": "20:29", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["plan-rigidity", "clinical-reasoning"], "severity": "milestone", "title": "The structural diagnosis", "quote": "The issue is Michelle is not applying her knowledge to different situations. She's has route learnt a method and applies it to all situation. [BT: yes. i noticed back in ~2021/2022]"}, {"date": "2026-03-12", "time": "15:25", "source": "im", "thread": "DM: MK", "speakers": ["MK"], "themes": ["supervisor-concern"], "severity": "concern", "title": "\"Michelle factor contributing\"", "quote": "BT: \"The Michelle factor?\" MK: \"Both. Michelle factor contributing.\""}, {"date": "2026-03-12", "time": "17:57", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-strategy", "formal-event"], "severity": "milestone", "title": "\u2b50 RACP exit pathway explored", "quote": "Cos Michelle didn't pass her last consults. So if she doesn't pass this one\u2026 she could potentially be exited right? Just reading racp policy. [BT: Then we need to fail her :p but sure recruit a reg]"}, {"date": "2026-03-13", "time": "21:09", "source": "im", "thread": "DM: AL", "speakers": ["AL", "BT"], "themes": ["clinical-reasoning", "handover"], "severity": "incident", "title": "AL's on-call experience", "quote": "It's\u2026.. difficult being on call with Michelle\u2026 I had to cut her off 3 times\u2026. I feel like being led around one of those French maze gardens. I cut her off to ask relevant medical stuff and she just keeps going back to social history. [BT: yeah. she's in the wrong job.]"}, {"date": "2026-03-16", "time": "18:30", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-strategy"], "severity": "concern", "title": "HY-as-supervisor questioned", "quote": "I am beginning to think HY probably not great as Michelle's supervisor but anyway"}, {"date": "2026-03-20", "time": "16:32", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["insight", "clinical-reasoning"], "severity": "milestone", "title": "AL's diagnostic framing", "quote": "She is stuck at exam stage of checklist-ing is my diagnosis. Even when she sees patients she mentally checklisting and not taking in what's occurring in front of her. she had a little sob with me when I point out the bpt exam prep stage she's stuck at."}, {"date": "2026-03-26", "time": "13:38", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["clinical-reasoning", "patient-safety"], "severity": "incident", "title": "Underdose: terminally agitated heavy drinker", "quote": "Michelle is giving a terminally agitated man who drinks heavily sc midaz 5 mg \ud83e\udd72 [after MK and I told her 10 of midaz in the driver isn't enough]"}, {"date": "2026-03-27", "time": "19:19", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["clinical-reasoning", "plan-rigidity", "patient-safety"], "severity": "incident", "title": "Driver dose insufficient \u2014 resp distress", "quote": "I outright told Michelle I think 15 mg morph and 10 mg midaz is not enough... The pt post driver starting and PRNs apparently RR was 26 (down from RR >70!!!). She left the driver order the unchanged despite what I said. [RW: I usually go 30mg midazolam or higher, usually 20-30mg morphine]"}, {"date": "2026-04-17", "time": "20:34", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["leadership", "supervisor-strategy"], "severity": "concern", "title": "\"If Michelle still can't be left alone in may of her last year wtf?\"", "quote": "But yeah I was like. If Michelle still can't be left alone in may of her last year wtf? [AL: Exactly. Getting letters doesn't automatically make someone independent suddenly.]"}, {"date": "2026-04-27", "time": "08:20", "source": "wa", "thread": "DM: HY", "speakers": ["BT", "HY"], "themes": ["plan-rigidity"], "severity": "concern", "title": "Pattern named: ignores or forgets suggestions", "quote": "BT: \"she follows instructions without variability... doesn't she. like... does she change the plan if she's given a plan?\" HY: \"She sometimes just ignores what I suggest. Or rather forgets.\""}, {"date": "2026-04-29", "time": "20:00", "source": "wa", "thread": "DM: HY", "speakers": ["HY", "BT"], "themes": ["plan-rigidity", "clinical-reasoning"], "severity": "milestone", "title": "\"Mx is on rails. like a train.\"", "quote": "HY: \"so MK last week said do not link (but without the full info), so Michelle said do not link.\" BT: \"I think I've told... someone... that her Mx is on rails. like a train. doesn't deviate.\""}, {"date": "2026-04-29", "time": "20:01", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["supervisor-concern", "patient-safety"], "severity": "milestone", "title": "\u2b50 HY's trust statement", "quote": "If she continues as she is, i honestly do not think she is someone I could trust to work at even senior AT level. I had been allocating patients away from her because I'm worried that she would under treat their pain because she's so timid with med dosing."}, {"date": "2026-04-30", "time": "15:26", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["formal-event", "insight"], "severity": "milestone", "title": "\u2b50 Formal feedback meeting (MK+HY)", "quote": "We made her cry but I said it's better that she cries now and improves over crying in 6 months and we have to fail her. Michelle didn't realise that both CNSs are burning out because of her."}, {"date": "2026-05-01", "time": "16:08", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-concern"], "severity": "concern", "title": "Team dynamic collapsing", "quote": "HY pretty much solo wo Michelle as no trust... Gemma also quite sick of Michelle cos Michelle doesn't take on Gemma's concerns... Michelle also forgotten to review a pt young handed over... I think MK is burning out from Michelle."}, {"date": "2026-05-01", "time": "17:48", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["supervisor-strategy", "insight"], "severity": "milestone", "title": "\u2b50 BT's articulated fail-rationale", "quote": "I think it's doing her as a trainee a [disservice] to let her keep getting further and further along without actually bringing a hard stop and allowing her to be properly performance managed from a trainee committee point of view because she obviously thinks things are fine and [she's] really surprised to hear they're not."}, {"date": "2026-05-07", "time": "08:52", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["leadership"], "severity": "concern", "title": "Buki had to go in \u2014 confidence", "quote": "Ash just texted me saying that Michelle is not confident operating without CNS support so Buki has had to go in today. Not confident without seeing the support is a bit of a flag for me."}, {"date": "2026-05-13", "time": "21:48", "source": "wa", "thread": "Group: BHR", "speakers": ["RW"], "themes": ["supervisor-concern", "plan-rigidity"], "severity": "milestone", "title": "\u2b50 RW: \"close to the finished product\"", "quote": "I think Michelle is quite set in her ways. I don't think she's going to change. I think what we see now might be close to the finished product."}, {"date": "2026-05-14", "time": "16:08", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["list-mgmt", "patient-safety"], "severity": "incident", "title": "Peritonitic patient: no regular pain relief", "quote": "And for a man with volvulus, she didn't see surgical fellow's notes that he is peritonic and in lots of pain so was going to leave him with no regular pain relief until review tmrw."}, {"date": "2026-05-21", "time": "19:24", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["patient-safety", "clinical-reasoning"], "severity": "incident", "title": "Community EOL patient \u2014 passive plan", "quote": "EOL pt at home, husband etoh can't give prns, daughter doesn't want to be involved... Her plan was do nothing different apart from letting nurse to let family know to call us if needed or ambulance for PRN... It took a lot of prompting and leading questions to get her to come to the conclusion of increasing sedation in SD. The other question is did Michelle discuss this plan with a consultant \u2014 I don't see record of it."}, {"date": "2026-05-22", "time": "09:02", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["plan-rigidity"], "severity": "milestone", "title": "Single path concern named", "quote": "That's always been my concern with Michelle, only single path for everything."}, {"date": "2026-06-05", "time": "14:22", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["formal-event", "supervisor-strategy"], "severity": "milestone", "title": "AL floats JMO unit formal notification", "quote": "Talking about JMO I wonder if we need to let them know Michelle is needing extra support for performance formally."}, {"date": "2026-06-05", "time": "16:18", "source": "wa", "thread": "Group: Team Staffing", "speakers": ["BT"], "themes": ["professionalism", "formal-event"], "severity": "milestone", "title": "\u2b50 Leave/SARA failure \u2014 formal escalation", "quote": "While it's fine to organise leave in the consults team, neither AL nor I were made formally aware... the leave was not approved at a service level / no SARA form put in. This has led to JMO management being unaware. If anything, it speaks further to issues around workflows etc in the clinical space."}, {"date": "2026-06-11", "time": "14:08", "source": "wa", "thread": "DM: HY", "speakers": ["HY"], "themes": ["supervisor-concern", "patient-safety"], "severity": "milestone", "title": "\u2b50 HY's current position", "quote": "I told MK that I feel as though we're trying to protect pts from Michelle by allocating them to us instead of her, or as it is happening this arvo, having to re-review pts because Michelle isn't managing a pt in distress appropriately. That it doesn't feel like passing her is the right thing to do."}, {"date": "2026-06-11", "time": "14:09", "source": "wa", "thread": "DM: HY", "speakers": ["BT"], "themes": ["supervisor-strategy", "formal-event"], "severity": "milestone", "title": "Current consensus \u2014 BT and AL telling MK", "quote": "AL and I have both told MK to fail her. [HY: So I kinda have to fail her too. Which I've kinda been struggling with.]"}, {"date": "2026-06-12", "time": "16:43", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["supervisor-strategy"], "severity": "milestone", "title": "TODAY: AL's persistent-pattern statement", "quote": "It's been persistent and recurrent pattern\u2026 basically she needs to be in a team who can support her as if she's a semi retiring senior consultant who's earned their respect and status in organisation."}, {"date": "2026-06-12", "time": "17:02", "source": "im", "thread": "DM: AL", "speakers": ["AL"], "themes": ["hiring"], "severity": "milestone", "title": "TODAY: AL suggests CMO alternative", "quote": "She would do well as cmo. Better pay too for her prob if she just do that now and work her way up that pay grade. And I say this not being condescending but tbh a genuine life advice."}, {"date": "2026-06-12", "time": "17:26", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["clinical-reasoning", "patient-safety"], "severity": "incident", "title": "TONIGHT: 60L HFNP wean with midaz 10", "quote": "Michelle has put someone on just 10 of midaz for weaning off 60 L of high flow"}, {"date": "2026-06-12", "time": "17:33", "source": "im", "thread": "DM: AL", "speakers": ["BT"], "themes": ["supervisor-strategy", "patient-safety"], "severity": "milestone", "title": "TODAY: Patients being screened away", "quote": "I think (haven't checked with MK) they are now screening patients AWAY from michelle on purpose... if you can't trust AT to manage the full caseload, you can't trust AT."}, {"date": "2026-06-12", "time": "17:38", "source": "wa", "thread": "Group: BHR", "speakers": ["HY"], "themes": ["insight", "plan-rigidity"], "severity": "milestone", "title": "\u2b50 TONIGHT: HY's feedback statement", "quote": "Hey guys, re Michelle and whether she's taken on feedback/improving. This is a problem. We have told her repeatedly that this dosing is not appropriate for eolc pts."}], "themes": {"clinical-reasoning": {"label": "Clinical reasoning", "color": "#dc2626", "icon": "\ud83e\ude7a"}, "plan-rigidity": {"label": "Plan rigidity", "color": "#ea580c", "icon": "\ud83d\ude82"}, "knowledge-gap": {"label": "Knowledge gaps", "color": "#d97706", "icon": "\ud83d\udcda"}, "list-mgmt": {"label": "List management", "color": "#ca8a04", "icon": "\ud83d\udccb"}, "handover": {"label": "Handover quality", "color": "#65a30d", "icon": "\ud83e\udd1d"}, "insight": {"label": "Insight / self-awareness", "color": "#7c3aed", "icon": "\ud83e\udde0"}, "leadership": {"label": "Leadership / ownership", "color": "#0891b2", "icon": "\ud83d\udc64"}, "patient-safety": {"label": "Patient safety", "color": "#b91c1c", "icon": "\u26a0\ufe0f"}, "professionalism": {"label": "Process / professionalism", "color": "#475569", "icon": "\ud83d\udcd1"}, "supervisor-strategy": {"label": "Supervisor strategy", "color": "#1d4ed8", "icon": "\ud83c\udfaf"}, "supervisor-concern": {"label": "Supervisor concern", "color": "#6d28d9", "icon": "\ud83d\udcac"}, "ipap-history": {"label": "IPAP / history", "color": "#0f766e", "icon": "\ud83d\udcdc"}, "hiring": {"label": "Hiring / career", "color": "#be185d", "icon": "\ud83d\udcbc"}, "formal-event": {"label": "Formal event", "color": "#1e40af", "icon": "\u2b50"}}, "people": {"BT": {"role": "Head of Service (informal/on-call supervisor; was direct supervisor years ago)", "color": "#1e40af", "avatar": "BT"}, "AL": {"role": "Medical Director, Division (informal/on-call; direct supervisor years ago)", "color": "#7c3aed", "avatar": "AL"}, "HY": {"role": "Current PRIMARY supervisor \u2014 consults (RACP)", "color": "#ea580c", "avatar": "HY"}, "MK": {"role": "Current PRIMARY supervisor + likely overall college supervisor (RACP)", "color": "#16a34a", "avatar": "MK"}, "RW": {"role": "1 day/week clinical supervision (consults). PCU H2 2025. Did Mini-CEXs. Not formal RACP.", "color": "#0d9488", "avatar": "RW"}, "GB": {"role": "PCU supervisor H2 2025 (RACP). Direct supervisor years ago.", "color": "#ca8a04", "avatar": "GB"}, "CC": {"role": "Sydney supervisor post-Wollongong. Did Michelle's first IPAP. First identifier of concerns.", "color": "#be185d", "avatar": "CC"}, "Young": {"role": "CNS \u2014 independently raised concerns", "color": "#64748b", "avatar": "Yo"}, "Sandy": {"role": "CNS \u2014 historical comparator", "color": "#64748b", "avatar": "Sa"}, "Gemma": {"role": "CNS \u2014 has had to escalate to HY", "color": "#64748b", "avatar": "Ge"}}, "sources": {"wa": {"label": "WhatsApp", "color": "#25d366"}, "im": {"label": "iMessage/SMS", "color": "#007aff"}, "context": {"label": "Historic context", "color": "#94a3b8"}}, "severity": {"context": {"label": "Context", "color": "#94a3b8", "border": "#cbd5e1"}, "concern": {"label": "Concern", "color": "#f59e0b", "border": "#fbbf24"}, "incident": {"label": "Incident", "color": "#dc2626", "border": "#ef4444"}, "milestone": {"label": "Milestone", "color": "#1e40af", "border": "#3b82f6"}}, "generated_at": "2026-06-12 22:05", "total_events": 71};
+const HEADLINES = {"2020-09": "Long-handover pattern noted in passing \u2014 first signal in the record", "2022-01": "CC raises communication concerns directly \u2014 same pattern as current cycle", "2025-08": "Concerns formally documented; supervisor note-keeping begins", "2025-09": "Direct supervisory observation \u2014 performance below expected level", "2025-11": "IPAP confirmed; first patient-impact incident; supervisor lens differences identified", "2025-12": "2026 hiring/coverage planning; cross-supervisor concern visible", "2026-01": "Knowledge-application pattern named; consults term expectations set", "2026-02": "Consults term begins; CNS concerns emerge; external corroboration arrives", "2026-03": "Plan-rigidity pattern explicit; clinical concerns escalate across sites", "2026-04": "Formal feedback meeting held by MK + HY; trust concerns named", "2026-05": "Clinical safety patterns recur; supervisor positions clarifying", "2026-06": "Same patterns continuing; process/admin issues surface; positions converging"};
+
+const state = { sev: new Set(), theme: new Set(), spk: new Set(), src: new Set(), expanded: new Set() };
+
+function el(tag, props={}, children=[]) {
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(props)) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('data-')) e.setAttribute(k, v);
+    else if (k === 'on') { for (const [evt, fn] of Object.entries(v)) e.addEventListener(evt, fn); }
+    else e[k] = v;
+  }
+  if (Array.isArray(children)) children.forEach(c => c && e.appendChild(c));
+  else if (children) e.textContent = children;
+  return e;
+}
+
+function passes(e) {
+  if (state.sev.size && !state.sev.has(e.severity)) return false;
+  if (state.theme.size && !e.themes.some(t => state.theme.has(t))) return false;
+  if (state.spk.size && !e.speakers.some(s => state.spk.has(s))) return false;
+  if (state.src.size && !state.src.has(e.source)) return false;
+  return true;
+}
+
+// Build filter chips
+function buildFilter(containerId, groupKey, items) {
+  const c = document.getElementById(containerId);
+  items.forEach(({key, label, count}) => {
+    if (!count) return;
+    const chip = el('span', { class: 'chip', 'data-key': key });
+    chip.innerHTML = label + ` <span class="count">${count}</span>`;
+    chip.addEventListener('click', () => {
+      if (state[groupKey].has(key)) { state[groupKey].delete(key); chip.classList.remove('active'); }
+      else { state[groupKey].add(key); chip.classList.add('active'); }
+      render();
+    });
+    c.appendChild(chip);
+  });
+}
+
+function setupFilters() {
+  buildFilter('f-sev', 'sev', Object.entries(DATA.severity).map(([k,m]) => ({
+    key: k, label: m.label,
+    count: DATA.events.filter(e => e.severity === k).length
+  })));
+  buildFilter('f-theme', 'theme', Object.entries(DATA.themes).map(([k,m]) => ({
+    key: k, label: `${m.icon} ${m.label}`,
+    count: DATA.events.filter(e => e.themes.includes(k)).length
+  })));
+  const spkCounts = {};
+  DATA.events.forEach(e => e.speakers.forEach(s => spkCounts[s] = (spkCounts[s]||0)+1));
+  const spkSorted = Object.entries(spkCounts).sort((a,b) => b[1]-a[1]);
+  buildFilter('f-spk', 'spk', spkSorted.map(([n,c]) => {
+    const m = DATA.people[n];
+    return { key: n, label: n, count: c };
+  }));
+  buildFilter('f-src', 'src', Object.entries(DATA.sources).map(([k,m]) => ({
+    key: k, label: m.label,
+    count: DATA.events.filter(e => e.source === k).length
+  })));
+
+  document.getElementById('reset').onclick = () => {
+    Object.keys(state).forEach(k => { if (k !== 'expanded') state[k].clear(); });
+    document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+    render();
+  };
+  document.getElementById('expand-all').onclick = () => {
+    const months = new Set();
+    DATA.events.filter(passes).forEach(e => months.add(e.date.slice(0,7)));
+    months.forEach(m => state.expanded.add(m));
+    render();
+  };
+  document.getElementById('collapse-all').onclick = () => { state.expanded.clear(); render(); };
+}
+
+// Render monthly cards
+function render() {
+  const container = document.getElementById('months');
+  container.innerHTML = '';
+
+  // Group events by month
+  const byMonth = {};
+  DATA.events.forEach(e => {
+    if (!passes(e)) return;
+    const m = e.date.slice(0,7);
+    if (!byMonth[m]) byMonth[m] = [];
+    byMonth[m].push(e);
+  });
+
+  const months = Object.keys(byMonth).sort();
+  if (months.length === 0) {
+    container.appendChild(el('div', {class:'month-card', style:'padding:20px;text-align:center;color:#6b7383'}, 'No events match the current filters.'));
+    return;
+  }
+
+  // Auto-expand matching months when filtering
+  const filterActive = state.sev.size || state.theme.size || state.spk.size || state.src.size;
+  if (filterActive) {
+    months.forEach(m => state.expanded.add(m));
+  }
+
+  months.forEach(monthKey => {
+    const events = byMonth[monthKey];
+    const card = el('div', { class: 'month-card' + (state.expanded.has(monthKey) ? ' expanded' : '') });
+
+    // Header
+    const head = el('div', { class: 'month-header' });
+    head.addEventListener('click', () => {
+      if (state.expanded.has(monthKey)) state.expanded.delete(monthKey);
+      else state.expanded.add(monthKey);
+      render();
+    });
+
+    const [y, m] = monthKey.split('-');
+    const monthName = new Date(parseInt(y), parseInt(m)-1).toLocaleString('en-US', { month: 'short' });
+    const nameEl = el('div', { class: 'month-name' });
+    nameEl.innerHTML = `${monthName} <span class="year">${y}</span>`;
+    head.appendChild(nameEl);
+
+    // Headline — curated or auto from highest-severity event
+    const headline = HEADLINES[monthKey] || events.find(e => e.severity === 'milestone')?.title || events.find(e => e.severity === 'incident')?.title || events[0].title;
+    head.appendChild(el('div', { class: 'month-headline' }, headline));
+
+    // Theme pips — top 5 most-represented themes this month
+    const themeCount = {};
+    events.forEach(e => e.themes.forEach(t => themeCount[t] = (themeCount[t]||0)+1));
+    const topThemes = Object.entries(themeCount).sort((a,b) => b[1]-a[1]).slice(0, 5);
+    const themesEl = el('div', { class: 'month-themes' });
+    topThemes.forEach(([t, c]) => {
+      const meta = DATA.themes[t];
+      if (meta) {
+        const pip = el('span', {
+          class: 'theme-pip',
+          style: `background:${meta.color}`,
+          title: `${meta.label} (${c})`,
+        }, meta.icon);
+        themesEl.appendChild(pip);
+      }
+    });
+    head.appendChild(themesEl);
+
+    // Meta: severity dot + count + chevron
+    const meta = el('div', { class: 'month-meta' });
+    const worstSev = ['incident','milestone','concern','context'].find(s => events.some(e => e.severity === s)) || 'context';
+    meta.appendChild(el('span', { class: 'severity-dot sev-' + worstSev + '-dot', title: 'Highest severity: ' + worstSev }));
+    meta.appendChild(el('span', {}, events.length + ' event' + (events.length === 1 ? '' : 's')));
+    meta.appendChild(el('span', { class: 'chevron', html: '▸' }));
+    head.appendChild(meta);
+
+    card.appendChild(head);
+
+    // Detail (events list)
+    const detail = el('div', { class: 'month-detail' });
+    events.sort((a,b) => (a.date + (a.time||'')).localeCompare(b.date + (b.time||'')));
+    events.forEach(e => detail.appendChild(renderEventRow(e)));
+    card.appendChild(detail);
+
+    container.appendChild(card);
+  });
+}
+
+function renderEventRow(e) {
+  const row = el('div', { class: 'event-row', 'data-severity': e.severity });
+
+  const head = el('div', { class: 'event-head' });
+  head.appendChild(el('span', { class: 'event-date' }, e.date.slice(5) + (e.time ? ' · ' + e.time : '')));
+  head.appendChild(el('span', { class: 'source-tag source-' + e.source }, DATA.sources[e.source].label));
+  head.appendChild(el('span', { class: 'event-thread' }, e.thread));
+
+  const speakers = el('div', { class: 'speakers-mini' });
+  e.speakers.forEach(s => {
+    const m = DATA.people[s];
+    if (m) speakers.appendChild(el('span', { class: 'avatar-mini', style: `background:${m.color}`, title: `${s} — ${m.role}` }, m.avatar));
+  });
+  head.appendChild(speakers);
+  row.appendChild(head);
+
+  row.appendChild(el('div', { class: 'event-title' }, e.title));
+  row.appendChild(el('div', { class: 'event-quote' }, e.quote));
+
+  const themes = el('div', { class: 'event-themes' });
+  e.themes.forEach(t => {
+    const m = DATA.themes[t];
+    if (m) themes.appendChild(el('span', { class: 'theme-tag-mini', style: `background:${m.color}` }, `${m.icon} ${m.label}`));
+  });
+  row.appendChild(themes);
+
+  return row;
+}
+
+// Themes matrix
+function renderMatrix() {
+  const c = document.getElementById('matrix');
+  const quarters = {};
+  DATA.events.forEach(e => {
+    const [y, m] = e.date.split('-');
+    const q = `${y}-Q${Math.ceil(parseInt(m)/3)}`;
+    if (!quarters[q]) quarters[q] = {};
+    e.themes.forEach(t => quarters[q][t] = (quarters[q][t]||0)+1);
+  });
+  const qList = Object.keys(quarters).sort();
+  const tbl = el('table');
+  const thead = el('thead');
+  const trh = el('tr');
+  trh.appendChild(el('th', {}, 'Theme'));
+  qList.forEach(q => trh.appendChild(el('th', {}, q)));
+  thead.appendChild(trh);
+  tbl.appendChild(thead);
+  const tbody = el('tbody');
+  Object.entries(DATA.themes).forEach(([k, m]) => {
+    const tr = el('tr');
+    tr.appendChild(el('td', { class: 'theme-cell' }, `${m.icon} ${m.label}`));
+    qList.forEach(q => {
+      const count = quarters[q][k] || 0;
+      const td = el('td');
+      if (count) td.appendChild(el('span', { class: 'quarter-dot', style: `background:${m.color};opacity:${0.5 + Math.min(0.5, count/8)}` }, String(count)));
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  c.innerHTML = ''; c.appendChild(tbl);
+}
+
+// Supervisor cards
+function renderSups() {
+  const c = document.getElementById('sup-grid');
+  c.innerHTML = '';
+  const det = {"AL": {"first": "21 Aug 2025", "firstQuote": "Just checked in with muoi re Michelle. Sounds like she's running every plan still and slow ish still.", "current": "Has told MK to fail. Today (12 Jun) suggested CMO as career alternative.", "key": "Explored RACP exit pathway 12 Mar. Diagnosed: \"stuck at exam stage of checklist-ing\". External Liverpool corroboration relayed Feb 2026."}, "BT": {"first": "22 Aug 2025", "firstQuote": "she would pretty much just do things ways she'd always done them unless specifically directed.", "current": "Has told MK to fail. First explicit \"she sorta might have to fail\" 5 Feb 2026.", "key": "Argues failing now is the kindness (\"hard stop, properly performance managed\"). Pattern observed since ~2021/2022."}, "HY": {"first": "31 Oct 2025 (early); Nov 2025 (clinical)", "firstQuote": "Hey B, who is covering Bulli today? Does Michelle have an escalation person?", "current": "Reaching fail. 11 Jun: \"it doesn't feel like passing her is the right thing to do.\" Tonight (12 Jun): \"re Michelle and whether she's taken on feedback/improving. This is a problem.\"", "key": "Trust statement 29 Apr: \"I could not trust her at even senior AT level.\" Has been allocating patients away from Michelle. Co-supervisor with MK for consults (RACP)."}, "MK": {"first": "Quietly throughout 2025; documented 19 Feb 2026", "firstQuote": "Michelle is being over supported and will de-skill in time efficieny.", "current": "In process \u2014 assessment ongoing. Conducted formal feedback meeting 30 Apr (Michelle cried). No fail-statement on text record. BT + AL lobbying.", "key": "Co-supervisor with HY (consults, RACP) \u2014 probable primary college supervisor. Limited direct text record; views captured in iMessage 19 Feb."}, "RW": {"first": "22 Dec 2025 (mini-CEX 6/10, \"safe\")", "firstQuote": "I think she's safe and I gave her a 6.", "current": "13 May: \"I don't think she's going to change. I think what we see now might be close to the finished product.\"", "key": "Position evolved from cautious-pass to fail-aligned. Only formal numeric assessment in dataset."}, "GB": {"first": "Not raising in current cycle", "firstQuote": "", "current": "Was kind/positive in early 2025. Was H2 2025 PCU supervisor.", "key": "AL noted (29 Nov 2025): GB = \"everyone performs satisfactorily\" lens \u2014 likely contributed to delayed alignment."}, "CC": {"first": "18 Sep 2020 (shared \"Michelle?\" shorthand re long handovers); explicit Jan 2022", "firstQuote": "21 Jan 2022: \"CONFIDENTIALLY - why after all this time am I still confused as to what Michelle wants when she calls? I feel like shouting get to the point!\" BT: \"oh no. it's maddening.\"", "current": "Historical \u2014 left Wollongong Jan 2022; later supervised Michelle in Sydney; did first IPAP. Ongoing direct text relationship with BT (last text Tue 9 Jun 2026).", "key": "Contemporaneously documented (2020 and 2022) the same long-handover, no-clear-ask pattern AL describes verbatim in March 2026 \u2014 4 years apart, two supervisors, identical concern."}};
+  Object.entries(det).forEach(([name, d]) => {
+    const m = DATA.people[name];
+    if (!m) return;
+    const card = el('div', { class: 'sup-card' });
+    const head = el('div', { class: 'sup-head' });
+    head.appendChild(el('span', { class: 'avatar-lg', style: `background:${m.color}` }, m.avatar));
+    const nm = el('div');
+    nm.appendChild(el('div', { class: 'sup-name' }, name));
+    nm.appendChild(el('div', { class: 'sup-role' }, m.role));
+    head.appendChild(nm);
+    card.appendChild(head);
+    const body = el('div', { class: 'sup-body' });
+    body.innerHTML = `<strong>Earliest:</strong> ${d.first}`;
+    if (d.firstQuote) body.innerHTML += `<div class="sup-quote">${d.firstQuote}</div>`;
+    body.innerHTML += `<strong>Context:</strong> ${d.key}`;
+    card.appendChild(body);
+    card.appendChild(el('div', { class: 'sup-pos' }, '→ ' + d.current));
+    c.appendChild(card);
+  });
+}
+
+// Quarterly wordcloud
+let activeQuarter = 'all';
+
+function buildQuarterBuckets() {
+  const buckets = { 'all': { events: DATA.events.slice(), label: 'All time' } };
+  DATA.events.forEach(e => {
+    const [y, m] = e.date.split('-');
+    const q = `${y}-Q${Math.ceil(parseInt(m)/3)}`;
+    if (!buckets[q]) buckets[q] = { events: [], label: q };
+    buckets[q].events.push(e);
+  });
+  return buckets;
+}
+
+function renderCloudControls() {
+  const c = document.getElementById('cloud-controls');
+  c.innerHTML = '';
+  const buckets = buildQuarterBuckets();
+  c.appendChild(el('span', { class: 'label' }, 'Quarter'));
+  Object.entries(buckets).forEach(([key, b]) => {
+    const btn = el('button', { class: 'q-btn' + (key === activeQuarter ? ' active' : '') });
+    btn.innerHTML = `${b.label} <span class="q-count">${b.events.length}</span>`;
+    btn.addEventListener('click', () => { activeQuarter = key; renderCloud(); });
+    c.appendChild(btn);
+  });
+}
+
+function renderCloud() {
+  renderCloudControls();
+  const buckets = buildQuarterBuckets();
+  const events = (buckets[activeQuarter] || buckets['all']).events;
+  const themeCount = {};
+  events.forEach(e => e.themes.forEach(t => themeCount[t] = (themeCount[t]||0)+1));
+
+  const counts = Object.values(themeCount);
+  const maxC = Math.max(...counts, 1);
+  const minC = Math.min(...counts, 1);
+
+  const cloud = document.getElementById('cloud');
+  cloud.innerHTML = '';
+
+  if (counts.length === 0) {
+    cloud.appendChild(el('div', { style: 'color:#6b7383;font-size:13px' }, 'No themes in this period.'));
+  } else {
+    // Sort by count desc so big items appear central
+    const sorted = Object.entries(themeCount).sort((a,b) => b[1]-a[1]);
+    sorted.forEach(([t, c]) => {
+      const meta = DATA.themes[t];
+      if (!meta) return;
+      // Map count to font-size 13–46px
+      const scale = maxC === minC ? 0.6 : (c - minC) / (maxC - minC);
+      const fontSize = Math.round(14 + scale * 32);
+      const word = el('span', {
+        class: 'cloud-word',
+        style: `background:${meta.color};font-size:${fontSize}px`,
+        title: `${meta.label} — ${c} event${c===1?'':'s'} in ${buckets[activeQuarter].label}`,
+      });
+      word.innerHTML = `${meta.icon} ${meta.label} <span class="cw-count">${c}</span>`;
+      cloud.appendChild(word);
+    });
+  }
+
+  const foot = document.getElementById('cloud-foot');
+  foot.innerHTML = `${events.length} event${events.length===1?'':'s'} · ${Object.keys(themeCount).length} themes represented · Size proportional to frequency in selected period`;
+}
+
+// === Term escalation table ===
+const TERM_DATA = {"quarters": ["2024-Q2", "2025-Q1", "2025-Q2", "2025-Q3", "2025-Q4", "2026-Q1", "2026-Q2"], "q_msg_count": {"2025-Q2": 11, "2025-Q3": 49, "2025-Q4": 142, "2026-Q1": 331, "2026-Q2": 267, "2024-Q2": 3, "2025-Q1": 9}, "rows": [{"term": "leave", "total": 42, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 10, "2026-Q1": 6, "2026-Q2": 25}, "early": 0, "late": 42, "trend": "new"}, {"term": "team", "total": 25, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 16, "2026-Q2": 9}, "early": 0, "late": 25, "trend": "new"}, {"term": "consults", "total": 24, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 3, "2026-Q1": 14, "2026-Q2": 7}, "early": 0, "late": 24, "trend": "new"}, {"term": "support", "total": 24, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 15, "2026-Q2": 5}, "early": 0, "late": 24, "trend": "new"}, {"term": "plan", "total": 23, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 3, "2026-Q1": 12, "2026-Q2": 7}, "early": 0, "late": 23, "trend": "new"}, {"term": "community", "total": 22, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 3, "2026-Q1": 7, "2026-Q2": 12}, "early": 0, "late": 22, "trend": "new"}, {"term": "handover", "total": 21, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 1, "2026-Q1": 13, "2026-Q2": 7}, "early": 0, "late": 21, "trend": "new"}, {"term": "away", "total": 20, "quarters": {"2024-Q2": 0, "2025-Q1": 1, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 6, "2026-Q2": 9}, "early": 1, "late": 19, "trend": "up"}, {"term": "nurses", "total": 19, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 1, "2026-Q1": 16, "2026-Q2": 1}, "early": 0, "late": 19, "trend": "new"}, {"term": "patients", "total": 19, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 2, "2025-Q4": 3, "2026-Q1": 8, "2026-Q2": 6}, "early": 0, "late": 19, "trend": "new"}, {"term": "work", "total": 18, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 1, "2026-Q1": 15, "2026-Q2": 2}, "early": 0, "late": 18, "trend": "new"}, {"term": "given", "total": 17, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 11, "2026-Q2": 2}, "early": 0, "late": 17, "trend": "new"}, {"term": "consultant", "total": 17, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 3, "2026-Q1": 13, "2026-Q2": 1}, "early": 0, "late": 17, "trend": "new"}, {"term": "morphine", "total": 16, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 1, "2026-Q1": 3, "2026-Q2": 12}, "early": 0, "late": 16, "trend": "new"}, {"term": "without", "total": 16, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 2, "2026-Q1": 7, "2026-Q2": 7}, "early": 0, "late": 16, "trend": "new"}, {"term": "patient", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 4, "2026-Q1": 4, "2026-Q2": 6}, "early": 0, "late": 15, "trend": "new"}, {"term": "issues", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 1, "2026-Q1": 7, "2026-Q2": 7}, "early": 0, "late": 15, "trend": "new"}, {"term": "left", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 1, "2025-Q3": 0, "2025-Q4": 1, "2026-Q1": 5, "2026-Q2": 8}, "early": 1, "late": 14, "trend": "up"}, {"term": "term", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 1, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 12, "2026-Q2": 2}, "early": 1, "late": 14, "trend": "up"}, {"term": "clinical", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 11, "2026-Q2": 4}, "early": 0, "late": 15, "trend": "new"}, {"term": "aware", "total": 15, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 2, "2026-Q1": 4, "2026-Q2": 8}, "early": 0, "late": 15, "trend": "new"}, {"term": "issue", "total": 14, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 2, "2025-Q3": 0, "2025-Q4": 6, "2026-Q1": 3, "2026-Q2": 3}, "early": 2, "late": 12, "trend": "up"}, {"term": "sent", "total": 14, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 1, "2025-Q3": 0, "2025-Q4": 3, "2026-Q1": 5, "2026-Q2": 5}, "early": 1, "late": 13, "trend": "up"}, {"term": "bulli", "total": 14, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 1, "2025-Q3": 0, "2025-Q4": 6, "2026-Q1": 5, "2026-Q2": 2}, "early": 1, "late": 13, "trend": "up"}, {"term": "able", "total": 14, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 2, "2026-Q1": 7, "2026-Q2": 4}, "early": 0, "late": 14, "trend": "new"}, {"term": "friday", "total": 14, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 3, "2026-Q1": 7, "2026-Q2": 4}, "early": 0, "late": 14, "trend": "new"}, {"term": "home", "total": 13, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 3, "2026-Q1": 5, "2026-Q2": 4}, "early": 0, "late": 13, "trend": "new"}, {"term": "list", "total": 13, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 9, "2026-Q2": 4}, "early": 0, "late": 13, "trend": "new"}, {"term": "review", "total": 13, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 5, "2026-Q1": 2, "2026-Q2": 6}, "early": 0, "late": 13, "trend": "new"}, {"term": "didn", "total": 12, "quarters": {"2024-Q2": 0, "2025-Q1": 1, "2025-Q2": 0, "2025-Q3": 1, "2025-Q4": 1, "2026-Q1": 6, "2026-Q2": 3}, "early": 1, "late": 11, "trend": "up"}, {"term": "pass", "total": 11, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 8, "2026-Q2": 3}, "early": 0, "late": 11, "trend": "new"}, {"term": "family", "total": 10, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 4, "2026-Q2": 2}, "early": 0, "late": 10, "trend": "new"}, {"term": "boss", "total": 10, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 3, "2025-Q3": 0, "2025-Q4": 2, "2026-Q1": 4, "2026-Q2": 1}, "early": 3, "late": 7, "trend": "up"}, {"term": "months", "total": 9, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 2, "2025-Q3": 0, "2025-Q4": 5, "2026-Q1": 2, "2026-Q2": 0}, "early": 2, "late": 7, "trend": "up"}, {"term": "office", "total": 8, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 8, "2026-Q2": 0}, "early": 0, "late": 8, "trend": "new"}, {"term": "formally", "total": 7, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 0, "2026-Q1": 0, "2026-Q2": 7}, "early": 0, "late": 7, "trend": "new"}, {"term": "ward", "total": 7, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 6, "2026-Q1": 0, "2026-Q2": 1}, "early": 0, "late": 7, "trend": "new"}, {"term": "round", "total": 6, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 5, "2025-Q4": 0, "2026-Q1": 1, "2026-Q2": 0}, "early": 0, "late": 6, "trend": "new"}, {"term": "tesl", "total": 6, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 6, "2026-Q1": 0, "2026-Q2": 0}, "early": 0, "late": 6, "trend": "new"}, {"term": "executive", "total": 5, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 1, "2026-Q2": 0}, "early": 0, "late": 5, "trend": "new"}, {"term": "worried", "total": 4, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 0, "2026-Q2": 0}, "early": 0, "late": 4, "trend": "new"}, {"term": "rounds", "total": 4, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 3, "2025-Q4": 1, "2026-Q1": 0, "2026-Q2": 0}, "early": 0, "late": 4, "trend": "new"}, {"term": "trivia", "total": 4, "quarters": {"2024-Q2": 0, "2025-Q1": 0, "2025-Q2": 0, "2025-Q3": 0, "2025-Q4": 4, "2026-Q1": 0, "2026-Q2": 0}, "early": 0, "late": 4, "trend": "new"}], "total_msgs": 812};
+let termSort = { col: 'trend', dir: 'asc' };
+
+function renderTermTable() {
+  // Info
+  const info = document.getElementById('termtable-info');
+  const qs = TERM_DATA.quarters.map(q => `${q} (${TERM_DATA.q_msg_count[q]||0})`).join(' · ');
+  info.innerHTML = `<strong>${TERM_DATA.total_msgs} messages</strong> — only messages mentioning Michelle, plus ±1 immediate context. ` +
+    `Stopwords + people-names filtered. Sorted by trend (rising first), then total frequency. Click any column to re-sort. <br>` +
+    `Per-quarter message counts: ${qs}`;
+
+  // Sort
+  const rows = TERM_DATA.rows.slice();
+  const trendRank = { up: 0, new: 0, flat: 1, down: 2 };
+  rows.sort((a, b) => {
+    let av, bv;
+    if (termSort.col === 'term') { av = a.term; bv = b.term; }
+    else if (termSort.col === 'total') { av = a.total; bv = b.total; }
+    else if (termSort.col === 'trend') {
+      av = trendRank[a.trend] * 10000 - a.total;
+      bv = trendRank[b.trend] * 10000 - b.total;
+    }
+    else { av = a.quarters[termSort.col]||0; bv = b.quarters[termSort.col]||0; }
+    if (av < bv) return termSort.dir === 'asc' ? -1 : 1;
+    if (av > bv) return termSort.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Build table
+  const table = document.getElementById('termtable');
+  table.innerHTML = '';
+  const thead = el('thead');
+  const trh = el('tr');
+  const cols = [
+    { key: 'term', label: 'Term' },
+    { key: 'trend', label: 'Trend' },
+    { key: 'total', label: 'Total' },
+    ...TERM_DATA.quarters.map(q => ({ key: q, label: q })),
+  ];
+  cols.forEach(c => {
+    const th = el('th', { class: 'sortable' + (termSort.col === c.key ? ' sorted' : '') }, c.label);
+    th.addEventListener('click', () => {
+      if (termSort.col === c.key) termSort.dir = termSort.dir === 'asc' ? 'desc' : 'asc';
+      else { termSort.col = c.key; termSort.dir = (c.key === 'term') ? 'asc' : 'desc'; }
+      renderTermTable();
+    });
+    if (c.key === 'term') th.style.textAlign = 'left';
+    trh.appendChild(th);
+  });
+  thead.appendChild(trh);
+  table.appendChild(thead);
+
+  // Max for heat scaling per quarter
+  const qMax = {};
+  TERM_DATA.quarters.forEach(q => {
+    qMax[q] = Math.max(...rows.map(r => r.quarters[q] || 0), 1);
+  });
+
+  const tbody = el('tbody');
+  rows.forEach(r => {
+    const tr = el('tr');
+    tr.appendChild(el('td', { class: 'term-cell' }, r.term));
+    const trendTd = el('td');
+    const trendLabel = { up: '↑ up', new: '★ new', flat: '— flat', down: '↓ down' }[r.trend];
+    trendTd.appendChild(el('span', { class: `trend-tag trend-${r.trend}` }, trendLabel));
+    tr.appendChild(trendTd);
+    tr.appendChild(el('td', { class: 'total-cell' }, String(r.total)));
+    TERM_DATA.quarters.forEach(q => {
+      const v = r.quarters[q] || 0;
+      const intensity = v / qMax[q];
+      const bg = v === 0 ? 'transparent' : `rgba(220, 38, 38, ${0.06 + intensity * 0.32})`;
+      const td = el('td', {
+        class: 'q-cell heat-cell' + (v === 0 ? ' zero' : ''),
+        style: `background:${bg}`,
+      }, v === 0 ? '·' : String(v));
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('view-' + b.dataset.view).classList.add('active');
+  });
+});
+
+setupFilters();
+render();
+renderCloud();
+renderTermTable();
+renderMatrix();
+renderSups();
+</script>
+</body>
+</html>
