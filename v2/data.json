@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19",
+  "generatedAt": "2026-05-26",
   "schemaVersion": 1,
   "staff": [
     {
@@ -1455,6 +1455,126 @@
     },
     "2026-10-30": {
       "first": "AL",
+      "second": null
+    },
+    "2026-06-06": {
+      "first": "Locum",
+      "second": null
+    },
+    "2026-06-07": {
+      "first": "Locum",
+      "second": null
+    },
+    "2026-06-13": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-06-14": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-06-20": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-06-21": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-06-27": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-06-28": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-06-01": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-06-02": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-06-03": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-06-04": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-06-05": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-06-08": {
+      "first": "Locum",
+      "second": null
+    },
+    "2026-06-09": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-06-10": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-06-11": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-06-12": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-06-15": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-06-16": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-06-17": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-06-18": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-06-19": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-06-22": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-06-23": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-06-24": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-06-25": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-06-26": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-06-29": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-06-30": {
+      "first": "GB",
       "second": null
     }
   },
