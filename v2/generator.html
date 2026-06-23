@@ -784,7 +784,7 @@
                         <th>Day</th>
                         <th>Type</th>
                         <th>On-Call</th>
-                        <th>Notes</th>
+                        <th>Trainee</th>
                     </tr>
                 </thead>
                 <tbody id="rosterBody"></tbody>
@@ -842,8 +842,8 @@
     <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
 
     <script type="module">
-        import { calculateTraineeTargets, pickTraineeForDay } from './lib/trainee-logic.js';
-        window.__traineeLogic = { calculateTraineeTargets, pickTraineeForDay };
+        import { calculateTraineeTargets, planTraineeMonth } from './lib/trainee-logic.js';
+        window.__traineeLogic = { calculateTraineeTargets, planTraineeMonth };
     </script>
 
     <script>
@@ -874,6 +874,23 @@
 
         function getActiveStaff() {
             return locumEnabled ? [...staffData, getLocumStaffRecord()] : [...staffData];
+        }
+
+        function getDisplayName(code) {
+            if (!code) return '';
+            if (code === 'Locum') return 'Locum';
+            const s = getActiveStaff().find(x => x.code === code);
+            if (s) return s.name.split(' ').pop();
+            const t = (traineeData || []).find(x => x.code === code);
+            if (t) return t.name.split(' ').pop();
+            return code;
+        }
+        function activeTrainees() {
+            if (currentMonth === null || !window.__traineeLogic) return [];
+            return (traineeData || []).filter(t => {
+                const tg = window.__traineeLogic.calculateTraineeTargets(t, currentYear, currentMonth);
+                return tg.weeknightTarget > 0 || tg.weekendTarget > 0;
+            });
         }
 
         function getMonthlyWeekNightTarget(staffCode) {
@@ -1222,13 +1239,20 @@
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
 
+        // True if this staff member carries on-call for this assignment — as 1st (solo SS)
+        // or as 2nd (backing a trainee who holds 1st). Used by the constraint helpers below
+        // so an SS's backup load is visible to fairness/buffer rules.
+        function isOnCall(assignment, staffCode) {
+            return !!assignment && (assignment.first === staffCode || assignment.second === staffCode);
+        }
+
         // Count weeknights assigned this week for a person
         function weeknightsThisWeek(staffCode, currentDate, roster) {
             const currentWeek = getWeekNumber(currentDate);
             const currentYear = currentDate.getFullYear();
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) &&
                         getWeekNumber(assignDate) === currentWeek &&
@@ -1249,7 +1273,7 @@
             saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
-            return assignment && assignment.first === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check if person had the previous weekend (for Mon/Tue exclusion)
@@ -1261,7 +1285,7 @@
             sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
-            return assignment && assignment.first === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check 2-day buffer around weekends
@@ -1296,7 +1320,7 @@
         function dayOfWeekCount(staffCode, dow, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
                         count++;
@@ -1310,7 +1334,7 @@
         function weeknightsThisMonth(staffCode, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate)) count++;
                 }
@@ -1327,7 +1351,7 @@
         // Check if person has a weekend this month already (in current roster)
         function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const d = parseDate(dateKey);
                     if (isWeekend(d)) return true;
                 }
@@ -1507,21 +1531,28 @@
                 monthWeekNights[s.code] = 0;
             });
 
-            // Trainee state: per-trainee monthly targets and counters
-            const traineeState = {};
+            // Build each active trainee's month plan, then a date→trainee lookup.
             const activeTraineesThisMonth = (traineeData || []).filter(t => {
-                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
-                return targets.weeknightTarget > 0 || targets.weekendTarget > 0;
+                const tg = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                return tg.weeknightTarget > 0 || tg.weekendTarget > 0;
             });
-
+            const isUnavailableDate = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+            const traineeByDate = {};   // 'YYYY-MM-DD' → trainee code
+            const claimed = new Set();  // dates already taken by a trainee
             for (const t of activeTraineesThisMonth) {
-                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
-                traineeState[t.code] = {
-                    weeknightAssigned: 0,
-                    weeknightTarget: targets.weeknightTarget,
-                    weekendAssigned: 0,
-                    weekendTarget: targets.weekendTarget
-                };
+                const plan = window.__traineeLogic.planTraineeMonth(
+                    t, weekendBlocks, weekNights, isUnavailableDate
+                );
+                if (plan.weekendKey && !claimed.has(plan.weekendKey)) {
+                    const block = weekendBlocks.find(b => b.satKey === plan.weekendKey);
+                    traineeByDate[block.satKey] = t.code;
+                    traineeByDate[block.sunKey] = t.code;
+                    claimed.add(plan.weekendKey);
+                }
+                for (const k of plan.weeknightKeys) {
+                    if (!claimed.has(k)) { traineeByDate[k] = t.code; claimed.add(k); }
+                }
             }
 
             // Weekend priority: prioritize those who didn't have a weekend last month
@@ -1654,20 +1685,9 @@
             weekendBlocks.forEach(block => {
                 let firstCode = null, secondCode = null;
 
-                // Try trainee as 1st (must be available BOTH Saturday and Sunday).
-                // If trainee is picked but unavailable on Sunday, leave the counter unincremented;
-                // they'll be retried on subsequent weekends (correct under-target catch-up behaviour).
-                const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    block.sat, activeTraineesThisMonth, traineeState, isUnavailable, true
-                );
-                if (traineeCode) {
-                    const sunDate = new Date(block.sat);
-                    sunDate.setDate(sunDate.getDate() + 1);
-                    if (!isUnavailable(traineeCode, sunDate)) {
-                        firstCode = traineeCode;
-                        traineeState[traineeCode].weekendAssigned++;
-                    }
-                }
+                // Trainee 1st (from the month plan); SS becomes 2nd.
+                const traineeCode = traineeByDate[block.satKey] || null;
+                if (traineeCode) firstCode = traineeCode;
 
                 // Pick SS to fill the remaining slot (1st if no trainee, 2nd if trainee took 1st)
                 const available = getAvailableForWeekend(block.sat);
@@ -1701,18 +1721,12 @@
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
 
-                const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    night, activeTraineesThisMonth, traineeState, isUnavailable, false
-                );
-
+                const traineeCode = traineeByDate[dateKey] || null;
                 let firstCode = null;
                 let secondCode = null;
                 let warning = null;
 
-                if (traineeCode) {
-                    firstCode = traineeCode;
-                    traineeState[traineeCode].weeknightAssigned++;
-                }
+                if (traineeCode) firstCode = traineeCode;
 
                 let available = getAvailableForWeeknight(night);
                 if (available.length === 0) {
@@ -1803,50 +1817,49 @@
                 tdType.appendChild(typeSpan);
                 tr.appendChild(tdType);
 
-                // On-Call (editable dropdown)
+                // On-Call (SS slot) — the SS is `second` when a trainee holds `first`, else `first`
+                const a = assignment || {};
+                const ssCode = TRAINEE_CODES.includes(a.first) ? (a.second || '') : (a.first || '');
+                const traineeCode = TRAINEE_CODES.includes(a.first) ? a.first : '';
+
                 const tdOncall = document.createElement('td');
-                const select = document.createElement('select');
-                select.dataset.dateKey = dateKey;
-                select.onchange = function() { updateAssignment(dateKey, this.value); };
-
-                // Empty option
-                const emptyOpt = document.createElement('option');
-                emptyOpt.value = '';
-                emptyOpt.textContent = '-- Select --';
-                select.appendChild(emptyOpt);
-
+                const ssSelect = document.createElement('select');
+                ssSelect.onchange = function () { setOncallSS(dateKey, this.value); };
+                const ssEmpty = document.createElement('option');
+                ssEmpty.value = ''; ssEmpty.textContent = '-- Select --';
+                ssSelect.appendChild(ssEmpty);
                 getActiveStaff().forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.code;
                     opt.textContent = s.isLocum ? 'Locum' : s.name;
-
-                    // Check if on leave
                     const leave = isOnLeave(s.code, day);
-                    if (leave) {
-                        opt.textContent += ` (${leave})`;
-                        opt.style.color = '#dc2626';
-                    }
-                    if (isAdHocUnavailable(s.code, dateKey)) {
-                        opt.textContent += ' (Unavail)';
-                        opt.style.color = '#dc2626';
-                    }
-
-                    if (assignment && assignment.first === s.code) {
-                        opt.selected = true;
-                    }
-                    select.appendChild(opt);
+                    if (leave) { opt.textContent += ` (${leave})`; opt.style.color = '#dc2626'; }
+                    if (isAdHocUnavailable(s.code, dateKey)) { opt.textContent += ' (Unavail)'; opt.style.color = '#dc2626'; }
+                    if (ssCode === s.code) opt.selected = true;
+                    ssSelect.appendChild(opt);
                 });
-
-                tdOncall.appendChild(select);
+                tdOncall.appendChild(ssSelect);
+                if (holiday) { const h = document.createElement('div'); h.style.cssText = 'font-size:0.7rem;color:#b45309;'; h.textContent = holiday; tdOncall.appendChild(h); }
+                if (a.warning) { const w = document.createElement('div'); w.style.cssText = 'font-size:0.7rem;color:#dc2626;'; w.textContent = '⚠ ' + a.warning; tdOncall.appendChild(w); }
                 tr.appendChild(tdOncall);
 
-                // Notes
-                const tdNotes = document.createElement('td');
-                let notes = [];
-                if (holiday) notes.push(holiday);
-                if (assignment && assignment.warning) notes.push(assignment.warning);
-                tdNotes.textContent = notes.join(', ');
-                tr.appendChild(tdNotes);
+                // Trainee (overlay) — NO by default; choosing a trainee makes them 1st, SS 2nd
+                const tdTrainee = document.createElement('td');
+                const trSelect = document.createElement('select');
+                trSelect.onchange = function () { setTrainee(dateKey, this.value); };
+                const trNo = document.createElement('option');
+                trNo.value = ''; trNo.textContent = 'NO';
+                trSelect.appendChild(trNo);
+                activeTrainees().forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.code;
+                    opt.textContent = t.code;
+                    if (isOnLeave(t.code, day)) { opt.textContent += ' (leave)'; opt.style.color = '#dc2626'; }
+                    if (traineeCode === t.code) opt.selected = true;
+                    trSelect.appendChild(opt);
+                });
+                tdTrainee.appendChild(trSelect);
+                tr.appendChild(tdTrainee);
 
                 tbody.appendChild(tr);
             });
@@ -1866,11 +1879,14 @@
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && counts[assignment.first]) {
+                if (!assignment) return;
+                // Credit the SS who carries the load: when a trainee is 1st, the SS is 2nd.
+                const credited = TRAINEE_CODES.includes(assignment.first) ? assignment.second : assignment.first;
+                if (credited && counts[credited]) {
                     if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
-                        counts[assignment.first].weekends++;
+                        counts[credited].weekends++;
                     } else if (!isWeekend(date)) {
-                        counts[assignment.first].weeknights++;
+                        counts[credited].weeknights++;
                     }
                 }
             });
@@ -1971,12 +1987,6 @@
             // Adjust to Monday-start week (0=Mon, 6=Sun)
             const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
-            const getStaffName = (code) => {
-                if (code === 'Locum') return 'Locum';
-                const staff = getActiveStaff().find(s => s.code === code);
-                return staff ? staff.name.split(' ').pop() : code; // Last name only
-            };
-
             let currentRow = document.createElement('tr');
 
             // Add empty cells for days before the 1st
@@ -2000,15 +2010,20 @@
                 dateDiv.textContent = day.getDate();
                 td.appendChild(dateDiv);
 
-                if (assignment) {
-                    const staffDiv = document.createElement('div');
-                    staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
-                    staffDiv.textContent = getStaffName(assignment.first);
-                    if (assignment.first === 'Locum') {
-                        staffDiv.style.background = '#e5e7eb';
-                        staffDiv.style.color = '#374151';
+                if (assignment && assignment.first) {
+                    const isTrainee = TRAINEE_CODES.includes(assignment.first);
+                    const firstDiv = document.createElement('div');
+                    firstDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
+                    firstDiv.textContent = getDisplayName(assignment.first);
+                    if (isTrainee) { firstDiv.style.background = '#ede9fe'; firstDiv.style.color = '#5b21b6'; firstDiv.style.fontWeight = '600'; }
+                    if (assignment.first === 'Locum') { firstDiv.style.background = '#e5e7eb'; firstDiv.style.color = '#374151'; }
+                    td.appendChild(firstDiv);
+                    if (assignment.second) {
+                        const secondDiv = document.createElement('div');
+                        secondDiv.style.cssText = 'font-size:0.7rem;color:#6b7280;';
+                        secondDiv.textContent = '2nd ' + getDisplayName(assignment.second);
+                        td.appendChild(secondDiv);
                     }
-                    td.appendChild(staffDiv);
                 }
 
                 currentRow.appendChild(td);
@@ -2047,15 +2062,33 @@
             `;
         }
 
-        function updateAssignment(dateKey, staffCode) {
-            if (staffCode) {
-                const existing = currentRoster[dateKey] || {};
-                const updated = { first: staffCode, second: existing.second ?? null };
-                if (existing.warning) updated.warning = existing.warning;
-                currentRoster[dateKey] = updated;
+        function setOncallSS(dateKey, ssCode) {
+            const a = currentRoster[dateKey] || {};
+            const traineeCode = TRAINEE_CODES.includes(a.first) ? a.first : null;
+            const warn = a.warning ? { warning: a.warning } : {};
+            if (traineeCode) {
+                currentRoster[dateKey] = { first: traineeCode, second: ssCode || null, ...warn };
+            } else if (ssCode) {
+                currentRoster[dateKey] = { first: ssCode, second: null, ...warn };
             } else {
                 delete currentRoster[dateKey];
             }
+            renderCalendarView();
+            renderEquity(currentMonth, currentYear);
+        }
+
+        function setTrainee(dateKey, traineeCode) {
+            const a = currentRoster[dateKey] || {};
+            const ssCode = TRAINEE_CODES.includes(a.first) ? (a.second || '') : (a.first || '');
+            const warn = a.warning ? { warning: a.warning } : {};
+            if (traineeCode) {
+                currentRoster[dateKey] = { first: traineeCode, second: ssCode || null, ...warn };
+            } else if (ssCode) {
+                currentRoster[dateKey] = { first: ssCode, second: null, ...warn };
+            } else {
+                delete currentRoster[dateKey];
+            }
+            renderCalendarView();
             renderEquity(currentMonth, currentYear);
         }
 

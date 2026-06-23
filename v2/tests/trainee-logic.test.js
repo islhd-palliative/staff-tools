@@ -1,4 +1,4 @@
-import { test, assertDeepEq, assertEq } from './test-runner.js';
+import { test, assertDeepEq, assertEq, assertTrue, assertFalse } from './test-runner.js';
 import { calculateTraineeTargets, countWeeknightsInRange, countWeekendsInRange } from '../lib/trainee-logic.js';
 
 // April 2026: 30 days. Weekdays: Wed 1, Thu 2, Fri 3 (PH but still weeknight slot),
@@ -17,24 +17,25 @@ test('countWeekendsInRange: full April 2026', () => {
     assertEq(countWeekendsInRange(start, end), 4);
 });
 
-test('calculateTraineeTargets: full-month rotation', () => {
-    const trainee = { code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' };
+test('calculateTraineeTargets: full April 2026 (4 weekend blocks)', () => {
+    const trainee = { code: 'MP', rotationStart: '2026-01-01', rotationEnd: '2027-01-31' };
     const result = calculateTraineeTargets(trainee, 2026, 3); // April
-    assertDeepEq(result, { weeknightTarget: 4, weekendTarget: 1 });
+    // 4 weekend blocks → 1 weekend + 3 weeknights
+    assertDeepEq(result, { weeknightTarget: 3, weekendTarget: 1 });
 });
 
-test('calculateTraineeTargets: half-month rotation (April 15 onwards)', () => {
+test('calculateTraineeTargets: half-month (April 15 on) → 2 weekend blocks', () => {
     const trainee = { code: 'MP', rotationStart: '2026-04-15', rotationEnd: '2026-06-30' };
     const result = calculateTraineeTargets(trainee, 2026, 3);
-    // Weeknights 15-30: 12. Weekends 18-19 + 25-26 = 2. Targets: round(12*0.2)=2, round(2*0.25)=1.
-    assertDeepEq(result, { weeknightTarget: 2, weekendTarget: 1 });
+    // Weekends 18-19, 25-26 = 2 blocks → 1 weekend + 1 weeknight
+    assertDeepEq(result, { weeknightTarget: 1, weekendTarget: 1 });
 });
 
-test('calculateTraineeTargets: rotation ends mid-month', () => {
+test('calculateTraineeTargets: rotation ends April 15 → 2 weekend blocks', () => {
     const trainee = { code: 'MP', rotationStart: '2026-03-01', rotationEnd: '2026-04-15' };
     const result = calculateTraineeTargets(trainee, 2026, 3);
-    // Weeknights 1-15: 11. Weekends 4-5 + 11-12 = 2. Targets: round(11*0.2)=2, round(2*0.25)=1.
-    assertDeepEq(result, { weeknightTarget: 2, weekendTarget: 1 });
+    // Weekends 4-5, 11-12 = 2 blocks → 1 weekend + 1 weeknight
+    assertDeepEq(result, { weeknightTarget: 1, weekendTarget: 1 });
 });
 
 test('calculateTraineeTargets: rotation does not overlap month', () => {
@@ -43,58 +44,68 @@ test('calculateTraineeTargets: rotation does not overlap month', () => {
     assertDeepEq(result, { weeknightTarget: 0, weekendTarget: 0 });
 });
 
-import { pickTraineeForDay } from '../lib/trainee-logic.js';
+import { planTraineeMonth } from '../lib/trainee-logic.js';
 
-test('pickTraineeForDay: single active trainee under target', () => {
-    const date = new Date(2026, 3, 7); // Tuesday
-    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
-    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
-    const onLeave = () => false;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), 'MP');
+// Local month builder mirroring the generator's getWeekendBlocks/getWeekNights.
+function key(d) {
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'),
+          day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+function buildMonth(year, month) {
+    const weekends = [], weeknights = [];
+    const last = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= last; day++) {
+        const d = new Date(year, month, day);
+        const dow = d.getDay();
+        if (dow === 6) {
+            const sun = new Date(year, month, day + 1);
+            if (sun.getMonth() === month) weekends.push({ sat: d, sun, satKey: key(d), sunKey: key(sun) });
+        } else if (dow >= 1 && dow <= 5) {
+            weeknights.push(d);
+        }
+    }
+    return { weekends, weeknights };
+}
+function weekMondayOf(satKey) {
+    const [y, m, d] = satKey.split('-').map(Number);
+    const sat = new Date(y, m - 1, d);
+    const mon = new Date(sat); mon.setDate(sat.getDate() - 5);
+    return key(mon);
+}
+
+test('planTraineeMonth: full July 2026 → 1 weekend + 3 weeknights, distinct weeks', () => {
+    const { weekends, weeknights } = buildMonth(2026, 6); // July
+    const trainee = { code: 'MP', rotationStart: '2026-01-01', rotationEnd: '2027-01-31' };
+    const plan = planTraineeMonth(trainee, weekends, weeknights, () => false);
+
+    assertTrue(weekends.some(b => b.satKey === plan.weekendKey), 'weekendKey is a real block');
+    assertEq(plan.weeknightKeys.length, 3, 'three weeknights');
+
+    const weekendWeekMon = weekMondayOf(plan.weekendKey);
+    const weekMondays = plan.weeknightKeys.map(k => {
+        const [y, m, d] = k.split('-').map(Number);
+        const date = new Date(y, m - 1, d);
+        const dow = date.getDay();            // 1..5
+        const mon = new Date(date); mon.setDate(date.getDate() - (dow - 1));
+        return key(mon);
+    });
+    assertFalse(weekMondays.includes(weekendWeekMon), 'no weeknight in her weekend week');
+    assertEq(new Set(weekMondays).size, 3, 'weeknights in 3 distinct weeks');
 });
 
-test('pickTraineeForDay: trainee at target, returns null', () => {
-    const date = new Date(2026, 3, 7);
-    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
-    const state = { 'MP': { weeknightAssigned: 4, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
-    const onLeave = () => false;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
+test('planTraineeMonth: trainee unavailable all of one week still yields valid plan', () => {
+    const { weekends, weeknights } = buildMonth(2026, 6);
+    const trainee = { code: 'MP', rotationStart: '2026-01-01', rotationEnd: '2027-01-31' };
+    const unavail = (code, d) => d.getDate() <= 5; // entire first calendar slice of July
+    const plan = planTraineeMonth(trainee, weekends, weeknights, unavail);
+    assertTrue(plan.weeknightKeys.every(k => Number(k.split('-')[2]) > 5), 'no assignment in blocked week');
 });
 
-test('pickTraineeForDay: trainee on leave that day, returns null', () => {
-    const date = new Date(2026, 3, 17);
-    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
-    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
-    const onLeave = (code, d) => code === 'MP' && d.getDate() === 17;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
-});
-
-test('pickTraineeForDay: outside rotation period, returns null', () => {
-    const date = new Date(2026, 2, 15);
-    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
-    const state = { 'MP': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
-    const onLeave = () => false;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), null);
-});
-
-test('pickTraineeForDay: two trainees, picks furthest below target', () => {
-    const date = new Date(2026, 3, 7);
-    const trainees = [
-        { code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' },
-        { code: 'PL', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }
-    ];
-    const state = {
-        'MP': { weeknightAssigned: 2, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 },
-        'PL': { weeknightAssigned: 0, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 }
-    };
-    const onLeave = () => false;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, false), 'PL');
-});
-
-test('pickTraineeForDay: weekend day, picks based on weekend target', () => {
-    const date = new Date(2026, 3, 25); // Saturday
-    const trainees = [{ code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' }];
-    const state = { 'MP': { weeknightAssigned: 4, weeknightTarget: 4, weekendAssigned: 0, weekendTarget: 1 } };
-    const onLeave = () => false;
-    assertEq(pickTraineeForDay(date, trainees, state, onLeave, true), 'MP');
+test('planTraineeMonth: no overlap → empty plan', () => {
+    const { weekends, weeknights } = buildMonth(2026, 6);
+    const trainee = { code: 'MP', rotationStart: '2025-01-01', rotationEnd: '2025-12-31' };
+    const plan = planTraineeMonth(trainee, weekends, weeknights, () => false);
+    assertEq(plan.weekendKey, null);
+    assertEq(plan.weeknightKeys.length, 0);
 });
