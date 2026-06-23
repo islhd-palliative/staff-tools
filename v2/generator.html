@@ -842,8 +842,8 @@
     <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
 
     <script type="module">
-        import { calculateTraineeTargets, pickTraineeForDay } from './lib/trainee-logic.js';
-        window.__traineeLogic = { calculateTraineeTargets, pickTraineeForDay };
+        import { calculateTraineeTargets, planTraineeMonth } from './lib/trainee-logic.js';
+        window.__traineeLogic = { calculateTraineeTargets, planTraineeMonth };
     </script>
 
     <script>
@@ -1507,21 +1507,28 @@
                 monthWeekNights[s.code] = 0;
             });
 
-            // Trainee state: per-trainee monthly targets and counters
-            const traineeState = {};
+            // Build each active trainee's month plan, then a date→trainee lookup.
             const activeTraineesThisMonth = (traineeData || []).filter(t => {
-                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
-                return targets.weeknightTarget > 0 || targets.weekendTarget > 0;
+                const tg = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                return tg.weeknightTarget > 0 || tg.weekendTarget > 0;
             });
-
+            const isUnavailableDate = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+            const traineeByDate = {};   // 'YYYY-MM-DD' → trainee code
+            const claimed = new Set();  // dates already taken by a trainee
             for (const t of activeTraineesThisMonth) {
-                const targets = window.__traineeLogic.calculateTraineeTargets(t, year, month);
-                traineeState[t.code] = {
-                    weeknightAssigned: 0,
-                    weeknightTarget: targets.weeknightTarget,
-                    weekendAssigned: 0,
-                    weekendTarget: targets.weekendTarget
-                };
+                const plan = window.__traineeLogic.planTraineeMonth(
+                    t, weekendBlocks, weekNights, isUnavailableDate
+                );
+                if (plan.weekendKey && !claimed.has(plan.weekendKey)) {
+                    const block = weekendBlocks.find(b => b.satKey === plan.weekendKey);
+                    traineeByDate[block.satKey] = t.code;
+                    traineeByDate[block.sunKey] = t.code;
+                    claimed.add(plan.weekendKey);
+                }
+                for (const k of plan.weeknightKeys) {
+                    if (!claimed.has(k)) { traineeByDate[k] = t.code; claimed.add(k); }
+                }
             }
 
             // Weekend priority: prioritize those who didn't have a weekend last month
@@ -1654,20 +1661,9 @@
             weekendBlocks.forEach(block => {
                 let firstCode = null, secondCode = null;
 
-                // Try trainee as 1st (must be available BOTH Saturday and Sunday).
-                // If trainee is picked but unavailable on Sunday, leave the counter unincremented;
-                // they'll be retried on subsequent weekends (correct under-target catch-up behaviour).
-                const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    block.sat, activeTraineesThisMonth, traineeState, isUnavailable, true
-                );
-                if (traineeCode) {
-                    const sunDate = new Date(block.sat);
-                    sunDate.setDate(sunDate.getDate() + 1);
-                    if (!isUnavailable(traineeCode, sunDate)) {
-                        firstCode = traineeCode;
-                        traineeState[traineeCode].weekendAssigned++;
-                    }
-                }
+                // Trainee 1st (from the month plan); SS becomes 2nd.
+                const traineeCode = traineeByDate[block.satKey] || null;
+                if (traineeCode) firstCode = traineeCode;
 
                 // Pick SS to fill the remaining slot (1st if no trainee, 2nd if trainee took 1st)
                 const available = getAvailableForWeekend(block.sat);
@@ -1701,18 +1697,12 @@
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
 
-                const traineeCode = window.__traineeLogic.pickTraineeForDay(
-                    night, activeTraineesThisMonth, traineeState, isUnavailable, false
-                );
-
+                const traineeCode = traineeByDate[dateKey] || null;
                 let firstCode = null;
                 let secondCode = null;
                 let warning = null;
 
-                if (traineeCode) {
-                    firstCode = traineeCode;
-                    traineeState[traineeCode].weeknightAssigned++;
-                }
+                if (traineeCode) firstCode = traineeCode;
 
                 let available = getAvailableForWeeknight(night);
                 if (available.length === 0) {
