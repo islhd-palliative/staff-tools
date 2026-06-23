@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Palliative Care After Hours Roster</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @page { size: A4 landscape; margin: 10mm; }
         * { box-sizing: border-box; }
@@ -49,7 +50,7 @@
         .roster-page {
             width: 277mm;
             min-height: 190mm;
-            padding: 4mm 6mm;
+            padding: 3mm 6mm;
             background: white;
             margin: 0 auto;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -60,13 +61,13 @@
             text-align: center;
             font-weight: 600;
             font-size: 11pt;
-            padding: 2mm 0;
+            padding: 1mm 0;
             border-top: 1px solid #999;
             border-bottom: 1px solid #999;
         }
         h1.title {
             font-size: 14pt;
-            margin: 6mm 0 1mm;
+            margin: 2mm 0 1mm;
             color: #1a365d;
         }
         h1.title u { text-decoration: underline; }
@@ -76,7 +77,7 @@
         }
         .subtitle {
             font-size: 10pt;
-            margin: 0 0 4mm 4mm;
+            margin: 0 0 2mm 4mm;
             font-weight: 600;
         }
         table.calendar {
@@ -87,7 +88,7 @@
         table.calendar th {
             background: #2563eb;
             color: white;
-            padding: 4px;
+            padding: 3px;
             font-size: 10pt;
             font-weight: 600;
             border: 1px solid #999;
@@ -99,9 +100,9 @@
         table.calendar td {
             border: 1px solid #999;
             vertical-align: top;
-            padding: 4px;
-            height: 22mm;
-            font-size: 10pt;
+            padding: 3px;
+            height: 15mm;
+            font-size: 9.5pt;
         }
         td .date-num {
             font-weight: bold;
@@ -131,7 +132,7 @@
         }
         .footer-row {
             display: flex;
-            margin-top: 4mm;
+            margin-top: 2mm;
             gap: 8mm;
             font-size: 9pt;
             align-items: flex-start;
@@ -152,11 +153,11 @@
         table.directory {
             flex: 1;
             border-collapse: collapse;
-            font-size: 9pt;
+            font-size: 8.5pt;
         }
         table.directory th, table.directory td {
             border: 1px solid #999;
-            padding: 2px 6px;
+            padding: 1px 6px;
             text-align: left;
         }
         table.directory th {
@@ -405,29 +406,38 @@
             return row.workDays.map(d => DAY_LETTERS[d]).join(', ');
         }
 
-        function downloadPdf() {
-            if (typeof html2pdf === 'undefined') {
-                document.getElementById('status').textContent = 'html2pdf library not loaded — check network';
-                document.getElementById('status').className = 'error';
+        async function downloadPdf() {
+            const status = document.getElementById('status');
+            const h2c = window.html2canvas;
+            const JsPDF = window.jspdf && window.jspdf.jsPDF;
+            if (!h2c || !JsPDF) {
+                status.textContent = 'PDF library not loaded — check network';
+                status.className = 'error';
                 return;
             }
-            document.getElementById('status').textContent = 'Generating PDF…';
-            const node = document.getElementById('rosterRoot');
-            const opt = {
-                margin: 5,
-                filename: document.title + '.pdf',
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }
-            };
-            html2pdf().set(opt).from(node).save()
-                .then(() => {
-                    document.getElementById('status').textContent = 'Saved.';
-                })
-                .catch(err => {
-                    document.getElementById('status').textContent = 'Error: ' + err.message;
-                    document.getElementById('status').className = 'error';
-                    console.error(err);
-                });
+            status.textContent = 'Generating PDF…';
+            try {
+                const node = document.getElementById('rosterRoot');
+                const canvas = await h2c(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+                const pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+                const margin = 5;
+                const availW = pdf.internal.pageSize.getWidth() - margin * 2;   // 287mm
+                const availH = pdf.internal.pageSize.getHeight() - margin * 2;  // 200mm
+                // Fit the whole roster onto ONE page, preserving aspect ratio.
+                // Normal months land at full width; an over-tall month shrinks to fit — never page 2.
+                let w = availW;
+                let h = (canvas.height * w) / canvas.width;
+                if (h > availH) { h = availH; w = (canvas.width * h) / canvas.height; }
+                const x = margin + (availW - w) / 2; // centre horizontally
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', x, margin, w, h);
+                pdf.save(document.title + '.pdf');
+                status.textContent = 'Saved.';
+                status.className = '';
+            } catch (err) {
+                status.textContent = 'Error: ' + err.message;
+                status.className = 'error';
+                console.error(err);
+            }
         }
 
         (async function init() {
