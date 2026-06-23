@@ -1872,11 +1872,14 @@
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && counts[assignment.first]) {
+                if (!assignment) return;
+                // Credit the SS who carries the load: when a trainee is 1st, the SS is 2nd.
+                const credited = TRAINEE_CODES.includes(assignment.first) ? assignment.second : assignment.first;
+                if (credited && counts[credited]) {
                     if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
-                        counts[assignment.first].weekends++;
+                        counts[credited].weekends++;
                     } else if (!isWeekend(date)) {
-                        counts[assignment.first].weeknights++;
+                        counts[credited].weeknights++;
                     }
                 }
             });
