@@ -33,18 +33,32 @@ export function assertFalse(cond, msg = '') {
 }
 
 export function run(containerId = 'results') {
-    const out = document.getElementById(containerId);
-    if (!out) throw new Error(`test-runner: no element with id "${containerId}"`);
     let pass = 0, fail = 0;
+    const lines = [];
     for (const t of tests) {
         try {
             t.fn();
-            out.innerHTML += `<div style="color:green">✓ ${t.name}</div>`;
+            lines.push({ ok: true, name: t.name });
             pass++;
         } catch (e) {
-            out.innerHTML += `<div style="color:red">✗ ${t.name}<pre>${e.message}</pre></div>`;
+            lines.push({ ok: false, name: t.name, msg: e.message });
             fail++;
         }
     }
-    out.innerHTML += `<hr><strong>${pass} passed, ${fail} failed</strong>`;
+    if (typeof document !== 'undefined') {
+        const out = document.getElementById(containerId);
+        if (!out) throw new Error(`test-runner: no element with id "${containerId}"`);
+        for (const l of lines) {
+            out.innerHTML += l.ok
+                ? `<div style="color:green">✓ ${l.name}</div>`
+                : `<div style="color:red">✗ ${l.name}<pre>${l.msg}</pre></div>`;
+        }
+        out.innerHTML += `<hr><strong>${pass} passed, ${fail} failed</strong>`;
+    } else {
+        for (const l of lines) {
+            console.log(l.ok ? `✓ ${l.name}` : `✗ ${l.name}\n   ${l.msg}`);
+        }
+        console.log(`\n${pass} passed, ${fail} failed`);
+        if (fail > 0) process.exit(1);
+    }
 }
