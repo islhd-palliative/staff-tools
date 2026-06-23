@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26",
+  "generatedAt": "2026-06-23",
   "schemaVersion": 1,
   "staff": [
     {
@@ -462,6 +462,14 @@
       "startDate": "2026-04-28",
       "endDate": "2026-04-28",
       "leaveType": "Unavailable"
+    },
+    {
+      "staffCode": "BT",
+      "staffName": "Benjamin Thomas",
+      "region": "North",
+      "startDate": "2026-07-06",
+      "endDate": "2026-07-26",
+      "leaveType": "Annual Leave"
     }
   ],
   "publicHolidays": {
