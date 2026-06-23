@@ -1239,13 +1239,20 @@
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
 
+        // True if this staff member carries on-call for this assignment — as 1st (solo SS)
+        // or as 2nd (backing a trainee who holds 1st). Used by the constraint helpers below
+        // so an SS's backup load is visible to fairness/buffer rules.
+        function isOnCall(assignment, staffCode) {
+            return !!assignment && (assignment.first === staffCode || assignment.second === staffCode);
+        }
+
         // Count weeknights assigned this week for a person
         function weeknightsThisWeek(staffCode, currentDate, roster) {
             const currentWeek = getWeekNumber(currentDate);
             const currentYear = currentDate.getFullYear();
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) &&
                         getWeekNumber(assignDate) === currentWeek &&
@@ -1266,7 +1273,7 @@
             saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
-            return assignment && assignment.first === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check if person had the previous weekend (for Mon/Tue exclusion)
@@ -1278,7 +1285,7 @@
             sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
-            return assignment && assignment.first === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check 2-day buffer around weekends
@@ -1313,7 +1320,7 @@
         function dayOfWeekCount(staffCode, dow, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
                         count++;
@@ -1327,7 +1334,7 @@
         function weeknightsThisMonth(staffCode, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate)) count++;
                 }
@@ -1344,7 +1351,7 @@
         // Check if person has a weekend this month already (in current roster)
         function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
-                if (assignment.first === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const d = parseDate(dateKey);
                     if (isWeekend(d)) return true;
                 }
