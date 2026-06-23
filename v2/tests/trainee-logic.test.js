@@ -17,24 +17,25 @@ test('countWeekendsInRange: full April 2026', () => {
     assertEq(countWeekendsInRange(start, end), 4);
 });
 
-test('calculateTraineeTargets: full-month rotation', () => {
-    const trainee = { code: 'MP', rotationStart: '2026-04-01', rotationEnd: '2026-06-30' };
+test('calculateTraineeTargets: full April 2026 (4 weekend blocks)', () => {
+    const trainee = { code: 'MP', rotationStart: '2026-01-01', rotationEnd: '2027-01-31' };
     const result = calculateTraineeTargets(trainee, 2026, 3); // April
-    assertDeepEq(result, { weeknightTarget: 4, weekendTarget: 1 });
+    // 4 weekend blocks → 1 weekend + 3 weeknights
+    assertDeepEq(result, { weeknightTarget: 3, weekendTarget: 1 });
 });
 
-test('calculateTraineeTargets: half-month rotation (April 15 onwards)', () => {
+test('calculateTraineeTargets: half-month (April 15 on) → 2 weekend blocks', () => {
     const trainee = { code: 'MP', rotationStart: '2026-04-15', rotationEnd: '2026-06-30' };
     const result = calculateTraineeTargets(trainee, 2026, 3);
-    // Weeknights 15-30: 12. Weekends 18-19 + 25-26 = 2. Targets: round(12*0.2)=2, round(2*0.25)=1.
-    assertDeepEq(result, { weeknightTarget: 2, weekendTarget: 1 });
+    // Weekends 18-19, 25-26 = 2 blocks → 1 weekend + 1 weeknight
+    assertDeepEq(result, { weeknightTarget: 1, weekendTarget: 1 });
 });
 
-test('calculateTraineeTargets: rotation ends mid-month', () => {
+test('calculateTraineeTargets: rotation ends April 15 → 2 weekend blocks', () => {
     const trainee = { code: 'MP', rotationStart: '2026-03-01', rotationEnd: '2026-04-15' };
     const result = calculateTraineeTargets(trainee, 2026, 3);
-    // Weeknights 1-15: 11. Weekends 4-5 + 11-12 = 2. Targets: round(11*0.2)=2, round(2*0.25)=1.
-    assertDeepEq(result, { weeknightTarget: 2, weekendTarget: 1 });
+    // Weekends 4-5, 11-12 = 2 blocks → 1 weekend + 1 weeknight
+    assertDeepEq(result, { weeknightTarget: 1, weekendTarget: 1 });
 });
 
 test('calculateTraineeTargets: rotation does not overlap month', () => {
