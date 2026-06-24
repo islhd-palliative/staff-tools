@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23",
+  "generatedAt": "2026-06-24",
   "schemaVersion": 1,
   "staff": [
     {
@@ -1470,12 +1470,12 @@
       "second": null
     },
     "2026-07-11": {
-      "first": "RW",
-      "second": null
+      "first": "MP",
+      "second": "RW"
     },
     "2026-07-12": {
-      "first": "RW",
-      "second": null
+      "first": "MP",
+      "second": "RW"
     },
     "2026-07-18": {
       "first": "Fadz",
@@ -1486,20 +1486,20 @@
       "second": null
     },
     "2026-07-25": {
-      "first": "SR",
-      "second": null
+      "first": "MP",
+      "second": "SR"
     },
     "2026-07-26": {
-      "first": "SR",
-      "second": null
+      "first": "MP",
+      "second": "SR"
     },
     "2026-07-01": {
       "first": "HY",
       "second": null
     },
     "2026-07-02": {
-      "first": "BT",
-      "second": null
+      "first": "MP",
+      "second": "BT"
     },
     "2026-07-03": {
       "first": "AL",
@@ -1534,8 +1534,8 @@
       "second": null
     },
     "2026-07-15": {
-      "first": "AL",
-      "second": null
+      "first": "MP",
+      "second": "AL"
     },
     "2026-07-16": {
       "first": "MK",
@@ -1554,8 +1554,8 @@
       "second": null
     },
     "2026-07-22": {
-      "first": "SR",
-      "second": null
+      "first": "MP",
+      "second": "SR"
     },
     "2026-07-23": {
       "first": "Fadz",
