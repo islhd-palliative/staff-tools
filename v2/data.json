@@ -226,15 +226,6 @@
       "staffCode": "BT",
       "staffName": "Benjamin Thomas",
       "region": "North",
-      "startDate": "2026-08-05",
-      "endDate": "2026-08-05",
-      "leaveType": "Unavailable",
-      "notes": "Work health and safety"
-    },
-    {
-      "staffCode": "BT",
-      "staffName": "Benjamin Thomas",
-      "region": "North",
       "startDate": "2026-08-10",
       "endDate": "2026-11-01",
       "leaveType": "Long Service Leave"
