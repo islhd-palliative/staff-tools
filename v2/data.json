@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07",
+  "generatedAt": "2026-07-08",
   "schemaVersion": 1,
   "staff": [
     {
@@ -468,7 +468,7 @@
       "staffName": "Benjamin Thomas",
       "region": "North",
       "startDate": "2026-07-06",
-      "endDate": "2026-07-26",
+      "endDate": "2026-07-19",
       "leaveType": "Annual Leave"
     },
     {
