@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08",
+  "generatedAt": "2026-07-11",
   "schemaVersion": 1,
   "staff": [
     {
@@ -351,8 +351,9 @@
       "staffName": "Muoi Khou",
       "region": "North",
       "startDate": "2026-07-07",
-      "endDate": "2026-07-14",
-      "leaveType": "Annual Leave"
+      "endDate": "2026-07-13",
+      "leaveType": "Unavailable",
+      "notes": "Sick leave"
     },
     {
       "staffCode": "MK",
