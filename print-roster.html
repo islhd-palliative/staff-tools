@@ -201,7 +201,7 @@
     </div>
 
     <script type="module">
-        import { buildDirectoryForMonth, formatLeaveDates } from './lib/directory.js';
+        import { buildDirectoryForMonth, formatLeaveDates } from './v2/lib/directory.js';
         window.__directory = { buildDirectoryForMonth, formatLeaveDates };
     </script>
 
@@ -233,7 +233,7 @@
                 const parsed = JSON.parse(draft);
 
                 // Pull static data from data.json
-                const res = await fetch('data.json', { cache: 'no-store' });
+                const res = await fetch('v2/data.json', { cache: 'no-store' });
                 const baseData = res.ok ? await res.json() : {};
 
                 // Build oncallRoster from draft for this month only
@@ -270,7 +270,7 @@
                     oncallRoster: { ...(baseData.oncallRoster || {}), ...draftRoster }
                 };
             } else {
-                const res = await fetch('data.json', { cache: 'no-store' });
+                const res = await fetch('v2/data.json', { cache: 'no-store' });
                 if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
                 return await res.json();
             }

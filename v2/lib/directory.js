@@ -91,6 +91,21 @@ function locumRosteredInMonth(locumCode, oncallRoster, year, month) {
     return false;
 }
 
+// On-call locum shifts use the code 'Locum' and carry the locum's name/phone on
+// the entry (published per shift, one locum per month). Returns the name/phone to
+// show in the directory, or null if no locum is rostered this month.
+function findOnCallLocum(oncallRoster, year, month) {
+    const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
+    let found = null;
+    for (const [key, entry] of Object.entries(oncallRoster || {})) {
+        if (!key.startsWith(prefix)) continue;
+        if (entry.first === 'Locum' || entry.second === 'Locum') {
+            found = { name: entry.locumName || 'Locum', phone: entry.locumPhone || '' };
+        }
+    }
+    return found;
+}
+
 function surnameOf(name) {
     const parts = name.trim().split(/\s+/);
     return parts[parts.length - 1].toLowerCase();
@@ -118,6 +133,19 @@ export function buildDirectoryForMonth(staff, trainees, locum, leave, oncallRost
             code: locum.code,
             name: locum.name,
             phone: locum.phone || '',
+            role: 'Locum',
+            workDays: null,
+            leaveDates: []
+        });
+    }
+
+    // On-call locum (code 'Locum', name/phone from the roster entry).
+    const onCallLocum = findOnCallLocum(oncallRoster, year, month);
+    if (onCallLocum) {
+        rows.push({
+            code: 'Locum',
+            name: onCallLocum.name,
+            phone: onCallLocum.phone,
             role: 'Locum',
             workDays: null,
             leaveDates: []

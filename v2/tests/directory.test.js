@@ -142,3 +142,28 @@ test('buildDirectoryForMonth: leaveDates is array of day numbers within month', 
     const mp = dir.find(d => d.code === 'MP');
     assertDeepEq(mp.leaveDates, [17, 23, 28]);
 });
+
+test('buildDirectoryForMonth: on-call locum row uses entry name + phone', () => {
+    const roster = { '2026-04-15': { first: 'Locum', second: null, locumName: 'Dr Jane Smith', locumPhone: '0412 345 678' } };
+    const dir = buildDirectoryForMonth(SAMPLE.staff, SAMPLE.trainees, null, [], roster, 2026, 3);
+    const loc = dir.find(d => d.code === 'Locum');
+    assertTrue(!!loc);
+    assertEq(loc.role, 'Locum');
+    assertEq(loc.name, 'Dr Jane Smith');
+    assertEq(loc.phone, '0412 345 678');
+});
+
+test('buildDirectoryForMonth: on-call locum with no name/phone falls back gracefully', () => {
+    const roster = { '2026-04-15': { first: 'Locum', second: null } };
+    const dir = buildDirectoryForMonth(SAMPLE.staff, SAMPLE.trainees, null, [], roster, 2026, 3);
+    const loc = dir.find(d => d.code === 'Locum');
+    assertTrue(!!loc);
+    assertEq(loc.name, 'Locum');
+    assertEq(loc.phone, '');
+});
+
+test('buildDirectoryForMonth: no on-call locum row when none rostered', () => {
+    const roster = { '2026-04-15': { first: 'BT', second: null } };
+    const dir = buildDirectoryForMonth(SAMPLE.staff, SAMPLE.trainees, null, [], roster, 2026, 3);
+    assertFalse(dir.some(d => d.code === 'Locum'));
+});

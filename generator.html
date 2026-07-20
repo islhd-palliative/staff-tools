@@ -678,6 +678,10 @@
                 <input type="text" id="locumName" placeholder="e.g. Dr Jane Smith"
                        oninput="setLocumName(this.value)"
                        style="width: 100%; max-width: 320px; padding: 6px 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <label style="font-size: 0.85rem; color: #444; display: block; margin: 8px 0 4px;">Locum contact number (shown in the PDF phone directory):</label>
+                <input type="text" id="locumPhone" placeholder="e.g. 0412 345 678"
+                       oninput="setLocumPhone(this.value)"
+                       style="width: 100%; max-width: 320px; padding: 6px 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; border-radius: 6px;">
             </div>
             <p id="locumTargetInfo" style="font-size: 0.8rem; color: #666; margin: 6px 0 0 28px; display: none;">
                 Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
@@ -752,6 +756,7 @@
         <div style="margin-bottom: 10px;">
             <button id="viewListBtn" class="view-btn" onclick="showListView()">List View</button>
             <button id="viewCalBtn" class="view-btn active" onclick="showCalendarView()">Calendar View</button>
+            <button type="button" onclick="previewPdf()" style="background:#7c3aed; color:white; border:none; border-radius:6px; padding:6px 12px; font-size:0.9rem; cursor:pointer; margin-left:8px;">&#128196; Preview PDF</button>
         </div>
         <div id="listView" style="display: none;">
             <table class="roster-table">
@@ -830,6 +835,7 @@
 
         const DEFAULT_LOCUM_NAME = 'Ratnayake (L)';
         let locumName = '';
+        let locumPhone = '';
         const locumStaff = { code: 'Locum', name: DEFAULT_LOCUM_NAME, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
         let locumEnabled = false;
 
@@ -843,6 +849,10 @@
             locumName = v;
             locumStaff.name = locumDisplayName();
             if (Object.keys(currentRoster).length) renderRoster();
+        }
+
+        function setLocumPhone(v) {
+            locumPhone = v;
         }
 
         function getActiveStaff() {
@@ -2079,7 +2089,8 @@
                 currentMonth,
                 currentYear,
                 locumEnabled,
-                locumName
+                locumName,
+                locumPhone
             };
             try {
                 localStorage.setItem('oncall_generator_test', JSON.stringify(data));
@@ -2105,6 +2116,11 @@
                     locumStaff.name = locumDisplayName();
                     const nameInput = document.getElementById('locumName');
                     if (nameInput) nameInput.value = locumName;
+                }
+                if (data.locumPhone !== undefined) {
+                    locumPhone = data.locumPhone || '';
+                    const phoneInput = document.getElementById('locumPhone');
+                    if (phoneInput) phoneInput.value = locumPhone;
                 }
                 if (data.locumEnabled !== undefined) {
                     locumEnabled = data.locumEnabled;
@@ -2201,7 +2217,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 savedDrafts,
                 adHocUnavailability,
                 locumEnabled,
-                locumName
+                locumName,
+                locumPhone
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2238,6 +2255,11 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                         locumStaff.name = locumDisplayName();
                         const nameInput = document.getElementById('locumName');
                         if (nameInput) nameInput.value = locumName;
+                    }
+                    if (data.locumPhone !== undefined) {
+                        locumPhone = data.locumPhone || '';
+                        const phoneInput = document.getElementById('locumPhone');
+                        if (phoneInput) phoneInput.value = locumPhone;
                     }
                     if (data.locumEnabled !== undefined) {
                         locumEnabled = data.locumEnabled;
@@ -2301,7 +2323,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 savedDrafts,
                 adHocUnavailability,
                 locumEnabled,
-                locumName
+                locumName,
+                locumPhone
             };
             const monthLabel = (currentMonth !== null)
                 ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
@@ -2346,6 +2369,18 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             const warns = document.getElementById('warningsContainer');
             if (warns) warns.innerHTML = '';
             flashAutoSave();
+        }
+
+        // Open the printable/PDF preview of the current draft (reads it from
+        // localStorage, so save state first).
+        function previewPdf() {
+            if (currentMonth === null) {
+                alert('Generate a roster first.');
+                return;
+            }
+            saveToLocalStorage();
+            const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            window.open(`print-roster.html?month=${monthStr}&source=draft`, '_blank');
         }
 
         // Publish the current month's roster LIVE via the Cloudflare Worker
@@ -2402,7 +2437,10 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             // PDF) shows who the locum actually is rather than a generic label.
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
                 const entry = { first: rec.staffCode, second: null };
-                if (rec.staffCode === 'Locum') entry.locumName = locumDisplayName();
+                if (rec.staffCode === 'Locum') {
+                    entry.locumName = locumDisplayName();
+                    if (locumPhone && locumPhone.trim()) entry.locumPhone = locumPhone.trim();
+                }
                 base.oncallRoster[dateKey] = entry;
             }
 
