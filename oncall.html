@@ -497,6 +497,30 @@
             'Locum': { name: 'Ratnayake (L)', initials: 'Rat', isTrainee: false, isLocum: true }
         };
 
+        // A locum shift carries its own name (published per shift). Resolve the
+        // display person from the roster entry so the typed locum name wins over
+        // the generic default.
+        function locumInitials(name) {
+            const cleaned = (name || '').replace(/\(L\)/ig, '').replace(/^Dr\.?\s+/i, '').trim();
+            const surname = cleaned.split(/\s+/).pop() || 'Loc';
+            return surname.slice(0, 3);
+        }
+        function personFor(code, entry) {
+            const base = staff[code] || { name: code, initials: code, isTrainee: false };
+            if (base.isLocum && entry && entry.locumName) {
+                return { ...base, name: entry.locumName, initials: locumInitials(entry.locumName) };
+            }
+            return base;
+        }
+        // The locum name used within a given YYYY-MM (one locum per publish month).
+        function locumNameForMonth(prefix) {
+            let name = null;
+            Object.entries(oncallData).forEach(([k, v]) => {
+                if (k.startsWith(prefix) && v && v.locumName) name = v.locumName;
+            });
+            return name;
+        }
+
         // NSW Public Holidays (embedded fallback; overridden by data.json fetch)
         let publicHolidays = {
             '2026-01-01': 'New Year\'s Day',
@@ -860,7 +884,7 @@
                     if (oncall) {
                         // First on-call
                         if (oncall.first) {
-                            const person = staff[oncall.first];
+                            const person = personFor(oncall.first, oncall);
                             const tag = document.createElement('span');
                             let classes = 'oncall-tag first';
                             if (person.isTrainee) classes += ' trainee';
@@ -877,7 +901,7 @@
 
                         // Second on-call
                         if (oncall.second) {
-                            const person = staff[oncall.second];
+                            const person = personFor(oncall.second, oncall);
                             const tag = document.createElement('span');
                             let classes = 'oncall-tag second';
                             if (person.isTrainee) classes += ' trainee';
@@ -911,7 +935,7 @@
 
                     const oncall = getOncallForDate(dateKey);
                     if (oncall && oncall.first) {
-                        const person = staff[oncall.first];
+                        const person = personFor(oncall.first, oncall);
                         const tag = document.createElement('span');
                         let classes = 'oncall-tag first';
                         if (person.isTrainee) classes += ' trainee';
@@ -981,8 +1005,11 @@
                     return surnameA.localeCompare(surnameB);
                 });
 
+            const monthLocumName = locumNameForMonth(monthPrefix);
             tbody.innerHTML = sorted.map(({ code, first, second, total }) => {
-                const person = staff[code];
+                const person = (code === 'Locum' && monthLocumName)
+                    ? { ...staff[code], name: monthLocumName }
+                    : staff[code];
                 return `
                     <tr>
                         <td>

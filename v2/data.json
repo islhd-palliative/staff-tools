@@ -82,16 +82,19 @@
     {
       "code": "MK",
       "name": "Muoi Khou",
-      "fte": 0.6,
+      "fte": 0.4,
       "region": "North",
       "workDays": [
         2,
-        3,
-        4
+        3
       ],
-      "daysPerWeek": 3,
+      "daysPerWeek": 2,
       "excessBalanceWeeks": 0,
-      "phone": "0434 053 114"
+      "phone": "0434 053 114",
+      "fteSchedule": [
+        { "from": "2026-01-01", "fte": 0.6 },
+        { "from": "2026-08-01", "fte": 0.4 }
+      ]
     },
     {
       "code": "RW",

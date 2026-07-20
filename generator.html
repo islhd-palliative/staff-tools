@@ -673,6 +673,12 @@
                        style="width: 18px; height: 18px; cursor: pointer;">
                 Locum available this month
             </label>
+            <div id="locumNameRow" style="margin: 8px 0 0 28px; display: none;">
+                <label style="font-size: 0.85rem; color: #444; display: block; margin-bottom: 4px;">Locum name (as it should appear on the roster):</label>
+                <input type="text" id="locumName" placeholder="e.g. Dr Jane Smith"
+                       oninput="setLocumName(this.value)"
+                       style="width: 100%; max-width: 320px; padding: 6px 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+            </div>
             <p id="locumTargetInfo" style="font-size: 0.8rem; color: #666; margin: 6px 0 0 28px; display: none;">
                 Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
                 Everyone else's targets adjusted proportionally.
@@ -817,13 +823,27 @@
             { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
             { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] },
             { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', workDays: [3,4,5] },
-            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.4, region: 'North', workDays: [2,3], fteSchedule: [{ from: '2026-01-01', fte: 0.6 }, { from: '2026-08-01', fte: 0.4 }] },
             { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
             { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
 
-        const locumStaff = { code: 'Locum', name: 'Ratnayake (L)', fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        const DEFAULT_LOCUM_NAME = 'Ratnayake (L)';
+        let locumName = '';
+        const locumStaff = { code: 'Locum', name: DEFAULT_LOCUM_NAME, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
         let locumEnabled = false;
+
+        // The name shown for the locum everywhere (roster, dropdowns, publish).
+        // Falls back to the historical default if the EA hasn't typed one.
+        function locumDisplayName() {
+            return (locumName && locumName.trim()) ? locumName.trim() : DEFAULT_LOCUM_NAME;
+        }
+
+        function setLocumName(v) {
+            locumName = v;
+            locumStaff.name = locumDisplayName();
+            if (Object.keys(currentRoster).length) renderRoster();
+        }
 
         function getActiveStaff() {
             return locumEnabled ? [...staffData, locumStaff] : [...staffData];
@@ -835,6 +855,40 @@
             const person = active.find(s => s.code === staffCode);
             if (!person) return 0;
             return Math.round((person.fte / totalFTE) * 22);
+        }
+
+        // Effective-dated FTE: staff may carry an optional fteSchedule
+        // [{from:'YYYY-MM-DD', fte}] recording when their FTE changed.
+        // Forward-looking logic (monthly targets, display) uses the flat top-level
+        // fte; only the HISTORICAL equity fair-share uses fteOn/avgFteOverDates so
+        // past on-calls are judged at the FTE that was in effect at the time.
+        // (e.g. MK dropped 0.6 -> 0.4 from 2026-08-01; her Jan-Jul nights stay
+        // fair-shared at 0.6 rather than being retroactively penalised.)
+        function fteOn(staff, date) {
+            const sched = staff.fteSchedule;
+            if (!sched || !sched.length) return staff.fte;
+            const key = formatDateKey(date);
+            let bestFrom = null, val = null;
+            for (const e of sched) {
+                if (e.from <= key && (bestFrom === null || e.from > bestFrom)) {
+                    bestFrom = e.from; val = e.fte;
+                }
+            }
+            if (val === null) {
+                // date precedes the earliest schedule entry — use that earliest fte
+                const earliest = sched.reduce((a, b) => a.from <= b.from ? a : b);
+                val = earliest.fte;
+            }
+            return val;
+        }
+
+        // Mean effective FTE across a set of dates (the historical on-call dates).
+        // Staff without an fteSchedule return their flat fte -> unchanged behaviour.
+        function avgFteOverDates(staff, dates) {
+            if (!staff.fteSchedule || !staff.fteSchedule.length || !dates.length) return staff.fte;
+            let sum = 0;
+            for (const d of dates) sum += fteOn(staff, d);
+            return sum / dates.length;
         }
 
         // ==================== LEAVE DATA ====================
@@ -1365,12 +1419,15 @@
 
             const start = entries[0].date;
             const end = entries[entries.length - 1].date;
+            const entryDates = entries.map(e => e.date);
 
-            // Leave-aware effective FTE over the period
+            // Leave-aware effective FTE over the period.
+            // Uses effective-dated FTE (avgFteOverDates) so a mid-history FTE
+            // change is judged at the FTE in effect on each past on-call date.
             let totalEffFTE = 0;
             const effFTE = {};
             staffData.forEach(s => {
-                effFTE[s.code] = s.fte * availabilityFraction(s.code, start, end);
+                effFTE[s.code] = avgFteOverDates(s, entryDates) * availabilityFraction(s.code, start, end);
                 totalEffFTE += effFTE[s.code];
             });
 
@@ -1403,13 +1460,16 @@
 
             const start = blocks[0].sat;
             const end = blocks[blocks.length - 1].sat;
+            const blockDates = blocks.map(b => b.sat);
 
-            // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA
+            // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA.
+            // FTE share uses effective-dated FTE (avgFteOverDates) so past weekends
+            // are judged at the FTE in effect on each block's date.
             let totalAvail = 0, totalEffFTE = 0;
             const avail = {}, effFTE = {};
             staffData.forEach(s => {
                 avail[s.code] = availabilityFraction(s.code, start, end);
-                effFTE[s.code] = s.fte * avail[s.code];
+                effFTE[s.code] = avgFteOverDates(s, blockDates) * avail[s.code];
                 totalAvail += avail[s.code];
                 totalEffFTE += effFTE[s.code];
             });
@@ -1701,7 +1761,7 @@
                 getActiveStaff().forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.code;
-                    opt.textContent = s.isLocum ? 'Locum' : s.name;
+                    opt.textContent = s.isLocum ? locumDisplayName() : s.name;
 
                     // Check if on leave
                     const leave = isOnLeave(s.code, day);
@@ -1769,7 +1829,7 @@
 
                 // Name
                 const tdName = document.createElement('td');
-                tdName.textContent = s.isLocum ? 'Locum' : s.name;
+                tdName.textContent = s.isLocum ? locumDisplayName() : s.name;
                 tr.appendChild(tdName);
 
                 // FTE
@@ -1855,7 +1915,7 @@
             const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
             const getStaffName = (code) => {
-                if (code === 'Locum') return 'Locum';
+                if (code === 'Locum') return locumDisplayName();
                 const staff = getActiveStaff().find(s => s.code === code);
                 return staff ? staff.name.split(' ').pop() : code; // Last name only
             };
@@ -1946,7 +2006,7 @@
                 const staff = getActiveStaff().find(s => s.code === u.staffCode);
                 return `
                     <div class="unavailability-item">
-                        ${staff ? (staff.isLocum ? 'Locum' : staff.name) : u.staffCode} - ${u.date}
+                        ${staff ? (staff.isLocum ? locumDisplayName() : staff.name) : u.staffCode} - ${u.date}
                         <button onclick="removeUnavailability(${i})">&times;</button>
                     </div>
                 `;
@@ -2018,7 +2078,8 @@
                 currentRoster,
                 currentMonth,
                 currentYear,
-                locumEnabled
+                locumEnabled,
+                locumName
             };
             try {
                 localStorage.setItem('oncall_generator_test', JSON.stringify(data));
@@ -2039,6 +2100,12 @@
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
 
+                if (data.locumName !== undefined) {
+                    locumName = data.locumName || '';
+                    locumStaff.name = locumDisplayName();
+                    const nameInput = document.getElementById('locumName');
+                    if (nameInput) nameInput.value = locumName;
+                }
                 if (data.locumEnabled !== undefined) {
                     locumEnabled = data.locumEnabled;
                     document.getElementById('locumToggle').checked = locumEnabled;
@@ -2133,7 +2200,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 currentYear,
                 savedDrafts,
                 adHocUnavailability,
-                locumEnabled
+                locumEnabled,
+                locumName
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2165,6 +2233,12 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     else if (data.historicalData) savedDrafts = data.historicalData; // backwards compat
                     if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
 
+                    if (data.locumName !== undefined) {
+                        locumName = data.locumName || '';
+                        locumStaff.name = locumDisplayName();
+                        const nameInput = document.getElementById('locumName');
+                        if (nameInput) nameInput.value = locumName;
+                    }
                     if (data.locumEnabled !== undefined) {
                         locumEnabled = data.locumEnabled;
                         document.getElementById('locumToggle').checked = locumEnabled;
@@ -2226,7 +2300,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 currentYear,
                 savedDrafts,
                 adHocUnavailability,
-                locumEnabled
+                locumEnabled,
+                locumName
             };
             const monthLabel = (currentMonth !== null)
                 ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
@@ -2322,9 +2397,13 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 if (key.startsWith(monthKey + '-')) delete base.oncallRoster[key];
             }
 
-            // Merge current roster in, formatted as { first, second }
+            // Merge current roster in, formatted as { first, second }.
+            // Locum shifts carry the typed name so every renderer (oncall, today,
+            // PDF) shows who the locum actually is rather than a generic label.
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
-                base.oncallRoster[dateKey] = { first: rec.staffCode, second: null };
+                const entry = { first: rec.staffCode, second: null };
+                if (rec.staffCode === 'Locum') entry.locumName = locumDisplayName();
+                base.oncallRoster[dateKey] = entry;
             }
 
             base.generatedAt = new Date().toISOString().slice(0, 10);
@@ -2520,6 +2599,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             locumEnabled = enabled;
             const info = document.getElementById('locumTargetInfo');
             info.style.display = enabled ? 'block' : 'none';
+            const nameRow = document.getElementById('locumNameRow');
+            if (nameRow) nameRow.style.display = enabled ? 'block' : 'none';
             if (enabled) {
                 document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
             }
@@ -2545,7 +2626,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 checkbox.value = s.code;
                 if (checkedCodes.has(s.code)) checkbox.checked = true;
                 label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(s.isLocum ? 'Locum' : s.name.split(' ').pop()));
+                label.appendChild(document.createTextNode(s.isLocum ? locumDisplayName() : s.name.split(' ').pop()));
                 weekendsDiv.appendChild(label);
             });
         }

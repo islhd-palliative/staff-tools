@@ -271,8 +271,13 @@
             return parts[parts.length - 1].toUpperCase();
         }
 
-        function nameForCell(code, ds) {
+        function nameForCell(code, ds, entry) {
             if (!code) return '';
+            // On-call locum shifts carry their own name on the roster entry.
+            if (code === 'Locum') {
+                const nm = (entry && entry.locumName) || (ds.locum && ds.locum.name) || 'Locum';
+                return surnameUpper(nm);
+            }
             const t = (ds.trainees || []).find(x => x.code === code);
             if (t) return surnameUpper(t.name);
             if (ds.locum && ds.locum.code === code) return surnameUpper(ds.locum.name);
@@ -330,16 +335,16 @@
                         if (entry.second) {
                             const l1 = document.createElement('div');
                             l1.className = 'doc-line';
-                            l1.innerHTML = `<span class="prefix">1st</span> Dr ${nameForCell(entry.first, ds)}`;
+                            l1.innerHTML = `<span class="prefix">1st</span> Dr ${nameForCell(entry.first, ds, entry)}`;
                             td.appendChild(l1);
                             const l2 = document.createElement('div');
                             l2.className = 'doc-line';
-                            l2.innerHTML = `<span class="prefix">2nd</span> Dr ${nameForCell(entry.second, ds)}`;
+                            l2.innerHTML = `<span class="prefix">2nd</span> Dr ${nameForCell(entry.second, ds, entry)}`;
                             td.appendChild(l2);
                         } else if (entry.first) {
                             const l = document.createElement('div');
                             l.className = 'doc-line';
-                            l.textContent = `Dr ${nameForCell(entry.first, ds)}`;
+                            l.textContent = `Dr ${nameForCell(entry.first, ds, entry)}`;
                             td.appendChild(l);
                         }
                     }

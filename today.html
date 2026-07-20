@@ -702,7 +702,7 @@
             'GB': { 2: 'PCU', 5: 'PCU' },
             'AL': { 1: 'Community', 2: 'Non-clinical', 3: 'Non-clinical', 4: 'Community' },
             'RW': { 1: 'TWH', 2: 'Clinic' },
-            'MK': { 2: 'SHH', 3: 'TWH', 4: 'TWH' },
+            'MK': { 2: 'SHH', 3: 'TWH' }, // 0.4 FTE from Aug 2026 — Thursdays dropped
             'HY': { 3: 'Clinic', 4: 'SHH', 5: 'TWH' },
             'SR': { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' }, // Alternate Fridays off
             'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off
@@ -722,6 +722,13 @@
             'MP': 'Michelle Petersen',
             'Locum': 'Ratnayake (L)'
         };
+
+        // A locum shift carries its own name on the roster entry; prefer it over
+        // the generic default so Today shows who the locum actually is.
+        function displayName(code, entry) {
+            if (code === 'Locum' && entry && entry.locumName) return entry.locumName;
+            return staffNames[code] || code;
+        }
 
         // On-call data (from oncall_roster.html)
         let oncallData = {
@@ -1172,16 +1179,16 @@
 
                 if (isTraineeFirst && oncall.second) {
                     // Trainee is 1st on-call, staff specialist is backup (2nd)
-                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
-                    backupEl.textContent = `Backup: ${staffNames[oncall.second]}`;
+                    primaryEl.textContent = `${displayName(oncall.first, oncall)} (Trainee)`;
+                    backupEl.textContent = `Backup: ${displayName(oncall.second, oncall)}`;
                     backupEl.style.display = 'block';
                 } else if (isTraineeFirst) {
                     // Trainee alone (shouldn't happen but handle it)
-                    primaryEl.textContent = `${staffNames[oncall.first]} (Trainee)`;
+                    primaryEl.textContent = `${displayName(oncall.first, oncall)} (Trainee)`;
                     backupEl.style.display = 'none';
                 } else {
                     // Staff specialist is primary
-                    primaryEl.textContent = staffNames[oncall.first] || oncall.first;
+                    primaryEl.textContent = displayName(oncall.first, oncall);
                     backupEl.style.display = 'none';
                 }
             } else {
@@ -1198,9 +1205,9 @@
             if (tomorrowOncall) {
                 const isTomorrowTrainee = traineeCodes.includes(tomorrowOncall.first);
                 if (isTomorrowTrainee && tomorrowOncall.second) {
-                    tomorrowEl.textContent = `${staffNames[tomorrowOncall.first]} + ${staffNames[tomorrowOncall.second]}`;
+                    tomorrowEl.textContent = `${displayName(tomorrowOncall.first, tomorrowOncall)} + ${displayName(tomorrowOncall.second, tomorrowOncall)}`;
                 } else {
-                    tomorrowEl.textContent = staffNames[tomorrowOncall.first] || tomorrowOncall.first;
+                    tomorrowEl.textContent = displayName(tomorrowOncall.first, tomorrowOncall);
                 }
             } else {
                 tomorrowEl.textContent = 'Not rostered';
@@ -1358,9 +1365,9 @@
                 let oncallDisplay = '—';
                 if (oncall) {
                     const isTrainee = traineeCodes.includes(oncall.first);
-                    const firstName = staffNames[oncall.first]?.split(' ').pop() || oncall.first;
+                    const firstName = displayName(oncall.first, oncall).split(' ').pop() || oncall.first;
                     if (isTrainee && oncall.second) {
-                        const backupName = staffNames[oncall.second]?.split(' ').pop() || oncall.second;
+                        const backupName = displayName(oncall.second, oncall).split(' ').pop() || oncall.second;
                         oncallDisplay = `${firstName}* + ${backupName}`;
                     } else {
                         oncallDisplay = firstName;
