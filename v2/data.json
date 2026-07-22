@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11",
+  "generatedAt": "2026-07-22",
   "schemaVersion": 1,
   "staff": [
     {
@@ -1594,6 +1594,140 @@
     },
     "2026-07-31": {
       "first": "Fadz",
+      "second": null
+    },
+    "2026-08-01": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-08-02": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-08-08": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-08-09": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-08-15": {
+      "first": "MP",
+      "second": "AL"
+    },
+    "2026-08-16": {
+      "first": "MP",
+      "second": "AL"
+    },
+    "2026-08-22": {
+      "first": "Locum",
+      "second": null,
+      "locumName": "Rob Chatterji",
+      "locumPhone": "0426 870 216"
+    },
+    "2026-08-23": {
+      "first": "Locum",
+      "second": null,
+      "locumName": "Rob Chatterji",
+      "locumPhone": "0426 870 216"
+    },
+    "2026-08-29": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-08-30": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-08-03": {
+      "first": "MP",
+      "second": "SR"
+    },
+    "2026-08-04": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-08-05": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-08-06": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-08-07": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-08-10": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-08-11": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-08-12": {
+      "first": "Locum",
+      "second": null,
+      "locumName": "Rob Chatterji",
+      "locumPhone": "0426 870 216"
+    },
+    "2026-08-13": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-08-14": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-08-17": {
+      "first": "Locum",
+      "second": null,
+      "locumName": "Rob Chatterji",
+      "locumPhone": "0426 870 216"
+    },
+    "2026-08-18": {
+      "first": "MP",
+      "second": "MK"
+    },
+    "2026-08-19": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-08-20": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-08-21": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-08-24": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-08-25": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-08-26": {
+      "first": "MP",
+      "second": "Fadz"
+    },
+    "2026-08-27": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-08-28": {
+      "first": "Locum",
+      "second": null,
+      "locumName": "Rob Chatterji",
+      "locumPhone": "0426 870 216"
+    },
+    "2026-08-31": {
+      "first": "SR",
       "second": null
     }
   },
