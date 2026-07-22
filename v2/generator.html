@@ -872,6 +872,15 @@
             return { code: 'Locum', name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
         }
 
+        // Short label for the locum in surname-style displays (calendar cells,
+        // checkboxes): "Dr Chatterji (L)" -> "Chatterji"; falls back to "Locum".
+        function locumShortLabel() {
+            const nm = (locumData && locumData.name) ? locumData.name : '';
+            const cleaned = nm.replace(/\(L\)/ig, '').replace(/^Dr\.?\s+/i, '').trim();
+            const surname = cleaned.split(/\s+/).filter(Boolean).pop();
+            return surname || 'Locum';
+        }
+
         let locumEnabled = false;
 
         function getActiveStaff() {
@@ -880,7 +889,7 @@
 
         function getDisplayName(code) {
             if (!code) return '';
-            if (code === 'Locum') return 'Locum';
+            if (code === 'Locum') return locumShortLabel();
             const s = getActiveStaff().find(x => x.code === code);
             if (s) return s.name.split(' ').pop();
             const t = (traineeData || []).find(x => x.code === code);
@@ -1869,7 +1878,7 @@
                 getActiveStaff().forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.code;
-                    opt.textContent = s.isLocum ? 'Locum' : s.name;
+                    opt.textContent = s.name;
                     const leave = isOnLeave(s.code, day);
                     if (leave) { opt.textContent += ` (${leave})`; opt.style.color = '#dc2626'; }
                     if (isAdHocUnavailable(s.code, dateKey)) { opt.textContent += ' (Unavail)'; opt.style.color = '#dc2626'; }
@@ -1940,7 +1949,7 @@
 
                 // Name
                 const tdName = document.createElement('td');
-                tdName.textContent = s.isLocum ? 'Locum' : s.name;
+                tdName.textContent = s.name;
                 tr.appendChild(tdName);
 
                 // FTE
@@ -2137,7 +2146,7 @@
                 const staff = getActiveStaff().find(s => s.code === u.staffCode);
                 return `
                     <div class="unavailability-item">
-                        ${staff ? (staff.isLocum ? 'Locum' : staff.name) : u.staffCode} - ${u.date}
+                        ${staff ? staff.name : u.staffCode} - ${u.date}
                         <button onclick="removeUnavailability(${i})">&times;</button>
                     </div>
                 `;
@@ -2887,7 +2896,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 checkbox.value = s.code;
                 if (checkedCodes.has(s.code)) checkbox.checked = true;
                 label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(s.isLocum ? 'Locum' : s.name.split(' ').pop()));
+                label.appendChild(document.createTextNode(s.isLocum ? locumShortLabel() : s.name.split(' ').pop()));
                 weekendsDiv.appendChild(label);
             });
         }
@@ -2899,7 +2908,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             getActiveStaff().forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s.code;
-                opt.textContent = s.isLocum ? 'Locum' : s.name;
+                opt.textContent = s.name;
                 select.appendChild(opt);
             });
             if (currentVal) select.value = currentVal;
