@@ -855,7 +855,7 @@
             { code: 'AL', name: 'Angela Lo', fte: 0.8, region: 'North', workDays: [1,2,3,4,5] },
             { code: 'Fadz', name: 'Fadz wan Bahrum', fte: 0.8, region: 'South', workDays: [1,3,4,5] },
             { code: 'HY', name: 'Helen Yourlo', fte: 0.7, region: 'North', workDays: [3,4,5] },
-            { code: 'MK', name: 'Muoi Khou', fte: 0.6, region: 'North', workDays: [2,3,4] },
+            { code: 'MK', name: 'Muoi Khou', fte: 0.4, region: 'North', workDays: [2,3], fteSchedule: [{ from: '2026-01-01', fte: 0.6 }, { from: '2026-08-01', fte: 0.4 }] },
             { code: 'RW', name: 'Ron Wai', fte: 0.4, region: 'North', workDays: [1,2] },
             { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
@@ -865,9 +865,11 @@
         let locumData = null; // { code, name, phone }
 
         function getLocumStaffRecord() {
-            const base = locumData || { code: 'Locum', name: 'Ratnayake' };
-            const displayName = base.name.includes('(L)') ? base.name : `${base.name} (L)`;
-            return { code: base.code, name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+            const base = locumData || { name: 'Ratnayake' };
+            const displayName = (base.name && base.name.includes('(L)')) ? base.name : `${base.name || 'Ratnayake'} (L)`;
+            // Always code 'Locum' — the live pages (oncall, today, PDF directory)
+            // resolve a locum shift by code 'Locum' + per-shift locumName/locumPhone.
+            return { code: 'Locum', name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
         }
 
         let locumEnabled = false;
@@ -899,6 +901,35 @@
             const person = active.find(s => s.code === staffCode);
             if (!person) return 0;
             return Math.round((person.fte / totalFTE) * 22);
+        }
+
+        // Effective-dated FTE: staff may carry an optional fteSchedule
+        // [{from:'YYYY-MM-DD', fte}] recording when their FTE changed.
+        // Forward-looking logic uses the flat top-level fte; only the HISTORICAL
+        // equity fair-share uses fteOn/avgFteOverDates so past on-calls are judged
+        // at the FTE that was in effect at the time (e.g. MK 0.6 -> 0.4 Aug 2026).
+        function fteOn(staff, date) {
+            const sched = staff.fteSchedule;
+            if (!sched || !sched.length) return staff.fte;
+            const key = formatDateKey(date);
+            let bestFrom = null, val = null;
+            for (const e of sched) {
+                if (e.from <= key && (bestFrom === null || e.from > bestFrom)) {
+                    bestFrom = e.from; val = e.fte;
+                }
+            }
+            if (val === null) {
+                const earliest = sched.reduce((a, b) => a.from <= b.from ? a : b);
+                val = earliest.fte;
+            }
+            return val;
+        }
+
+        function avgFteOverDates(staff, dates) {
+            if (!staff.fteSchedule || !staff.fteSchedule.length || !dates.length) return staff.fte;
+            let sum = 0;
+            for (const d of dates) sum += fteOn(staff, d);
+            return sum / dates.length;
         }
 
         // ==================== LEAVE DATA ====================
@@ -1438,12 +1469,14 @@
 
             const start = entries[0].date;
             const end = entries[entries.length - 1].date;
+            const entryDates = entries.map(e => e.date);
 
-            // Leave-aware effective FTE over the period
+            // Leave-aware effective FTE over the period (effective-dated so a
+            // mid-history FTE change is judged at the FTE in effect on each date)
             let totalEffFTE = 0;
             const effFTE = {};
             staffData.forEach(s => {
-                effFTE[s.code] = s.fte * availabilityFraction(s.code, start, end);
+                effFTE[s.code] = avgFteOverDates(s, entryDates) * availabilityFraction(s.code, start, end);
                 totalEffFTE += effFTE[s.code];
             });
 
@@ -1476,13 +1509,16 @@
 
             const start = blocks[0].sat;
             const end = blocks[blocks.length - 1].sat;
+            const blockDates = blocks.map(b => b.sat);
 
-            // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA
+            // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA.
+            // FTE share uses effective-dated FTE so past weekends are judged at the
+            // FTE in effect on each block's date.
             let totalAvail = 0, totalEffFTE = 0;
             const avail = {}, effFTE = {};
             staffData.forEach(s => {
                 avail[s.code] = availabilityFraction(s.code, start, end);
-                effFTE[s.code] = s.fte * avail[s.code];
+                effFTE[s.code] = avgFteOverDates(s, blockDates) * avail[s.code];
                 totalAvail += avail[s.code];
                 totalEffFTE += effFTE[s.code];
             });
@@ -2173,7 +2209,8 @@
                 currentRoster,
                 currentMonth,
                 currentYear,
-                locumEnabled
+                locumEnabled,
+                locumData
             };
             try {
                 localStorage.setItem('oncall_generator_test', JSON.stringify(data));
@@ -2203,6 +2240,13 @@
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
 
+                if (data.locumData) {
+                    locumData = data.locumData;
+                    const ni = document.getElementById('locumName');
+                    const pi = document.getElementById('locumPhone');
+                    if (ni) ni.value = locumData.name || '';
+                    if (pi) pi.value = locumData.phone || '';
+                }
                 if (data.locumEnabled !== undefined) {
                     locumEnabled = data.locumEnabled;
                     document.getElementById('locumToggle').checked = locumEnabled;
@@ -2308,7 +2352,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 currentYear,
                 savedDrafts,
                 adHocUnavailability,
-                locumEnabled
+                locumEnabled,
+                locumData
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2349,6 +2394,13 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     else if (data.historicalData) savedDrafts = data.historicalData; // backwards compat
                     if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
 
+                    if (data.locumData) {
+                        locumData = data.locumData;
+                        const ni = document.getElementById('locumName');
+                        const pi = document.getElementById('locumPhone');
+                        if (ni) ni.value = locumData.name || '';
+                        if (pi) pi.value = locumData.phone || '';
+                    }
                     if (data.locumEnabled !== undefined) {
                         locumEnabled = data.locumEnabled;
                         document.getElementById('locumToggle').checked = locumEnabled;
@@ -2410,7 +2462,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 currentYear,
                 savedDrafts,
                 adHocUnavailability,
-                locumEnabled
+                locumEnabled,
+                locumData
             };
             const monthLabel = (currentMonth !== null)
                 ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
@@ -2506,14 +2559,25 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 if (key.startsWith(monthKey + '-')) delete base.oncallRoster[key];
             }
 
-            // Merge current roster in, formatted as { first, second }
+            // Merge current roster in, formatted as { first, second }.
+            // Locum shifts carry the typed name/phone per entry so every renderer
+            // (oncall, today, PDF calendar + directory) shows who the locum is.
+            const locName = locumData && locumData.name ? locumData.name.trim() : '';
+            const locPhone = locumData && locumData.phone ? locumData.phone.trim() : '';
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
-                base.oncallRoster[dateKey] = { first: rec.first, second: rec.second };
+                const entry = { first: rec.first, second: rec.second };
+                if (rec.first === 'Locum' || rec.second === 'Locum') {
+                    if (locName) entry.locumName = locName;
+                    if (locPhone) entry.locumPhone = locPhone;
+                }
+                base.oncallRoster[dateKey] = entry;
             }
 
             base.staff = staffData; // includes phone edits
             base.trainees = traineeData;
-            base.locum = locumData;
+            // NB: on-call locum identity rides on each shift (entry.locumName/Phone
+            // above), NOT on a top-level base.locum — leaving the original data.json
+            // locum (site-coverage) untouched and avoiding a duplicate directory row.
             base.generatedAt = new Date().toISOString().slice(0, 10);
 
             const btn = document.querySelector('.btn-publish');
@@ -2876,13 +2940,13 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             const locumPhoneEl = document.getElementById('locumPhone');
             if (locumNameEl) {
                 locumNameEl.addEventListener('change', e => {
-                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    if (!locumData) locumData = { code: 'Locum', name: '', phone: '' };
                     locumData.name = e.target.value;
                 });
             }
             if (locumPhoneEl) {
                 locumPhoneEl.addEventListener('change', e => {
-                    if (!locumData) locumData = { code: 'LOC', name: '', phone: '' };
+                    if (!locumData) locumData = { code: 'Locum', name: '', phone: '' };
                     locumData.phone = e.target.value;
                 });
             }
@@ -2929,7 +2993,9 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     originalDataJson = d; // keep raw for publish merges
                     if (d.staff) staffData = d.staff;
                     if (d.trainees) traineeData = d.trainees;
-                    if (d.locum) locumData = d.locum;
+                    // NOTE: do NOT seed the on-call locum from data.json.locum — that
+                    // is the separate SITE-COVERAGE locum. The on-call locum is its own
+                    // per-shift identity (entry.locumName/Phone); the EA types it fresh.
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.leave) {
                         leaveData = d.leave.map(l => ({

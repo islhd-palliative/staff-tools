@@ -673,20 +673,14 @@
                        style="width: 18px; height: 18px; cursor: pointer;">
                 Locum available this month
             </label>
-            <div id="locumNameRow" style="margin: 8px 0 0 28px; display: none;">
-                <label style="font-size: 0.85rem; color: #444; display: block; margin-bottom: 4px;">Locum name (as it should appear on the roster):</label>
-                <input type="text" id="locumName" placeholder="e.g. Dr Jane Smith"
-                       oninput="setLocumName(this.value)"
-                       style="width: 100%; max-width: 320px; padding: 6px 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-                <label style="font-size: 0.85rem; color: #444; display: block; margin: 8px 0 4px;">Locum contact number (shown in the PDF phone directory):</label>
-                <input type="text" id="locumPhone" placeholder="e.g. 0412 345 678"
-                       oninput="setLocumPhone(this.value)"
-                       style="width: 100%; max-width: 320px; padding: 6px 8px; font-size: 0.9rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-            </div>
             <p id="locumTargetInfo" style="font-size: 0.8rem; color: #666; margin: 6px 0 0 28px; display: none;">
                 Locum targets: 1 weekend, <span id="locumWeekNightTarget">3</span> weeknights.
                 Everyone else's targets adjusted proportionally.
             </p>
+            <div id="locumDetails" style="display:none; margin: 6px 0 0 28px; font-size: 0.85rem;">
+                <label>Locum name: <input type="text" id="locumName" style="padding:3px;"></label>
+                <label style="margin-left:8px;">Phone: <input type="text" id="locumPhone" style="padding:3px;"></label>
+            </div>
         </div>
 
         <h3 style="font-size: 0.95rem; margin-top: 16px; margin-bottom: 8px;">Last Month's Weekends</h3>
@@ -706,6 +700,31 @@
             <button class="btn-outline" onclick="addUnavailability()">Add</button>
         </div>
         <div id="unavailabilityList" class="unavailability-list"></div>
+    </div>
+
+    <!-- Trainees Panel -->
+    <div class="trainee-panel controls-section" id="traineePanel" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleTraineePanel()">
+            <span id="traineePanelArrow">▶</span>
+            Trainees this rotation
+            <span id="traineeCount" class="badge" style="background:#7c3aed; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="traineePanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="traineeRows"></div>
+            <button type="button" onclick="addTrainee()" style="margin-top: 8px; padding: 6px 12px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer;">+ Add trainee</button>
+        </div>
+    </div>
+
+    <!-- Staff Specialists Panel -->
+    <div class="ss-panel controls-section" style="margin: 0 0 16px;">
+        <h3 style="margin: 0 0 6px; font-size: 1rem; cursor:pointer;" onclick="toggleSSPanel()">
+            <span id="ssPanelArrow">▶</span>
+            Staff specialists
+            <span id="ssCount" class="badge" style="background:#2563eb; color:white; padding:1px 8px; border-radius:10px; font-size:0.75rem;">0</span>
+        </h3>
+        <div id="ssPanelBody" style="display:none; border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+            <div id="ssRows"></div>
+        </div>
     </div>
 
     <!-- Leave This Month Preview -->
@@ -756,7 +775,6 @@
         <div style="margin-bottom: 10px;">
             <button id="viewListBtn" class="view-btn" onclick="showListView()">List View</button>
             <button id="viewCalBtn" class="view-btn active" onclick="showCalendarView()">Calendar View</button>
-            <button type="button" onclick="previewPdf()" style="background:#7c3aed; color:white; border:none; border-radius:6px; padding:6px 12px; font-size:0.9rem; cursor:pointer; margin-left:8px;">&#128196; Preview PDF</button>
         </div>
         <div id="listView" style="display: none;">
             <table class="roster-table">
@@ -766,7 +784,7 @@
                         <th>Day</th>
                         <th>Type</th>
                         <th>On-Call</th>
-                        <th>Notes</th>
+                        <th>Trainee</th>
                     </tr>
                 </thead>
                 <tbody id="rosterBody"></tbody>
@@ -807,6 +825,10 @@
                 <div class="action-desc">Downloads a backup to your computer.</div>
             </div>
             <div class="action-btn-card">
+                <button class="btn-preview-pdf" onclick="previewPdf()" style="background:#7c3aed; color:white; border:none; border-radius:6px; padding:8px 14px; font-size:0.95rem; cursor:pointer;">📄 Preview PDF</button>
+                <div class="action-desc">Opens a printable preview to download as PDF for emailing.</div>
+            </div>
+            <div class="action-btn-card">
                 <button class="btn-open" onclick="openFile()">📂 Open file</button>
                 <div class="action-desc">Loads a roster you previously saved.</div>
             </div>
@@ -818,6 +840,11 @@
     </div>
 
     <input type="file" id="jsonFileInput" style="display: none;" accept=".json" onchange="handleJSONImport(event)">
+
+    <script type="module">
+        import { calculateTraineeTargets, planTraineeMonth } from './v2/lib/trainee-logic.js';
+        window.__traineeLogic = { calculateTraineeTargets, planTraineeMonth };
+    </script>
 
     <script>
         // ==================== STAFF DATA ====================
@@ -833,30 +860,39 @@
             { code: 'GB', name: 'Greg Barclay', fte: 0.4, region: 'North', workDays: [2,5] }
         ];
 
-        const DEFAULT_LOCUM_NAME = 'Ratnayake (L)';
-        let locumName = '';
-        let locumPhone = '';
-        const locumStaff = { code: 'Locum', name: DEFAULT_LOCUM_NAME, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        // Trainees and locum populated from data.json (loadDataAndInit IIFE at bottom of script)
+        let traineeData = [];
+        let locumData = null; // { code, name, phone }
+
+        function getLocumStaffRecord() {
+            const base = locumData || { name: 'Ratnayake' };
+            const displayName = (base.name && base.name.includes('(L)')) ? base.name : `${base.name || 'Ratnayake'} (L)`;
+            // Always code 'Locum' — the live pages (oncall, today, PDF directory)
+            // resolve a locum shift by code 'Locum' + per-shift locumName/locumPhone.
+            return { code: 'Locum', name: displayName, fte: 1.0, region: null, workDays: [1,2,3,4,5], isLocum: true };
+        }
+
         let locumEnabled = false;
 
-        // The name shown for the locum everywhere (roster, dropdowns, publish).
-        // Falls back to the historical default if the EA hasn't typed one.
-        function locumDisplayName() {
-            return (locumName && locumName.trim()) ? locumName.trim() : DEFAULT_LOCUM_NAME;
-        }
-
-        function setLocumName(v) {
-            locumName = v;
-            locumStaff.name = locumDisplayName();
-            if (Object.keys(currentRoster).length) renderRoster();
-        }
-
-        function setLocumPhone(v) {
-            locumPhone = v;
-        }
-
         function getActiveStaff() {
-            return locumEnabled ? [...staffData, locumStaff] : [...staffData];
+            return locumEnabled ? [...staffData, getLocumStaffRecord()] : [...staffData];
+        }
+
+        function getDisplayName(code) {
+            if (!code) return '';
+            if (code === 'Locum') return 'Locum';
+            const s = getActiveStaff().find(x => x.code === code);
+            if (s) return s.name.split(' ').pop();
+            const t = (traineeData || []).find(x => x.code === code);
+            if (t) return t.name.split(' ').pop();
+            return code;
+        }
+        function activeTrainees() {
+            if (currentMonth === null || !window.__traineeLogic) return [];
+            return (traineeData || []).filter(t => {
+                const tg = window.__traineeLogic.calculateTraineeTargets(t, currentYear, currentMonth);
+                return tg.weeknightTarget > 0 || tg.weekendTarget > 0;
+            });
         }
 
         function getMonthlyWeekNightTarget(staffCode) {
@@ -869,11 +905,9 @@
 
         // Effective-dated FTE: staff may carry an optional fteSchedule
         // [{from:'YYYY-MM-DD', fte}] recording when their FTE changed.
-        // Forward-looking logic (monthly targets, display) uses the flat top-level
-        // fte; only the HISTORICAL equity fair-share uses fteOn/avgFteOverDates so
-        // past on-calls are judged at the FTE that was in effect at the time.
-        // (e.g. MK dropped 0.6 -> 0.4 from 2026-08-01; her Jan-Jul nights stay
-        // fair-shared at 0.6 rather than being retroactively penalised.)
+        // Forward-looking logic uses the flat top-level fte; only the HISTORICAL
+        // equity fair-share uses fteOn/avgFteOverDates so past on-calls are judged
+        // at the FTE that was in effect at the time (e.g. MK 0.6 -> 0.4 Aug 2026).
         function fteOn(staff, date) {
             const sched = staff.fteSchedule;
             if (!sched || !sched.length) return staff.fte;
@@ -885,15 +919,12 @@
                 }
             }
             if (val === null) {
-                // date precedes the earliest schedule entry — use that earliest fte
                 const earliest = sched.reduce((a, b) => a.from <= b.from ? a : b);
                 val = earliest.fte;
             }
             return val;
         }
 
-        // Mean effective FTE across a set of dates (the historical on-call dates).
-        // Staff without an fteSchedule return their flat fte -> unchanged behaviour.
         function avgFteOverDates(staff, dates) {
             if (!staff.fteSchedule || !staff.fteSchedule.length || !dates.length) return staff.fte;
             let sum = 0;
@@ -959,7 +990,7 @@
         };
 
         // ==================== STATE ====================
-        let currentRoster = {}; // { 'YYYY-MM-DD': { staffCode: 'XX' } }
+        let currentRoster = {}; // { 'YYYY-MM-DD': { first: 'XX', second: 'YY'|null, warning?: '...' } }
         let adHocUnavailability = []; // [{ staffCode, date }]
         let historicalBalance = {}; // Set at generation time by getHistoricalWeeknightBalance()
         let historicalWeekendBalance = {}; // Set at generation time by getHistoricalWeekendBalance()
@@ -1241,13 +1272,20 @@
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
 
+        // True if this staff member carries on-call for this assignment — as 1st (solo SS)
+        // or as 2nd (backing a trainee who holds 1st). Used by the constraint helpers below
+        // so an SS's backup load is visible to fairness/buffer rules.
+        function isOnCall(assignment, staffCode) {
+            return !!assignment && (assignment.first === staffCode || assignment.second === staffCode);
+        }
+
         // Count weeknights assigned this week for a person
         function weeknightsThisWeek(staffCode, currentDate, roster) {
             const currentWeek = getWeekNumber(currentDate);
             const currentYear = currentDate.getFullYear();
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) &&
                         getWeekNumber(assignDate) === currentWeek &&
@@ -1268,7 +1306,7 @@
             saturday.setDate(saturday.getDate() + daysUntilSat);
             const satKey = formatDateKey(saturday);
             const assignment = roster[satKey];
-            return assignment && assignment.staffCode === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check if person had the previous weekend (for Mon/Tue exclusion)
@@ -1280,7 +1318,7 @@
             sunday.setDate(sunday.getDate() - daysSinceSun);
             const sunKey = formatDateKey(sunday);
             const assignment = roster[sunKey];
-            return assignment && assignment.staffCode === staffCode;
+            return isOnCall(assignment, staffCode);
         }
 
         // Check 2-day buffer around weekends
@@ -1315,7 +1353,7 @@
         function dayOfWeekCount(staffCode, dow, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate) && assignDate.getDay() === dow) {
                         count++;
@@ -1329,7 +1367,7 @@
         function weeknightsThisMonth(staffCode, roster) {
             let count = 0;
             for (const [dateKey, assignment] of Object.entries(roster)) {
-                if (assignment.staffCode === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const assignDate = parseDate(dateKey);
                     if (!isWeekend(assignDate)) count++;
                 }
@@ -1346,7 +1384,7 @@
         // Check if person has a weekend this month already (in current roster)
         function hasWeekendThisMonth(staffCode) {
             for (const [dateKey, assignment] of Object.entries(currentRoster)) {
-                if (assignment.staffCode === staffCode) {
+                if (isOnCall(assignment, staffCode)) {
                     const d = parseDate(dateKey);
                     if (isWeekend(d)) return true;
                 }
@@ -1433,9 +1471,8 @@
             const end = entries[entries.length - 1].date;
             const entryDates = entries.map(e => e.date);
 
-            // Leave-aware effective FTE over the period.
-            // Uses effective-dated FTE (avgFteOverDates) so a mid-history FTE
-            // change is judged at the FTE in effect on each past on-call date.
+            // Leave-aware effective FTE over the period (effective-dated so a
+            // mid-history FTE change is judged at the FTE in effect on each date)
             let totalEffFTE = 0;
             const effFTE = {};
             staffData.forEach(s => {
@@ -1475,8 +1512,8 @@
             const blockDates = blocks.map(b => b.sat);
 
             // Availability-adjusted equal share + FTE share, blended by WEEKEND_ALPHA.
-            // FTE share uses effective-dated FTE (avgFteOverDates) so past weekends
-            // are judged at the FTE in effect on each block's date.
+            // FTE share uses effective-dated FTE so past weekends are judged at the
+            // FTE in effect on each block's date.
             let totalAvail = 0, totalEffFTE = 0;
             const avail = {}, effFTE = {};
             staffData.forEach(s => {
@@ -1500,6 +1537,13 @@
         }
 
         function generateRoster() {
+            // Guard: trainee-logic ES module is loaded asynchronously; if user clicks Generate
+            // before it resolves, fail loudly rather than throwing an unhandled TypeError.
+            if (!window.__traineeLogic) {
+                alert('Page is still loading — please wait a moment and try again.');
+                return;
+            }
+
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
 
@@ -1524,6 +1568,30 @@
                 monthWeekends[s.code] = 0;
                 monthWeekNights[s.code] = 0;
             });
+
+            // Build each active trainee's month plan, then a date→trainee lookup.
+            const activeTraineesThisMonth = (traineeData || []).filter(t => {
+                const tg = window.__traineeLogic.calculateTraineeTargets(t, year, month);
+                return tg.weeknightTarget > 0 || tg.weekendTarget > 0;
+            });
+            const isUnavailableDate = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+            const traineeByDate = {};   // 'YYYY-MM-DD' → trainee code
+            const claimed = new Set();  // dates already taken by a trainee
+            for (const t of activeTraineesThisMonth) {
+                const plan = window.__traineeLogic.planTraineeMonth(
+                    t, weekendBlocks, weekNights, isUnavailableDate
+                );
+                if (plan.weekendKey && !claimed.has(plan.weekendKey)) {
+                    const block = weekendBlocks.find(b => b.satKey === plan.weekendKey);
+                    traineeByDate[block.satKey] = t.code;
+                    traineeByDate[block.sunKey] = t.code;
+                    claimed.add(plan.weekendKey);
+                }
+                for (const k of plan.weeknightKeys) {
+                    if (!claimed.has(k)) { traineeByDate[k] = t.code; claimed.add(k); }
+                }
+            }
 
             // Weekend priority: prioritize those who didn't have a weekend last month
             // v2: also factor in historical weekend surplus (leave-aware, alpha=0.3 blend)
@@ -1647,52 +1715,72 @@
                 });
             }
 
-            // Assign weekends first (Sat-Sun as a block)
+            // Combined leave + ad-hoc unavailability check — applied to trainees same as SS
+            const isUnavailable = (code, d) =>
+                isOnLeave(code, d) || isAdHocUnavailable(code, formatDateKey(d));
+
+            // Assign weekends first (Sat-Sun as a block); trainee as 1st when eligible, SS as 2nd
             weekendBlocks.forEach(block => {
+                let firstCode = null, secondCode = null;
+
+                // Trainee 1st (from the month plan); SS becomes 2nd.
+                const traineeCode = traineeByDate[block.satKey] || null;
+                if (traineeCode) firstCode = traineeCode;
+
+                // Pick SS to fill the remaining slot (1st if no trainee, 2nd if trainee took 1st)
                 const available = getAvailableForWeekend(block.sat);
                 if (available.length === 0) {
+                    if (firstCode) {
+                        // Trainee covers solo (no SS available — log a warning but assign)
+                        warnings.push(`No SS available as 2nd for trainee ${firstCode} on weekend ${block.satKey}`);
+                        currentRoster[block.satKey] = { first: firstCode, second: null };
+                        currentRoster[block.sunKey] = { first: firstCode, second: null };
+                        return;
+                    }
                     warnings.push(`No staff available for weekend ${block.satKey}`);
                     return;
                 }
 
-                // Sort by priority (those who didn't have weekend last month first)
-                available.sort((a, b) => {
-                    return getWeekendPriority(a.code) - getWeekendPriority(b.code);
-                });
-
+                available.sort((a, b) => getWeekendPriority(a.code) - getWeekendPriority(b.code));
                 const assigned = available[0];
-                currentRoster[block.satKey] = { staffCode: assigned.code };
-                currentRoster[block.sunKey] = { staffCode: assigned.code };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                currentRoster[block.satKey] = { first: firstCode, second: secondCode };
+                currentRoster[block.sunKey] = { first: firstCode, second: secondCode };
                 monthWeekends[assigned.code]++;
             });
 
-            // Assign weeknights
+            // Assign weeknights; trainee as 1st when eligible, SS as 2nd
             weekNights.forEach(night => {
                 const dateKey = formatDateKey(night);
-                let available = getAvailableForWeeknight(night);
 
+                const traineeCode = traineeByDate[dateKey] || null;
+                let firstCode = null;
+                let secondCode = null;
+                let warning = null;
+
+                if (traineeCode) firstCode = traineeCode;
+
+                let available = getAvailableForWeeknight(night);
                 if (available.length === 0) {
-                    // Fallback: relax work day constraint
                     available = getFallbackForWeeknight(night);
                     if (available.length === 0) {
+                        if (firstCode) {
+                            // Trainee covers solo
+                            currentRoster[dateKey] = { first: firstCode, second: null };
+                            return;
+                        }
                         warnings.push(`No staff available for ${dateKey} - check leave coverage`);
                         return;
                     }
-
-                    // Sort by priority
-                    available.sort((a, b) => {
-                        const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
-                        if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
-                        return diff;
-                    });
-
-                    const assigned = available[0];
-                    currentRoster[dateKey] = { staffCode: assigned.code, warning: 'Non-work day' };
-                    monthWeekNights[assigned.code]++;
-                    return;
+                    warning = 'Non-work day';
                 }
 
-                // Sort by priority with random tie-breaker
                 available.sort((a, b) => {
                     const diff = getWeekNightPriority(a.code, night) - getWeekNightPriority(b.code, night);
                     if (Math.abs(diff) < 0.5) return Math.random() - 0.5;
@@ -1700,7 +1788,16 @@
                 });
 
                 const assigned = available[0];
-                currentRoster[dateKey] = { staffCode: assigned.code };
+
+                if (firstCode) {
+                    secondCode = assigned.code;
+                } else {
+                    firstCode = assigned.code;
+                }
+
+                const rec = { first: firstCode, second: secondCode };
+                if (warning) rec.warning = warning;
+                currentRoster[dateKey] = rec;
                 monthWeekNights[assigned.code]++;
             });
 
@@ -1758,50 +1855,49 @@
                 tdType.appendChild(typeSpan);
                 tr.appendChild(tdType);
 
-                // On-Call (editable dropdown)
+                // On-Call (SS slot) — the SS is `second` when a trainee holds `first`, else `first`
+                const a = assignment || {};
+                const ssCode = TRAINEE_CODES.includes(a.first) ? (a.second || '') : (a.first || '');
+                const traineeCode = TRAINEE_CODES.includes(a.first) ? a.first : '';
+
                 const tdOncall = document.createElement('td');
-                const select = document.createElement('select');
-                select.dataset.dateKey = dateKey;
-                select.onchange = function() { updateAssignment(dateKey, this.value); };
-
-                // Empty option
-                const emptyOpt = document.createElement('option');
-                emptyOpt.value = '';
-                emptyOpt.textContent = '-- Select --';
-                select.appendChild(emptyOpt);
-
+                const ssSelect = document.createElement('select');
+                ssSelect.onchange = function () { setOncallSS(dateKey, this.value); };
+                const ssEmpty = document.createElement('option');
+                ssEmpty.value = ''; ssEmpty.textContent = '-- Select --';
+                ssSelect.appendChild(ssEmpty);
                 getActiveStaff().forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.code;
-                    opt.textContent = s.isLocum ? locumDisplayName() : s.name;
-
-                    // Check if on leave
+                    opt.textContent = s.isLocum ? 'Locum' : s.name;
                     const leave = isOnLeave(s.code, day);
-                    if (leave) {
-                        opt.textContent += ` (${leave})`;
-                        opt.style.color = '#dc2626';
-                    }
-                    if (isAdHocUnavailable(s.code, dateKey)) {
-                        opt.textContent += ' (Unavail)';
-                        opt.style.color = '#dc2626';
-                    }
-
-                    if (assignment && assignment.staffCode === s.code) {
-                        opt.selected = true;
-                    }
-                    select.appendChild(opt);
+                    if (leave) { opt.textContent += ` (${leave})`; opt.style.color = '#dc2626'; }
+                    if (isAdHocUnavailable(s.code, dateKey)) { opt.textContent += ' (Unavail)'; opt.style.color = '#dc2626'; }
+                    if (ssCode === s.code) opt.selected = true;
+                    ssSelect.appendChild(opt);
                 });
-
-                tdOncall.appendChild(select);
+                tdOncall.appendChild(ssSelect);
+                if (holiday) { const h = document.createElement('div'); h.style.cssText = 'font-size:0.7rem;color:#b45309;'; h.textContent = holiday; tdOncall.appendChild(h); }
+                if (a.warning) { const w = document.createElement('div'); w.style.cssText = 'font-size:0.7rem;color:#dc2626;'; w.textContent = '⚠ ' + a.warning; tdOncall.appendChild(w); }
                 tr.appendChild(tdOncall);
 
-                // Notes
-                const tdNotes = document.createElement('td');
-                let notes = [];
-                if (holiday) notes.push(holiday);
-                if (assignment && assignment.warning) notes.push(assignment.warning);
-                tdNotes.textContent = notes.join(', ');
-                tr.appendChild(tdNotes);
+                // Trainee (overlay) — NO by default; choosing a trainee makes them 1st, SS 2nd
+                const tdTrainee = document.createElement('td');
+                const trSelect = document.createElement('select');
+                trSelect.onchange = function () { setTrainee(dateKey, this.value); };
+                const trNo = document.createElement('option');
+                trNo.value = ''; trNo.textContent = 'NO';
+                trSelect.appendChild(trNo);
+                activeTrainees().forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.code;
+                    opt.textContent = t.code;
+                    if (isOnLeave(t.code, day)) { opt.textContent += ' (leave)'; opt.style.color = '#dc2626'; }
+                    if (traineeCode === t.code) opt.selected = true;
+                    trSelect.appendChild(opt);
+                });
+                tdTrainee.appendChild(trSelect);
+                tr.appendChild(tdTrainee);
 
                 tbody.appendChild(tr);
             });
@@ -1821,11 +1917,14 @@
             Object.keys(currentRoster).forEach(dateKey => {
                 const date = parseDate(dateKey);
                 const assignment = currentRoster[dateKey];
-                if (assignment && counts[assignment.staffCode]) {
+                if (!assignment) return;
+                // Credit the SS who carries the load: when a trainee is 1st, the SS is 2nd.
+                const credited = TRAINEE_CODES.includes(assignment.first) ? assignment.second : assignment.first;
+                if (credited && counts[credited]) {
                     if (isWeekend(date) && date.getDay() === 6) { // Only count Saturday
-                        counts[assignment.staffCode].weekends++;
+                        counts[credited].weekends++;
                     } else if (!isWeekend(date)) {
-                        counts[assignment.staffCode].weeknights++;
+                        counts[credited].weeknights++;
                     }
                 }
             });
@@ -1841,7 +1940,7 @@
 
                 // Name
                 const tdName = document.createElement('td');
-                tdName.textContent = s.isLocum ? locumDisplayName() : s.name;
+                tdName.textContent = s.isLocum ? 'Locum' : s.name;
                 tr.appendChild(tdName);
 
                 // FTE
@@ -1926,12 +2025,6 @@
             // Adjust to Monday-start week (0=Mon, 6=Sun)
             const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
-            const getStaffName = (code) => {
-                if (code === 'Locum') return locumDisplayName();
-                const staff = getActiveStaff().find(s => s.code === code);
-                return staff ? staff.name.split(' ').pop() : code; // Last name only
-            };
-
             let currentRow = document.createElement('tr');
 
             // Add empty cells for days before the 1st
@@ -1955,15 +2048,20 @@
                 dateDiv.textContent = day.getDate();
                 td.appendChild(dateDiv);
 
-                if (assignment) {
-                    const staffDiv = document.createElement('div');
-                    staffDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
-                    staffDiv.textContent = getStaffName(assignment.staffCode);
-                    if (assignment.staffCode === 'Locum') {
-                        staffDiv.style.background = '#e5e7eb';
-                        staffDiv.style.color = '#374151';
+                if (assignment && assignment.first) {
+                    const isTrainee = TRAINEE_CODES.includes(assignment.first);
+                    const firstDiv = document.createElement('div');
+                    firstDiv.className = 'cal-staff' + (isWknd ? ' weekend' : '');
+                    firstDiv.textContent = getDisplayName(assignment.first);
+                    if (isTrainee) { firstDiv.style.background = '#ede9fe'; firstDiv.style.color = '#5b21b6'; firstDiv.style.fontWeight = '600'; }
+                    if (assignment.first === 'Locum') { firstDiv.style.background = '#e5e7eb'; firstDiv.style.color = '#374151'; }
+                    td.appendChild(firstDiv);
+                    if (assignment.second) {
+                        const secondDiv = document.createElement('div');
+                        secondDiv.style.cssText = 'font-size:0.7rem;color:#6b7280;';
+                        secondDiv.textContent = '2nd ' + getDisplayName(assignment.second);
+                        td.appendChild(secondDiv);
                     }
-                    td.appendChild(staffDiv);
                 }
 
                 currentRow.appendChild(td);
@@ -2002,12 +2100,33 @@
             `;
         }
 
-        function updateAssignment(dateKey, staffCode) {
-            if (staffCode) {
-                currentRoster[dateKey] = { staffCode };
+        function setOncallSS(dateKey, ssCode) {
+            const a = currentRoster[dateKey] || {};
+            const traineeCode = TRAINEE_CODES.includes(a.first) ? a.first : null;
+            const warn = a.warning ? { warning: a.warning } : {};
+            if (traineeCode) {
+                currentRoster[dateKey] = { first: traineeCode, second: ssCode || null, ...warn };
+            } else if (ssCode) {
+                currentRoster[dateKey] = { first: ssCode, second: null, ...warn };
             } else {
                 delete currentRoster[dateKey];
             }
+            renderCalendarView();
+            renderEquity(currentMonth, currentYear);
+        }
+
+        function setTrainee(dateKey, traineeCode) {
+            const a = currentRoster[dateKey] || {};
+            const ssCode = TRAINEE_CODES.includes(a.first) ? (a.second || '') : (a.first || '');
+            const warn = a.warning ? { warning: a.warning } : {};
+            if (traineeCode) {
+                currentRoster[dateKey] = { first: traineeCode, second: ssCode || null, ...warn };
+            } else if (ssCode) {
+                currentRoster[dateKey] = { first: ssCode, second: null, ...warn };
+            } else {
+                delete currentRoster[dateKey];
+            }
+            renderCalendarView();
             renderEquity(currentMonth, currentYear);
         }
 
@@ -2018,7 +2137,7 @@
                 const staff = getActiveStaff().find(s => s.code === u.staffCode);
                 return `
                     <div class="unavailability-item">
-                        ${staff ? (staff.isLocum ? locumDisplayName() : staff.name) : u.staffCode} - ${u.date}
+                        ${staff ? (staff.isLocum ? 'Locum' : staff.name) : u.staffCode} - ${u.date}
                         <button onclick="removeUnavailability(${i})">&times;</button>
                     </div>
                 `;
@@ -2091,8 +2210,7 @@
                 currentMonth,
                 currentYear,
                 locumEnabled,
-                locumName,
-                locumPhone
+                locumData
             };
             try {
                 localStorage.setItem('oncall_generator_test', JSON.stringify(data));
@@ -2110,19 +2228,24 @@
                 adHocUnavailability = data.adHocUnavailability || [];
                 savedDrafts = data.savedDrafts || data.historicalData || {}; // backwards compat
                 currentRoster = data.currentRoster || {};
+                // Backwards-compat: normalise pre-refactor { staffCode } entries to { first, second }
+                for (const k of Object.keys(currentRoster)) {
+                    const v = currentRoster[k];
+                    if (v.staffCode !== undefined && v.first === undefined) {
+                        const upgraded = { first: v.staffCode, second: null };
+                        if (v.warning) upgraded.warning = v.warning;
+                        currentRoster[k] = upgraded;
+                    }
+                }
                 currentMonth = data.currentMonth;
                 currentYear = data.currentYear;
 
-                if (data.locumName !== undefined) {
-                    locumName = data.locumName || '';
-                    locumStaff.name = locumDisplayName();
-                    const nameInput = document.getElementById('locumName');
-                    if (nameInput) nameInput.value = locumName;
-                }
-                if (data.locumPhone !== undefined) {
-                    locumPhone = data.locumPhone || '';
-                    const phoneInput = document.getElementById('locumPhone');
-                    if (phoneInput) phoneInput.value = locumPhone;
+                if (data.locumData) {
+                    locumData = data.locumData;
+                    const ni = document.getElementById('locumName');
+                    const pi = document.getElementById('locumPhone');
+                    if (ni) ni.value = locumData.name || '';
+                    if (pi) pi.value = locumData.phone || '';
                 }
                 if (data.locumEnabled !== undefined) {
                     locumEnabled = data.locumEnabled;
@@ -2156,6 +2279,17 @@
             alert(`Draft saved for ${monthKey}`);
         }
 
+        function previewPdf() {
+            if (currentMonth === null) {
+                alert('Generate a roster first.');
+                return;
+            }
+            // Persist current state so print-roster.html can read it from localStorage
+            saveToLocalStorage();
+            const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            window.open(`print-roster.html?month=${monthStr}&source=draft`, '_blank');
+        }
+
         function loadSavedDraft() {
             const month = parseInt(document.getElementById('monthSelect').value);
             const year = parseInt(document.getElementById('yearSelect').value);
@@ -2186,7 +2320,7 @@
             // Convert current roster to oncallData format
             const oncallEntries = Object.entries(currentRoster)
                 .sort(([a], [b]) => a.localeCompare(b))
-                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.staffCode}', second: null }`)
+                .map(([dateKey, data]) => `            '${dateKey}': { first: '${data.first}', second: ${data.second ? `'${data.second}'` : 'null'} }`)
                 .join(',\n');
 
             const jsContent = `// On-Call Roster Data
@@ -2219,8 +2353,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 savedDrafts,
                 adHocUnavailability,
                 locumEnabled,
-                locumName,
-                locumPhone
+                locumData
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2245,23 +2378,28 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 try {
                     const data = JSON.parse(e.target.result);
 
-                    if (data.currentRoster) currentRoster = data.currentRoster;
+                    if (data.currentRoster) {
+                        // Backwards-compat: old backups used { staffCode } shape; normalise to { first, second }
+                        for (const k of Object.keys(data.currentRoster)) {
+                            const v = data.currentRoster[k];
+                            if (v.staffCode !== undefined && v.first === undefined) {
+                                data.currentRoster[k] = { first: v.staffCode, second: null, warning: v.warning };
+                            }
+                        }
+                        currentRoster = data.currentRoster;
+                    }
                     if (data.currentMonth !== undefined) currentMonth = data.currentMonth;
                     if (data.currentYear !== undefined) currentYear = data.currentYear;
                     if (data.savedDrafts) savedDrafts = data.savedDrafts;
                     else if (data.historicalData) savedDrafts = data.historicalData; // backwards compat
                     if (data.adHocUnavailability) adHocUnavailability = data.adHocUnavailability;
 
-                    if (data.locumName !== undefined) {
-                        locumName = data.locumName || '';
-                        locumStaff.name = locumDisplayName();
-                        const nameInput = document.getElementById('locumName');
-                        if (nameInput) nameInput.value = locumName;
-                    }
-                    if (data.locumPhone !== undefined) {
-                        locumPhone = data.locumPhone || '';
-                        const phoneInput = document.getElementById('locumPhone');
-                        if (phoneInput) phoneInput.value = locumPhone;
+                    if (data.locumData) {
+                        locumData = data.locumData;
+                        const ni = document.getElementById('locumName');
+                        const pi = document.getElementById('locumPhone');
+                        if (ni) ni.value = locumData.name || '';
+                        if (pi) pi.value = locumData.phone || '';
                     }
                     if (data.locumEnabled !== undefined) {
                         locumEnabled = data.locumEnabled;
@@ -2325,8 +2463,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 savedDrafts,
                 adHocUnavailability,
                 locumEnabled,
-                locumName,
-                locumPhone
+                locumData
             };
             const monthLabel = (currentMonth !== null)
                 ? `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
@@ -2371,18 +2508,6 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             const warns = document.getElementById('warningsContainer');
             if (warns) warns.innerHTML = '';
             flashAutoSave();
-        }
-
-        // Open the printable/PDF preview of the current draft (reads it from
-        // localStorage, so save state first).
-        function previewPdf() {
-            if (currentMonth === null) {
-                alert('Generate a roster first.');
-                return;
-            }
-            saveToLocalStorage();
-            const monthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-            window.open(`print-roster.html?month=${monthStr}&source=draft`, '_blank');
         }
 
         // Publish the current month's roster LIVE via the Cloudflare Worker
@@ -2435,17 +2560,24 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             }
 
             // Merge current roster in, formatted as { first, second }.
-            // Locum shifts carry the typed name so every renderer (oncall, today,
-            // PDF) shows who the locum actually is rather than a generic label.
+            // Locum shifts carry the typed name/phone per entry so every renderer
+            // (oncall, today, PDF calendar + directory) shows who the locum is.
+            const locName = locumData && locumData.name ? locumData.name.trim() : '';
+            const locPhone = locumData && locumData.phone ? locumData.phone.trim() : '';
             for (const [dateKey, rec] of Object.entries(currentRoster)) {
-                const entry = { first: rec.staffCode, second: null };
-                if (rec.staffCode === 'Locum') {
-                    entry.locumName = locumDisplayName();
-                    if (locumPhone && locumPhone.trim()) entry.locumPhone = locumPhone.trim();
+                const entry = { first: rec.first, second: rec.second };
+                if (rec.first === 'Locum' || rec.second === 'Locum') {
+                    if (locName) entry.locumName = locName;
+                    if (locPhone) entry.locumPhone = locPhone;
                 }
                 base.oncallRoster[dateKey] = entry;
             }
 
+            base.staff = staffData; // includes phone edits
+            base.trainees = traineeData;
+            // NB: on-call locum identity rides on each shift (entry.locumName/Phone
+            // above), NOT on a top-level base.locum — leaving the original data.json
+            // locum (site-coverage) untouched and avoiding a duplicate directory row.
             base.generatedAt = new Date().toISOString().slice(0, 10);
 
             const btn = document.querySelector('.btn-publish');
@@ -2634,15 +2766,104 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             }).join('');
         }
 
+        // ==================== TRAINEE PANEL ====================
+        function toggleTraineePanel() {
+            const body = document.getElementById('traineePanelBody');
+            const arrow = document.getElementById('traineePanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderTrainees() {
+            const container = document.getElementById('traineeRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('traineeCount').textContent = traineeData.length;
+
+            traineeData.forEach((t, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px 130px 130px 30px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <input type="text" value="${t.code || ''}" data-i="${i}" data-f="code" placeholder="Code" style="padding:4px;">
+                    <input type="text" value="${t.name || ''}" data-i="${i}" data-f="name" placeholder="Name" style="padding:4px;">
+                    <input type="text" value="${t.phone || ''}" data-i="${i}" data-f="phone" placeholder="Phone" style="padding:4px;">
+                    <input type="date" value="${t.rotationStart || ''}" data-i="${i}" data-f="rotationStart" style="padding:4px;">
+                    <input type="date" value="${t.rotationEnd || ''}" data-i="${i}" data-f="rotationEnd" style="padding:4px;">
+                    <button type="button" onclick="removeTrainee(${i})" style="background:#dc2626;color:white;border:none;border-radius:3px;cursor:pointer; padding: 4px 8px;">×</button>
+                `;
+                row.querySelectorAll('input').forEach(inp => {
+                    inp.addEventListener('change', e => {
+                        const idx = +e.target.dataset.i;
+                        const field = e.target.dataset.f;
+                        traineeData[idx][field] = e.target.value;
+                    });
+                });
+                container.appendChild(row);
+            });
+        }
+
+        function addTrainee() {
+            const today = new Date().toISOString().slice(0, 10);
+            traineeData.push({ code: '', name: '', phone: '', rotationStart: today, rotationEnd: today });
+            renderTrainees();
+        }
+
+        function removeTrainee(i) {
+            if (!confirm(`Remove trainee ${traineeData[i].name || '?'}`)) return;
+            traineeData.splice(i, 1);
+            renderTrainees();
+        }
+
+        // ==================== STAFF SPECIALISTS PANEL ====================
+        function toggleSSPanel() {
+            const body = document.getElementById('ssPanelBody');
+            const arrow = document.getElementById('ssPanelArrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '▶' : '▼';
+        }
+
+        function renderSSPool() {
+            const container = document.getElementById('ssRows');
+            if (!container) return;
+            container.innerHTML = '';
+            document.getElementById('ssCount').textContent = staffData.length;
+
+            staffData.forEach((s, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: grid; grid-template-columns: 60px 1fr 130px; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #ddd;';
+                row.innerHTML = `
+                    <span style="font-weight:600;">${s.code}</span>
+                    <span>${s.name}</span>
+                    <input type="text" value="${s.phone || ''}" data-i="${i}" placeholder="Phone" style="padding:4px;">
+                `;
+                row.querySelector('input').addEventListener('change', e => {
+                    staffData[+e.target.dataset.i].phone = e.target.value;
+                });
+                container.appendChild(row);
+            });
+        }
+
         // ==================== LOCUM TOGGLE ====================
         function toggleLocum(enabled) {
             locumEnabled = enabled;
             const info = document.getElementById('locumTargetInfo');
-            info.style.display = enabled ? 'block' : 'none';
-            const nameRow = document.getElementById('locumNameRow');
-            if (nameRow) nameRow.style.display = enabled ? 'block' : 'none';
+            const details = document.getElementById('locumDetails');
             if (enabled) {
-                document.getElementById('locumWeekNightTarget').textContent = getMonthlyWeekNightTarget('Locum');
+                if (info) info.style.display = 'block';
+                if (details) details.style.display = 'block';
+                const wnTarget = document.getElementById('locumWeekNightTarget');
+                if (wnTarget) wnTarget.textContent = getMonthlyWeekNightTarget(getLocumStaffRecord().code);
+                if (locumData) {
+                    const nameInput = document.getElementById('locumName');
+                    const phoneInput = document.getElementById('locumPhone');
+                    if (nameInput) nameInput.value = locumData.name || '';
+                    if (phoneInput) phoneInput.value = locumData.phone || '';
+                }
+            } else {
+                if (info) info.style.display = 'none';
+                if (details) details.style.display = 'none';
             }
             renderLastMonthWeekends();
             renderUnavailabilityDropdown();
@@ -2666,7 +2887,7 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 checkbox.value = s.code;
                 if (checkedCodes.has(s.code)) checkbox.checked = true;
                 label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(s.isLocum ? locumDisplayName() : s.name.split(' ').pop()));
+                label.appendChild(document.createTextNode(s.isLocum ? 'Locum' : s.name.split(' ').pop()));
                 weekendsDiv.appendChild(label);
             });
         }
@@ -2714,6 +2935,22 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
             monthSelect.addEventListener('change', renderLeavePreview);
             document.getElementById('yearSelect').addEventListener('change', renderLeavePreview);
 
+            // Locum name/phone input handlers
+            const locumNameEl = document.getElementById('locumName');
+            const locumPhoneEl = document.getElementById('locumPhone');
+            if (locumNameEl) {
+                locumNameEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'Locum', name: '', phone: '' };
+                    locumData.name = e.target.value;
+                });
+            }
+            if (locumPhoneEl) {
+                locumPhoneEl.addEventListener('change', e => {
+                    if (!locumData) locumData = { code: 'Locum', name: '', phone: '' };
+                    locumData.phone = e.target.value;
+                });
+            }
+
             // Initial render
             renderRoster();
             renderLeavePreview();
@@ -2755,6 +2992,10 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     const d = await res.json();
                     originalDataJson = d; // keep raw for publish merges
                     if (d.staff) staffData = d.staff;
+                    if (d.trainees) traineeData = d.trainees;
+                    // NOTE: do NOT seed the on-call locum from data.json.locum — that
+                    // is the separate SITE-COVERAGE locum. The on-call locum is its own
+                    // per-shift identity (entry.locumName/Phone); the EA types it fresh.
                     if (d.publicHolidays) publicHolidays = d.publicHolidays;
                     if (d.leave) {
                         leaveData = d.leave.map(l => ({
@@ -2771,7 +3012,9 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                     console.log('[v2 generator] Loaded data.json (',
                         Object.keys(historicalOnCall).length, 'historical days,',
                         leaveData.length, 'leave entries,',
-                        staffData.length, 'staff)');
+                        staffData.length, 'staff,',
+                        traineeData.length, 'trainees,',
+                        'locum=', !!locumData, ')');
                 }
             } catch (e) {
                 console.warn('[v2 generator] data.json fetch failed, using embedded fallback:', e);
@@ -2783,6 +3026,8 @@ const savedDrafts = ${JSON.stringify(savedDrafts, null, 4)};
                 }
             }
             init();
+            renderTrainees();
+            renderSSPool();
         })();
     </script>
 </body>

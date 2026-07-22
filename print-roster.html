@@ -254,8 +254,10 @@
                         // Attach the draft-level locum name/phone to any Locum shift
                         // (the draft stores these at the top level, not per entry).
                         if (entry.first === 'Locum' || entry.second === 'Locum') {
-                            if (!entry.locumName && parsed.locumName) entry.locumName = parsed.locumName;
-                            if (!entry.locumPhone && parsed.locumPhone) entry.locumPhone = parsed.locumPhone;
+                            const draftLocName = parsed.locumName || (parsed.locumData && parsed.locumData.name);
+                            const draftLocPhone = parsed.locumPhone || (parsed.locumData && parsed.locumData.phone);
+                            if (!entry.locumName && draftLocName) entry.locumName = draftLocName;
+                            if (!entry.locumPhone && draftLocPhone) entry.locumPhone = draftLocPhone;
                         }
                         draftRoster[k] = entry;
                     }
