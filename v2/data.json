@@ -488,6 +488,14 @@
       "startDate": "2026-12-17",
       "endDate": "2026-12-18",
       "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "MK",
+      "staffName": "Muoi Khou",
+      "region": "North",
+      "startDate": "2027-01-19",
+      "endDate": "2027-01-20",
+      "leaveType": "Annual Leave"
     }
   ],
   "publicHolidays": {
