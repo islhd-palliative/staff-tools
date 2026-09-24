@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18",
+  "generatedAt": "2026-09-24",
   "schemaVersion": 1,
   "staff": [
     {
@@ -1659,12 +1659,16 @@
       "second": null
     },
     "2026-10-24": {
-      "first": "GB",
-      "second": null
+      "first": "Locum",
+      "second": null,
+      "locumName": "Dr Tweddle",
+      "locumPhone": "0423 701 562"
     },
     "2026-10-25": {
-      "first": "GB",
-      "second": null
+      "first": "Locum",
+      "second": null,
+      "locumName": "Dr Tweddle",
+      "locumPhone": "0423 701 562"
     },
     "2026-10-31": {
       "first": "RW",
@@ -1727,8 +1731,10 @@
       "second": null
     },
     "2026-10-21": {
-      "first": "SR",
-      "second": null
+      "first": "Locum",
+      "second": null,
+      "locumName": "Dr Tweddle",
+      "locumPhone": "0423 701 562"
     },
     "2026-10-22": {
       "first": "HY",
