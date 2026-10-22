@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21",
+  "generatedAt": "2026-10-22",
   "schemaVersion": 1,
   "staff": [
     {
@@ -1128,10 +1128,6 @@
       "first": "HY",
       "second": null
     },
-    "2026-11-01": {
-      "first": "GB",
-      "second": null
-    },
     "2026-06-06": {
       "first": "Locum",
       "second": null
@@ -1770,6 +1766,126 @@
     },
     "2026-10-30": {
       "first": "HY",
+      "second": null
+    },
+    "2026-11-07": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-11-08": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-11-14": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-11-15": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-11-21": {
+      "first": "MP",
+      "second": "BT"
+    },
+    "2026-11-22": {
+      "first": "MP",
+      "second": "BT"
+    },
+    "2026-11-28": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-11-29": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-11-02": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-11-03": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-11-04": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-11-05": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-11-06": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-11-09": {
+      "first": "MP",
+      "second": "SR"
+    },
+    "2026-11-10": {
+      "first": "GB",
+      "second": null
+    },
+    "2026-11-11": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-11-12": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-11-13": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-11-16": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-11-17": {
+      "first": "MP",
+      "second": "RW"
+    },
+    "2026-11-18": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-11-19": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-11-20": {
+      "first": "Fadz",
+      "second": null
+    },
+    "2026-11-23": {
+      "first": "AL",
+      "second": null
+    },
+    "2026-11-24": {
+      "first": "RW",
+      "second": null
+    },
+    "2026-11-25": {
+      "first": "MK",
+      "second": null
+    },
+    "2026-11-26": {
+      "first": "SR",
+      "second": null
+    },
+    "2026-11-27": {
+      "first": "HY",
+      "second": null
+    },
+    "2026-11-30": {
+      "first": "BT",
+      "second": null
+    },
+    "2026-11-01": {
+      "first": "RW",
       "second": null
     }
   },
