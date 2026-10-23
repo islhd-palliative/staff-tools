@@ -89,6 +89,19 @@
             color: #0369a1;
         }
 
+        .info-banner .preview-btn {
+            margin-left: 10px;
+            padding: 4px 10px;
+            border: 1px solid #1e40af;
+            border-radius: 4px;
+            background: white;
+            color: #1e40af;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .info-banner .preview-btn:hover { background: #1e40af; color: white; }
+        .info-banner.previewing { background: #fef3c7; border-color: #f59e0b; }
+
         .info-banner strong {
             color: #075985;
         }
@@ -233,6 +246,8 @@
         .loc-shh { color: #0891b2; }
         .loc-clinic { color: #dc2626; }
         .loc-non-clinical { color: #6b7280; }
+        .loc-support { color: #475569; }
+        .loc-mdt { color: #475569; }
         /* Location color coding - South (warm palette) */
         .loc-sdmh { color: #0d9488; }
         .loc-south-community { color: #d97706; }
@@ -264,6 +279,7 @@
         .legend-dot.twh { background: #2563eb; }
         .legend-dot.shh { background: #0891b2; }
         .legend-dot.clinic { background: #dc2626; }
+        .legend-dot.support { background: #475569; }
         .legend-dot.sdmh { background: #0d9488; }
         .legend-dot.south-community { background: #d97706; }
 
@@ -324,148 +340,10 @@
     <div class="region-section">
         <div class="region-header">North (Illawarra)</div>
 
-        <!-- Coming Soon placeholder (shown before 9 Feb 2026) -->
-        <div id="northComingSoon" class="coming-soon" style="display: none;">
-            <div style="font-size: 1.2rem; margin-bottom: 8px; color: #374151;">Leave Roster Currently in Effect</div>
-            <div style="color: #6b7280;">The new consultant roster begins <strong>9 February 2026</strong>.</div>
-            <div style="color: #9ca3af; font-size: 0.85rem; margin-top: 12px;">Please check your email or StaffLink for the current leave coverage arrangements.</div>
-        </div>
-
-        <!-- Service View -->
-        <div id="northServiceView" class="service-table-container">
-            <table class="service-table">
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>PCU (Bulli)</td>
-                        <td><span class="doctor-name loc-pcu">Ben</span></td>
-                        <td><span class="doctor-name loc-pcu">Greg</span></td>
-                        <td><span class="registrar">(Registrar)</span></td>
-                        <td><span class="doctor-name loc-pcu">Ben</span></td>
-                        <td><span class="doctor-name loc-pcu">Greg</span></td>
-                    </tr>
-                    <tr>
-                        <td>Community</td>
-                        <td><span class="doctor-name loc-community">Angela</span></td>
-                        <td><span class="doctor-name loc-community">Ben</span></td>
-                        <td><span class="doctor-name loc-community">Ben</span></td>
-                        <td><span class="doctor-name loc-community">Angela</span></td>
-                        <td><span class="doctor-name loc-community">Ben</span></td>
-                    </tr>
-                    <tr>
-                        <td>Consults (TWH)</td>
-                        <td><span class="doctor-name loc-twh">Ron</span></td>
-                        <td><span class="registrar">(Registrar)</span></td>
-                        <td><span class="doctor-name loc-twh">Muoi</span></td>
-                        <td><span class="no-cover">—</span></td>
-                        <td><span class="doctor-name loc-twh">Helen</span></td>
-                    </tr>
-                    <tr>
-                        <td>Consults (SHH)</td>
-                        <td><span class="no-cover">—</span></td>
-                        <td><span class="doctor-name loc-shh">Muoi</span></td>
-                        <td><span class="no-cover">—</span></td>
-                        <td><span class="doctor-name loc-shh">Helen</span></td>
-                        <td><span class="no-cover">—</span></td>
-                    </tr>
-                    <tr>
-                        <td>Symptom Clinic (Dapto)</td>
-                        <td><span class="no-cover">—</span></td>
-                        <td><span class="doctor-name loc-clinic">Ron</span></td>
-                        <td><span class="doctor-name loc-clinic">Helen</span></td>
-                        <td><span class="no-cover">—</span></td>
-                        <td><span class="no-cover">—</span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="location-legend">
-                <div class="legend-item"><span class="legend-dot pcu"></span> PCU = Bulli Hospital</div>
-                <div class="legend-item"><span class="legend-dot community"></span> Community = Illawarra region</div>
-                <div class="legend-item"><span class="legend-dot twh"></span> TWH = Wollongong Hospital</div>
-                <div class="legend-item"><span class="legend-dot shh"></span> SHH = Shellharbour Hospital</div>
-                <div class="legend-item"><span class="legend-dot clinic"></span> Clinic = Dapto</div>
-            </div>
-        </div>
-
-        <!-- Doctor View -->
-        <div id="northDoctorView" class="doctor-cards" style="display: none;">
-            <div class="doctor-card">
-                <div class="doctor-card-header">Benjamin Thomas <span class="fte">1.0 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-community">Community</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-community">Community</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-community">Community</span></div>
-                </div>
-            </div>
-            <div class="doctor-card">
-                <div class="doctor-card-header">Greg Barclay <span class="fte">0.4 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-pcu">PCU (Bulli)</span></div>
-                </div>
-            </div>
-            <div class="doctor-card">
-                <div class="doctor-card-header">Angela Lo <span class="fte">0.8 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-community">Community</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-non-clinical">Non-clinical</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-non-clinical">Non-clinical</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-community">Community</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">Day off (floating)</span></div>
-                </div>
-            </div>
-            <div class="doctor-card">
-                <div class="doctor-card-header">Ron Wai <span class="fte">0.4 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-clinic">Symptom Clinic</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">—</span></div>
-                </div>
-            </div>
-            <div class="doctor-card">
-                <div class="doctor-card-header">Muoi Khou <span class="fte">0.4 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location loc-shh">Consults (SHH)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location off">—</span></div>
-                </div>
-            </div>
-            <div class="doctor-card">
-                <div class="doctor-card-header">Helen Yourlo <span class="fte">0.7 FTE</span></div>
-                <div class="doctor-schedule">
-                    <div class="schedule-row"><span class="schedule-day">Mon</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Tue</span><span class="schedule-location off">—</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Wed</span><span class="schedule-location loc-clinic">Symptom Clinic</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Thu</span><span class="schedule-location loc-shh">Consults (SHH)</span></div>
-                    <div class="schedule-row"><span class="schedule-day">Fri</span><span class="schedule-location loc-twh">Consults (TWH)</span></div>
-                </div>
-            </div>
-            <div class="location-legend" style="grid-column: 1 / -1;">
-                <div class="legend-item"><span class="legend-dot pcu"></span> PCU = Bulli Hospital</div>
-                <div class="legend-item"><span class="legend-dot community"></span> Community = Illawarra region</div>
-                <div class="legend-item"><span class="legend-dot twh"></span> TWH = Wollongong Hospital</div>
-                <div class="legend-item"><span class="legend-dot shh"></span> SHH = Shellharbour Hospital</div>
-                <div class="legend-item"><span class="legend-dot clinic"></span> Clinic = Dapto</div>
-            </div>
-        </div>
+        <!-- North service table and doctor cards are rendered from northModels (see script):
+             the current model until 1 Nov 2026, the new Illawarra weekly model from Monday 2 Nov 2026. -->
+        <div id="northServiceView" class="service-table-container"></div>
+        <div id="northDoctorView" class="doctor-cards" style="display: none;"></div>
     </div>
 
     <!-- South Region -->
@@ -540,9 +418,109 @@
         </div>
     </div>
 
-    <div class="last-updated">Last updated: 19 January 2026</div>
+    <div class="last-updated">Last updated: 24 October 2026</div>
 
     <script>
+        // ==================== NORTH MODELS ====================
+        // The new Illawarra weekly model starts Monday 2 November 2026 (roster_november_2026.pdf).
+        // Until then the page shows the current model, with a preview button for the new one.
+        const NORTH_MODEL_START = new Date(2026, 10, 2); // 2 Nov 2026 (local time)
+
+        const LOC = {
+            pcu:       { label: 'PCU (Bulli)',        cls: 'loc-pcu' },
+            community: { label: 'Community',          cls: 'loc-community' },
+            twh:       { label: 'Consults (TWH)',     cls: 'loc-twh' },
+            shh:       { label: 'Consults (SHH)',     cls: 'loc-shh' },
+            clinic:    { label: 'Symptom Clinic',     cls: 'loc-clinic' },
+            support:   { label: 'Support / Advice',   cls: 'loc-support' },
+            mdt:       { label: 'MDT (Bulli)',        cls: 'loc-mdt' },
+            nonclin:   { label: 'Non-clinical',       cls: 'loc-non-clinical' },
+            floating:  { label: 'Day off (floating)', cls: 'off' }
+        };
+
+        // Service rows: cell = {doc:'Ben', loc:'pcu'} | {cover:'CNS + Registrar'} | null
+        // Doctor cards: Mon..Fri location keys (null = off)
+        const northModels = {
+            current: {
+                effective: '9 February 2026',
+                services: [
+                    ['PCU (Bulli)',            [{doc:'Ben',loc:'pcu'}, {doc:'Greg',loc:'pcu'}, {cover:'(Registrar)'}, {doc:'Ben',loc:'pcu'}, {doc:'Greg',loc:'pcu'}]],
+                    ['Community',              [{doc:'Angela',loc:'community'}, {doc:'Ben',loc:'community'}, {doc:'Ben',loc:'community'}, {doc:'Angela',loc:'community'}, {doc:'Ben',loc:'community'}]],
+                    ['Consults (TWH)',         [{doc:'Ron',loc:'twh'}, {cover:'(Registrar)'}, {doc:'Muoi',loc:'twh'}, null, {doc:'Helen',loc:'twh'}]],
+                    ['Consults (SHH)',         [null, {doc:'Muoi',loc:'shh'}, null, {doc:'Helen',loc:'shh'}, null]],
+                    ['Symptom Clinic (Dapto)', [null, {doc:'Ron',loc:'clinic'}, {doc:'Helen',loc:'clinic'}, null, null]]
+                ],
+                doctors: [
+                    ['Benjamin Thomas', '1.0', ['pcu','community','community','pcu','community']],
+                    ['Greg Barclay',    '0.4', [null,'pcu',null,null,'pcu']],
+                    ['Angela Lo',       '0.8', ['community','nonclin','nonclin','community','floating']],
+                    ['Ron Wai',         '0.4', ['twh','clinic',null,null,null]],
+                    ['Muoi Khou',       '0.4', [null,'shh','twh',null,null]],
+                    ['Helen Yourlo',    '0.7', [null,null,'clinic','shh','twh']]
+                ],
+                legend: ['pcu','community','twh','shh','clinic']
+            },
+            nov2026: {
+                effective: '2 November 2026',
+                services: [
+                    ['PCU (Bulli)',            [{doc:'Ben',loc:'pcu'}, {doc:'Greg',loc:'pcu'}, {cover:'Registrar'}, {doc:'Ben',loc:'pcu'}, {doc:'Greg',loc:'pcu'}]],
+                    ['Community',              [{doc:'Ron',loc:'community'}, {doc:'Muoi',loc:'community'}, {doc:'Ben',loc:'community'}, {doc:'Helen',loc:'community'}, {doc:'Angela',loc:'community'}]],
+                    ['Symptom Clinic (Dapto)', [null, {doc:'Ron',loc:'clinic'}, {doc:'Helen',loc:'clinic'}, null, null]],
+                    ['Consults (TWH)',         [{doc:'Angela',loc:'twh'}, {cover:'CNS + Registrar'}, {doc:'Muoi',loc:'twh'}, {cover:'CNS + Registrar'}, {doc:'Ben',loc:'twh'}]],
+                    ['Consults (SHH)',         [null, {cover:'CNS'}, null, null, {doc:'Helen',loc:'shh'}]],
+                    ['Support / Advice',       [null, {doc:'Angela',loc:'support'}, {doc:'Angela',loc:'support'}, null, null]]
+                ],
+                doctors: [
+                    ['Angela Lo',       '0.8', ['twh','support','support',null,'community']],
+                    ['Benjamin Thomas', '1.0', ['pcu','mdt','community','pcu','twh']],
+                    ['Greg Barclay',    '0.4', [null,'pcu',null,null,'pcu']],
+                    ['Helen Yourlo',    '0.7', [null,null,'clinic','community','shh']],
+                    ['Muoi Khou',       '0.4', [null,'community','twh',null,null]],
+                    ['Ron Wai',         '0.4', ['community','clinic',null,null,null]]
+                ],
+                legend: ['pcu','community','twh','shh','clinic','support']
+            }
+        };
+
+        const LEGEND_TEXT = {
+            pcu: 'PCU = Bulli Hospital', community: 'Community = Illawarra region',
+            twh: 'TWH = Wollongong Hospital', shh: 'SHH = Shellharbour Hospital',
+            clinic: 'Clinic = Dapto', support: 'Support / Advice = phone advice, consultant available'
+        };
+        const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+        function legendHtml(keys, extraStyle) {
+            return `<div class="location-legend"${extraStyle ? ` style="${extraStyle}"` : ''}>` +
+                keys.map(k => `<div class="legend-item"><span class="legend-dot ${k}"></span> ${LEGEND_TEXT[k]}</div>`).join('') +
+                '</div>';
+        }
+
+        function serviceCell(cell) {
+            if (!cell) return '<span class="no-cover">—</span>';
+            if (cell.cover) return `<span class="registrar">${cell.cover}</span>`;
+            return `<span class="doctor-name ${LOC[cell.loc].cls}">${cell.doc}</span>`;
+        }
+
+        function renderNorth(model) {
+            const m = northModels[model];
+            const svc = document.getElementById('northServiceView');
+            svc.innerHTML = `<table class="service-table"><thead><tr><th>Service</th>${DAYS.map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>` +
+                m.services.map(([name, cells]) => `<tr><td>${name}</td>${cells.map(c => `<td>${serviceCell(c)}</td>`).join('')}</tr>`).join('') +
+                '</tbody></table>' + legendHtml(m.legend);
+
+            const doc = document.getElementById('northDoctorView');
+            doc.innerHTML = m.doctors.map(([name, fte, days]) =>
+                `<div class="doctor-card"><div class="doctor-card-header">${name} <span class="fte">${fte} FTE</span></div><div class="doctor-schedule">` +
+                days.map((k, i) => {
+                    const l = k ? LOC[k] : null;
+                    const txt = l ? l.label : '—';
+                    const cls = l ? l.cls : 'off';
+                    return `<div class="schedule-row"><span class="schedule-day">${DAYS[i]}</span><span class="schedule-location ${cls}">${txt}</span></div>`;
+                }).join('') + '</div></div>'
+            ).join('') + legendHtml(m.legend, 'grid-column: 1 / -1;');
+        }
+
+        // ==================== VIEW TOGGLE ====================
         const btnServiceView = document.getElementById('btnServiceView');
         const btnDoctorView = document.getElementById('btnDoctorView');
         const northServiceView = document.getElementById('northServiceView');
@@ -553,11 +531,8 @@
         btnServiceView.addEventListener('click', () => {
             btnServiceView.classList.add('active');
             btnDoctorView.classList.remove('active');
-            // Only show North views if roster is active
-            if (isNorthRosterActive()) {
-                northServiceView.style.display = 'block';
-                northDoctorView.style.display = 'none';
-            }
+            northServiceView.style.display = 'block';
+            northDoctorView.style.display = 'none';
             southServiceView.style.display = 'block';
             southDoctorView.style.display = 'none';
         });
@@ -565,39 +540,39 @@
         btnDoctorView.addEventListener('click', () => {
             btnDoctorView.classList.add('active');
             btnServiceView.classList.remove('active');
-            // Only show North views if roster is active
-            if (isNorthRosterActive()) {
-                northServiceView.style.display = 'none';
-                northDoctorView.style.display = 'grid';
-            }
+            northServiceView.style.display = 'none';
+            northDoctorView.style.display = 'grid';
             southServiceView.style.display = 'none';
             southDoctorView.style.display = 'grid';
         });
 
-        // Check if North roster is active (on or after 9 Feb 2026)
-        function isNorthRosterActive() {
-            const today = new Date();
-            const northStartDate = new Date(2026, 1, 9); // 9 Feb 2026
-            return today >= northStartDate;
+        // ==================== DATE SWITCH ====================
+        function newModelActive() {
+            return new Date() >= NORTH_MODEL_START;
         }
 
-        // Initialize view based on date
-        function initDateAwareViews() {
-            const northComingSoon = document.getElementById('northComingSoon');
-            const infoBanner = document.getElementById('infoBanner');
+        let previewing = false;
 
-            if (isNorthRosterActive()) {
-                // Show the full roster
-                northComingSoon.style.display = 'none';
-                northServiceView.style.display = 'block';
-                infoBanner.innerHTML = '<strong>North:</strong> Effective from 9 February 2026 · <strong>South:</strong> Effective from 16 January 2026 — Actual coverage may vary due to leave or service needs.';
+        function initDateAwareViews() {
+            const infoBanner = document.getElementById('infoBanner');
+            const south = '<strong>South:</strong> Effective from 16 January 2026 — Actual coverage may vary due to leave or service needs.';
+
+            if (newModelActive()) {
+                renderNorth('nov2026');
+                infoBanner.classList.remove('previewing');
+                infoBanner.innerHTML = '<strong>North:</strong> Effective from 2 November 2026 · ' + south;
+            } else if (previewing) {
+                renderNorth('nov2026');
+                infoBanner.classList.add('previewing');
+                infoBanner.innerHTML = '<strong>North:</strong> Previewing the new Illawarra weekly model, which begins <strong>Monday 2 November 2026</strong>. <button class="preview-btn" id="btnPreview">Show current roster</button><br>' + south;
             } else {
-                // Show coming soon for North
-                northComingSoon.style.display = 'block';
-                northServiceView.style.display = 'none';
-                northDoctorView.style.display = 'none';
-                infoBanner.innerHTML = '<strong>South:</strong> Effective from 16 January 2026 · <strong>North:</strong> New roster begins 9 February 2026 — Actual coverage may vary due to leave or service needs.';
+                renderNorth('current');
+                infoBanner.classList.remove('previewing');
+                infoBanner.innerHTML = '<strong>North:</strong> Effective from 9 February 2026 · New Illawarra weekly model begins <strong>Monday 2 November 2026</strong>. <button class="preview-btn" id="btnPreview">Preview new model</button><br>' + south;
             }
+
+            const btn = document.getElementById('btnPreview');
+            if (btn) btn.addEventListener('click', () => { previewing = !previewing; initDateAwareViews(); });
         }
 
         // Run on page load

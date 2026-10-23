@@ -398,6 +398,12 @@
             font-style: italic;
         }
 
+        .site-doctor.cover {
+            color: #6b7280;
+            font-weight: 500;
+            font-style: italic;
+        }
+
         /* ==================== TRAINEE CARD ==================== */
         .trainee-section .card {
             height: fit-content;
@@ -644,6 +650,10 @@
                             <span class="site-name">Symptom Clinic</span>
                             <span class="site-doctor" id="site-clinic">—</span>
                         </div>
+                        <div class="site-row" id="site-support-row" style="display: none;">
+                            <span class="site-name">Support / Advice</span>
+                            <span class="site-doctor" id="site-support">—</span>
+                        </div>
                     </div>
                 </div>
 
@@ -697,7 +707,11 @@
     <script>
         // ==================== DATA ====================
         // Consultant schedule by day of week (0=Sun, 1=Mon, etc.)
-        const consultantSchedule = {
+        // North changes to the new Illawarra weekly model on Monday 2 November 2026
+        // (roster_november_2026.pdf). scheduleFor() picks the schedule by the date viewed.
+        const NORTH_MODEL_START = new Date(2026, 10, 2); // 2 Nov 2026 (local time)
+
+        const consultantScheduleCurrent = {
             'BT': { 1: 'PCU', 2: 'Community', 3: 'Community', 4: 'PCU', 5: 'Community' },
             'GB': { 2: 'PCU', 5: 'PCU' },
             'AL': { 1: 'Community', 2: 'Non-clinical', 3: 'Non-clinical', 4: 'Community' },
@@ -707,6 +721,28 @@
             'SR': { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' }, // Alternate Fridays off
             'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off
         };
+
+        const consultantScheduleNov2026 = {
+            'BT': { 1: 'PCU', 2: 'MDT', 3: 'Community', 4: 'PCU', 5: 'TWH' },
+            'GB': { 2: 'PCU', 5: 'PCU' },
+            'AL': { 1: 'TWH', 2: 'Support', 3: 'Support', 5: 'Community' },
+            'RW': { 1: 'Community', 2: 'Clinic' },
+            'MK': { 2: 'Community', 3: 'TWH' },
+            'HY': { 3: 'Clinic', 4: 'Community', 5: 'SHH' },
+            'SR': { 1: 'SDMH', 2: 'SDMH', 3: 'Community', 4: 'Community', 5: 'SDMH' }, // Alternate Fridays off (unchanged)
+            'Fadz': { 1: 'Community', 3: 'Community', 4: 'SDMH', 5: 'Community' } // Tues off (unchanged)
+        };
+
+        // Where no consultant is on site under the new model, who covers (shown in place of "—")
+        const northCoverNov2026 = {
+            pcu: { 3: 'Registrar' },
+            twh: { 2: 'CNS + Registrar', 4: 'CNS + Registrar' },
+            shh: { 2: 'CNS' }
+        };
+
+        function scheduleFor(date) {
+            return date >= NORTH_MODEL_START ? consultantScheduleNov2026 : consultantScheduleCurrent;
+        }
 
         const staffNames = {
             'BT': 'Benjamin Thomas',
@@ -1111,8 +1147,11 @@
                 'community': '—',
                 'twh': '—',
                 'shh': '—',
-                'clinic': '—'
+                'clinic': '—',
+                'support': '—'
             };
+            const newModel = date >= NORTH_MODEL_START;
+            document.getElementById('site-support-row').style.display = newModel ? '' : 'none';
 
             // South region sites
             const southSites = {
@@ -1121,7 +1160,7 @@
             };
 
             // Map consultant schedules to sites (excluding those on leave)
-            Object.entries(consultantSchedule).forEach(([code, schedule]) => {
+            Object.entries(scheduleFor(date)).forEach(([code, schedule]) => {
                 // Skip if on leave
                 if (isOnLeave(code, date)) return;
 
@@ -1138,6 +1177,7 @@
                         if (location === 'TWH') northSites.twh = surname;
                         if (location === 'SHH') northSites.shh = surname;
                         if (location === 'Clinic') northSites.clinic = surname;
+                        if (location === 'Support') northSites.support = surname;
                     }
                     // South sites
                     if (location === 'SDMH') southSites.sdmh.push(surname);
@@ -1149,9 +1189,17 @@
             if (northActive) {
                 Object.entries(northSites).forEach(([site, doctor]) => {
                     const el = document.getElementById(`site-${site}`);
-                    if (el) {
+                    if (!el) return;
+                    const cover = newModel && northCoverNov2026[site] && northCoverNov2026[site][dow];
+                    if (doctor !== '—') {
                         el.textContent = doctor;
-                        el.className = doctor === '—' ? 'site-doctor empty' : 'site-doctor';
+                        el.className = 'site-doctor';
+                    } else if (cover) {
+                        el.textContent = cover;
+                        el.className = 'site-doctor cover';
+                    } else {
+                        el.textContent = '—';
+                        el.className = 'site-doctor empty';
                     }
                 });
             }
