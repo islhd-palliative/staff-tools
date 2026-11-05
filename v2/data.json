@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22",
+  "generatedAt": "2026-11-05",
   "schemaVersion": 1,
   "staff": [
     {
@@ -503,6 +503,14 @@
       "region": "North",
       "startDate": "2027-02-26",
       "endDate": "2027-03-08",
+      "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "Fadz",
+      "staffName": "Fadz wan Bahrum",
+      "region": "South",
+      "startDate": "2027-01-07",
+      "endDate": "2027-01-24",
       "leaveType": "Annual Leave"
     }
   ],
