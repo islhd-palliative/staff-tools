@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Specialist Leave Calendar 2026-27 - ISLHD Palliative Care</title>
+    <title>Staff Specialist Leave Calendar - ISLHD Palliative Care</title>
     <style>
         * {
             box-sizing: border-box;
@@ -228,7 +228,7 @@
 
         .month-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 1px;
             background: #e5e7eb;
             padding: 1px;
@@ -416,6 +416,7 @@
             border-radius: 20px;
             font-size: 0.85rem;
             background: white;
+            color: #374151;
             cursor: pointer;
             transition: all 0.15s;
         }
@@ -670,7 +671,7 @@
         <a href="index.html">&larr; Back to Home</a>
     </div>
 
-    <h1>Staff Specialist Leave Calendar 2026-27</h1>
+    <h1>Staff Specialist Leave Calendar</h1>
     <p class="subtitle">ISLHD Palliative and End of Life Care</p>
     <p class="last-updated">Last updated: <span id="lastUpdatedText">—</span></p>
 
@@ -699,23 +700,22 @@
                         </optgroup>
                     </select>
                     <label for="monthJump">Jump to:</label>
-                    <select id="monthJump">
-                        <option value="2026-0">January 2026</option>
-                        <option value="2026-1">February 2026</option>
-                        <option value="2026-2">March 2026</option>
-                        <option value="2026-3">April 2026</option>
-                        <option value="2026-4">May 2026</option>
-                        <option value="2026-5">June 2026</option>
-                        <option value="2026-6">July 2026</option>
-                        <option value="2026-7">August 2026</option>
-                        <option value="2026-8">September 2026</option>
-                        <option value="2026-9">October 2026</option>
-                        <option value="2026-10">November 2026</option>
-                        <option value="2026-11">December 2026</option>
-                        <option value="2027-0">January 2027</option>
-                        <option value="2027-1">February 2027</option>
-                    </select>
+                    <select id="monthJump"></select>
                     <button onclick="jumpToMonth()">Go</button>
+                </div>
+            </div>
+
+            <div class="toolbar-group">
+                <div class="toolbar-group-label">Months shown</div>
+                <div class="toolbar-group-buttons">
+                    <label for="rangeFrom">From:</label>
+                    <select id="rangeFrom" onchange="onRangeChange('from')"></select>
+                    <label for="rangeTo">To:</label>
+                    <select id="rangeTo" onchange="onRangeChange('to')"></select>
+                    <button onclick="setRangePreset('current')" title="This month to the end of the calendar">From this month</button>
+                    <button onclick="setRangePreset('6')" title="This month and the next 5">Next 6 months</button>
+                    <button onclick="setRangePreset('12')" title="This month and the next 11">Next 12 months</button>
+                    <button onclick="setRangePreset('all')" title="Every month in the calendar, including past months">Show all</button>
                 </div>
             </div>
 
@@ -735,7 +735,7 @@
                 <div class="toolbar-group-buttons">
                     <button onclick="showUpcoming()">My Upcoming Leave</button>
                     <button class="btn-green" onclick="showAvailable()" title="Highlight days where leave would currently be approved (under the regional cap)">Available</button>
-                    <button class="btn-amber" onclick="showLimited()" title="Highlight days where leave is limited (cap approaching)">Limited</button>
+                    <button class="btn-amber" onclick="showLimited()" title="Highlight days where one region already has someone on leave (the other region is still free)">Limited</button>
                     <button class="btn-red" onclick="showRestricted()" title="Highlight days where leave is unlikely to be approved (cap reached)">Restricted</button>
                     <button class="btn-outline" onclick="resetView()">Reset</button>
                 </div>
@@ -795,7 +795,7 @@
     </div>
 
     <div class="rules-info">
-        <strong>Leave Rules:</strong> North: Max 2 on leave at once | South: Max 1 on leave at once
+        <strong>Leave Rules:</strong> North: Max 1 on leave at once | South: Max 1 on leave at once
     </div>
 
     <div id="upcomingPanel" class="status-panel" style="display:none;">
@@ -859,7 +859,19 @@
             '2026-12-31': 'Additional Public Holiday (NSW Health)',
             // 2027
             '2027-01-01': "New Year's Day",
-            '2027-01-26': 'Australia Day'
+            '2027-01-26': 'Australia Day',
+            '2027-03-26': 'Good Friday',
+            '2027-03-27': 'Easter Saturday',
+            '2027-03-28': 'Easter Sunday',
+            '2027-03-29': 'Easter Monday',
+            '2027-04-25': 'ANZAC Day',
+            '2027-04-26': 'ANZAC Day (additional)',
+            '2027-06-14': "King's Birthday",
+            '2027-10-04': 'Labour Day',
+            '2027-12-25': 'Christmas Day',
+            '2027-12-26': 'Boxing Day',
+            '2027-12-27': 'Christmas Day (additional)',
+            '2027-12-28': 'Boxing Day (additional)'
         };
 
         // Leave data - will be populated from CSV
@@ -1013,29 +1025,44 @@
             renderCalendar();
         }
 
-        // Calculate availability status for a date
-        function getAvailability(date) {
+        // Calculate availability status for a date.
+        // Rule: max 1 on leave at once in each region (North, South).
+        // Whole-team view: green = both regions free, amber = one region at cap, red = both at cap.
+        // Region or person view: only that region counts (green = free, red = at cap).
+        function getAvailability(date, filter = 'all') {
             const dayOfWeek = date.getDay();
             if (dayOfWeek === 0 || dayOfWeek === 6) return null; // Weekend
 
             const dateKey = formatDateKey(date);
             if (publicHolidays[dateKey]) return null; // Public holiday
 
-            const northLeave = leaveData.filter(l =>
-                l.region === 'North' && date >= l.startDate && date <= l.endDate
+            const countFor = region => leaveData.filter(l =>
+                l.region === region && date >= l.startDate && date <= l.endDate
             ).length;
+            const REGION_CAP = 1;
+            const northFull = countFor('North') >= REGION_CAP;
+            const southFull = countFor('South') >= REGION_CAP;
 
-            const southLeave = leaveData.filter(l =>
-                l.region === 'South' && date >= l.startDate && date <= l.endDate
-            ).length;
+            let region = null;
+            if (filter === 'north') region = 'North';
+            else if (filter === 'south') region = 'South';
+            else if (filter !== 'all' && staff[filter]) region = staff[filter].region;
 
-            // Rules:
-            // RED (full/unlikely): North 2+ OR South 1+
-            // AMBER (limited): North 1
-            // GREEN (available): otherwise
+            if (region) {
+                // For a single person, ignore their own leave when checking the cap
+                if (staff[filter]) {
+                    const others = leaveData.filter(l =>
+                        l.region === region && l.staffCode !== filter &&
+                        date >= l.startDate && date <= l.endDate
+                    ).length;
+                    return others >= REGION_CAP ? 'full' : 'available';
+                }
+                const full = region === 'North' ? northFull : southFull;
+                return full ? 'full' : 'available';
+            }
 
-            if (northLeave >= 2 || southLeave >= 1) return 'full';
-            if (northLeave >= 1) return 'limited';
+            if (northFull && southFull) return 'full';
+            if (northFull || southFull) return 'limited';
             return 'available';
         }
 
@@ -1049,14 +1076,11 @@
                            'July', 'August', 'September', 'October', 'November', 'December'];
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-            // Calendar spans: Jan 2026 - Feb 2027 (14 months)
-            const calendarMonths = [
-                { year: 2026, month: 0 }, { year: 2026, month: 1 }, { year: 2026, month: 2 },
-                { year: 2026, month: 3 }, { year: 2026, month: 4 }, { year: 2026, month: 5 },
-                { year: 2026, month: 6 }, { year: 2026, month: 7 }, { year: 2026, month: 8 },
-                { year: 2026, month: 9 }, { year: 2026, month: 10 }, { year: 2026, month: 11 },
-                { year: 2027, month: 0 }, { year: 2027, month: 1 }
-            ];
+            // Months shown come from the From/To range (default: this month onward)
+            const calendarMonths = [];
+            for (let i = rangeFrom; i <= rangeTo; i++) {
+                calendarMonths.push({ year: Math.floor(i / 12), month: i % 12 });
+            }
 
             calendarMonths.forEach(({ year, month }) => {
                 const monthCard = document.createElement('div');
@@ -1138,7 +1162,7 @@
 
                     // Availability indicator (only for weekdays, non-holidays)
                     if (!isWeekend && !isHoliday) {
-                        const availability = getAvailability(date);
+                        const availability = getAvailability(date, filter);
                         if (availability) {
                             const indicator = document.createElement('div');
                             indicator.className = `availability-indicator ${availability}`;
@@ -1152,6 +1176,66 @@
                 monthCard.appendChild(grid);
                 container.appendChild(monthCard);
             });
+        }
+
+        // ---- Month range ----
+        // Months are numbered as year*12 + month so ranges are simple integers.
+        const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+                             'July', 'August', 'September', 'October', 'November', 'December'];
+        const CAL_FIRST = 2026 * 12 + 0;                                   // January 2026 (earliest data)
+        const CAL_LAST = Math.max(2027, new Date().getFullYear() + 1) * 12 + 11; // December next year, at least Dec 2027
+        const clampMonth = i => Math.min(CAL_LAST, Math.max(CAL_FIRST, i));
+        const THIS_MONTH = clampMonth(new Date().getFullYear() * 12 + new Date().getMonth());
+        let rangeFrom = THIS_MONTH;
+        let rangeTo = CAL_LAST;
+
+        function monthLabel(i) { return MONTH_NAMES[i % 12] + ' ' + Math.floor(i / 12); }
+
+        function fillMonthSelect(sel, from, to, selected) {
+            sel.innerHTML = '';
+            for (let i = from; i <= to; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = monthLabel(i);
+                if (i === selected) opt.selected = true;
+                sel.appendChild(opt);
+            }
+        }
+
+        function syncRangeControls() {
+            fillMonthSelect(document.getElementById('rangeFrom'), CAL_FIRST, CAL_LAST, rangeFrom);
+            fillMonthSelect(document.getElementById('rangeTo'), CAL_FIRST, CAL_LAST, rangeTo);
+            // Jump-to lists only the months on screen
+            const jump = document.getElementById('monthJump');
+            jump.innerHTML = '';
+            for (let i = rangeFrom; i <= rangeTo; i++) {
+                const opt = document.createElement('option');
+                opt.value = `${Math.floor(i / 12)}-${i % 12}`;
+                opt.textContent = monthLabel(i);
+                jump.appendChild(opt);
+            }
+        }
+
+        function onRangeChange(which) {
+            const from = parseInt(document.getElementById('rangeFrom').value, 10);
+            const to = parseInt(document.getElementById('rangeTo').value, 10);
+            rangeFrom = from;
+            rangeTo = to;
+            // Keep From before To: move the other end if they cross
+            if (rangeFrom > rangeTo) {
+                if (which === 'from') rangeTo = rangeFrom; else rangeFrom = rangeTo;
+            }
+            syncRangeControls();
+            renderCalendar();
+        }
+
+        function setRangePreset(preset) {
+            if (preset === 'all') { rangeFrom = CAL_FIRST; rangeTo = CAL_LAST; }
+            else if (preset === '6') { rangeFrom = THIS_MONTH; rangeTo = clampMonth(THIS_MONTH + 5); }
+            else if (preset === '12') { rangeFrom = THIS_MONTH; rangeTo = clampMonth(THIS_MONTH + 11); }
+            else { rangeFrom = THIS_MONTH; rangeTo = CAL_LAST; }
+            syncRangeControls();
+            renderCalendar();
         }
 
         // Jump to month
@@ -1227,6 +1311,10 @@
                 btn.classList.remove('active');
                 if (btn.dataset.type === 'all') btn.classList.add('active');
             });
+            // Back to the default range (this month onward)
+            rangeFrom = THIS_MONTH;
+            rangeTo = CAL_LAST;
+            syncRangeControls();
             // Re-render calendar
             renderCalendar();
         }
@@ -1278,6 +1366,7 @@
         document.getElementById('staffFilter').addEventListener('change', renderCalendar);
 
         // Initial load
+        syncRangeControls();
         loadLeaveData();
     </script>
 
