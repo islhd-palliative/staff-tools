@@ -546,6 +546,15 @@
       "endDate": "2027-04-05",
       "leaveType": "TESL",
       "notes": "ECIM, Paris (incl. travel)"
+    },
+    {
+      "staffCode": "BT",
+      "staffName": "Benjamin Thomas",
+      "region": "North",
+      "startDate": "2027-04-20",
+      "endDate": "2027-04-23",
+      "leaveType": "TESL",
+      "notes": "APHC/OPCC 2027, Adelaide"
     }
   ],
   "publicHolidays": {
