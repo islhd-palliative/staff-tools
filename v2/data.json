@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05",
+  "generatedAt": "2026-11-10",
   "schemaVersion": 1,
   "staff": [
     {
@@ -512,6 +512,14 @@
       "startDate": "2027-01-07",
       "endDate": "2027-01-24",
       "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "SR",
+      "staffName": "Stephanie Robinson",
+      "region": "South",
+      "startDate": "2026-11-12",
+      "endDate": "2026-11-12",
+      "leaveType": "TESL"
     }
   ],
   "publicHolidays": {
