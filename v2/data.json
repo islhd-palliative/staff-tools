@@ -520,6 +520,32 @@
       "startDate": "2026-11-12",
       "endDate": "2026-11-12",
       "leaveType": "TESL"
+    },
+    {
+      "staffCode": "SR",
+      "staffName": "Stephanie Robinson",
+      "region": "South",
+      "startDate": "2027-03-16",
+      "endDate": "2027-03-21",
+      "leaveType": "TESL",
+      "notes": "ELCC, Munich (incl. travel)"
+    },
+    {
+      "staffCode": "SR",
+      "staffName": "Stephanie Robinson",
+      "region": "South",
+      "startDate": "2027-03-22",
+      "endDate": "2027-03-30",
+      "leaveType": "Annual Leave"
+    },
+    {
+      "staffCode": "SR",
+      "staffName": "Stephanie Robinson",
+      "region": "South",
+      "startDate": "2027-03-31",
+      "endDate": "2027-04-05",
+      "leaveType": "TESL",
+      "notes": "ECIM, Paris (incl. travel)"
     }
   ],
   "publicHolidays": {
